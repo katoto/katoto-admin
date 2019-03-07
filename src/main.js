@@ -19,8 +19,8 @@ import '@/permission' // permission control
  * it will intercept your request, so you won't see the request in the network.
  * If you remove `../mock` it will automatically request easy-mock data.
  */
-import '../mock' // simulation data
 
+import '../mock' // simulation data
 Vue.use(ElementUI, { locale })
 
 // 设置为 false 以阻止 vue 在启动时生成生产提示
