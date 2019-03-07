@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">Wellcome : {{ name }}</div>
+    <div class="dashboard-text">Hello : {{ name }}</div>
     <el-carousel :interval="5000" height="400px">
       <el-carousel-item v-for="item in imgArr" :key="item">
         <div>
