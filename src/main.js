@@ -1,13 +1,9 @@
 import Vue from 'vue'
-
-import 'normalize.css/normalize.css' // A modern alternative to CSS resets
-
+import 'normalize.css/normalize.css' // resets CSS
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
-
 import '@/styles/index.scss' // global css
-
 import App from './App'
 import store from './store'
 import router from './router'
@@ -27,7 +23,8 @@ import '../mock' // simulation data
 
 Vue.use(ElementUI, { locale })
 
-Vue.config.productionTip = false
+// 设置为 false 以阻止 vue 在启动时生成生产提示
+// Vue.config.productionTip = false
 
 new Vue({
   el: '#app',
