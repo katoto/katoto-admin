@@ -228,16 +228,12 @@ export default {
         lang: {},
       },
 
-      onlineVisible: true, // 上下线 通用弹窗
+      onlineVisible: false, // 上下线 通用弹窗
       onlineMsg: '出错啦',
       onlinecurrRowData: null,
 
       modifyExpectId: null,
       expectMoreMsg: null,
-      pageCounts: 5,
-      pageNumber: 1,
-      pageSize: 6,
-      currPageNumber: null,
     }
   },
   watch:{
