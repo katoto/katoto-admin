@@ -82,18 +82,6 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="block">
-          <!-- <el-pagination
-            @current-change="handleCurrentChange"
-            background
-            :current-page.sync="pageNumber"
-            size="small"
-            :page-size="pageSize"
-            layout="prev, pager, next,jumper"
-            :page-count="pageCounts"
-          >
-          </el-pagination> -->
-        </div>
       </div>
     </section>
     <!-- 提款申请 -->
@@ -143,29 +131,33 @@
         </template>
         <el-form-item>
           <el-button type="primary" @click="onAddSubmit">立即新增</el-button>
-          <el-button >取消</el-button>
+          <el-button @click="showlangDialog=false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
     
     <!-- 修改语言 -->
-    <el-dialog size="small" width="600px" title="修改语言" center
-               :visible.sync="showModifyDialog">
-      <el-form ref="form" :model="addform" label-width="80px">
+    <el-dialog size="small" width="600px" title="修改语言" center :visible.sync="showModifyDialog">
+      <el-form ref="form" :model="modifyData" label-width="80px">
         <el-form-item label="StringID">
-          <el-input size="small" v-model="addform.stringid" class="common-input"></el-input>
+          <el-input size="small" disabled="disabled" v-model="modifyData.StringID" class="common-input"></el-input>
         </el-form-item>
         <el-form-item label="page">
-          <el-input size="small" v-model="addform.page" class="common-input"></el-input>
+          <el-input size="small" disabled="disabled" v-model="modifyData.page" class="common-input"></el-input>
         </el-form-item>
-        <template v-for="(item,index) in selLangOptions">
-        <el-form-item :label="item.value" :key="index">
-          <el-input size="small" v-model="addform.lang[item.value]" class="common-input"></el-input>
+        <el-form-item label="language">
+          <el-input size="small" disabled="disabled" v-model="modifyData.language" class="common-input"></el-input>
         </el-form-item>
-        </template>
-        <el-form-item>
-          <el-button type="primary" @click="onAddSubmit">立即新增</el-button>
-          <el-button >取消</el-button>
+        <el-form-item label="oldArticle">
+          <el-input size="small" disabled="disabled" v-model="modifyData.oldArticle" class="common-input"></el-input>
+        </el-form-item>
+        <el-form-item label="translation" class="addHeight">
+          <el-input size="small" placeholder="输入修改的文案" v-model="modifyData.newArticle" class="common-input"></el-input>
+        </el-form-item>
+        <el-checkbox v-model="modifyDialog_label">是否有通配符？？？</el-checkbox>
+        <el-form-item class="common-input">
+          <el-button type="primary" @click="onAddSubmit">立即修改</el-button>
+          <el-button @click="showModifyDialog=false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -179,7 +171,9 @@ import { wait } from '@/utils/utils.js'
 export default {
   data() {
     return {
+      modifyDialog_label: false,
       showModifyDialog: true,
+      modifyData: {}, // 修改的文案
       dialogTableVisible: false, // 上传文件
       uploading: false, // 上次loading
       inputLan: null,
@@ -219,13 +213,10 @@ export default {
       selLang: 'en',
       selLangOptions: [{
         value: 'en',
-        label: 'en'
       }, {
         value: 'zh',
-        label: 'zh'
       }, {
         value: 'india',
-        label: 'india'
       }],
       addform: {
         stringid: '',
@@ -237,14 +228,12 @@ export default {
       onlineMsg: '出错啦',
       onlinecurrRowData: null,
 
-
       modifyExpectId: null,
       expectMoreMsg: null,
       pageCounts: 5,
       pageNumber: 1,
       pageSize: 6,
       currPageNumber: null,
-
     }
   },
   watch:{
@@ -252,11 +241,15 @@ export default {
   mounted(){
   },
   methods: {
-
+    before_js_modify(lineData){
+      this.showModifyDialog = true
+      this.modifyData = JSON.parse(JSON.stringify(lineData))
+      this.modifyData.newArticle = ''
+    },
     before_js_del(lineData){
       this.onlineVisible = true
       this.onlineMsg = `确定删除 ${lineData.oldArticle} 这条信息?`
-      this.onlinecurrRowData = lineData
+      this.onlinecurrRowData = JSON.parse(JSON.stringify(lineData))
     },
     js_del(){
       // 执行删除
@@ -387,5 +380,12 @@ export default {
   height: 0;
   visibility: hidden
 }
+.el-form-item{
+  margin-bottom: 14px;
+}
+.el-dialog .el-checkbox{
+  margin-bottom: 10px;
+}
+
 </style>
 
