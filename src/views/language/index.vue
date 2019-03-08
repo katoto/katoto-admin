@@ -7,7 +7,7 @@
           <section style="float: left;">
             <template>
               <span style="font-size: 14px">page筛选: </span>
-              <el-select size="small" v-model="selPage" placeholder="请选择">
+              <el-select size="small" change="aa" v-model="selPage" placeholder="请选择">
                   <el-option
                   v-for="item in selPageOptions"
                   :key="item.value"
@@ -29,14 +29,14 @@
             </template>
           </section>
           <div style="float: right; margin-right:30px">
-            <el-button @click="searchExpectFn()" type="primary" plain size="small">
+            <el-button @click="addlangs()" type="primary" plain size="small">
               新增语言
             </el-button>
-            <el-button @click="initWithdraw()" type="warning" size="small">
+            <el-button @click="addLine()" type="warning" size="small">
               新增文案
             </el-button>
-            <el-button @click="addGoods()" type="primary" size="small" icon="el-icon-plus">
-              批量导入
+            <el-button @click="modifylangs()" type="primary" size="small" icon="el-icon-plus">
+              批量导入当前语言
             </el-button>
           </div>
         </section>
@@ -73,10 +73,10 @@
           <el-table-column
             label="状态操作">
             <template slot-scope="scope">
-              <el-button @click="before_js_onlineFn( scope.row )" type="primary" size="small">
+              <el-button @click="before_js_modify( scope.row )" type="primary" size="small">
                 修改
               </el-button>
-              <el-button @click="before_js_onlineFn( scope.row )" type="danger" size="small">
+              <el-button @click="before_js_modify( scope.row )" type="danger" size="small">
                 删除
               </el-button>
             </template>
@@ -99,7 +99,7 @@
     <!-- 提款申请 -->
 
     <!--语言弹窗 -->
-    <el-dialog title="注意！" :visible="dialogTableVisible" v-loading="uploading">
+    <el-dialog title="注意！" :visible="dialogTableVisible" @open="openDialog" v-loading="uploading">
       <div>
         <span>请输入文件语言:</span>
         <hr>
@@ -122,7 +122,7 @@
       <span>{{ onlineMsg }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="onlineVisible = false">取 消</el-button>
-        <el-button type="danger" @click="js_onlineFn">确 定</el-button>
+        <el-button type="danger" @click="js_modify">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -199,18 +199,15 @@ export default {
         value: '2000',
         label: 'C'
       }],
-      selLang: '-1',
+      selLang: 'en',
       selLangOptions: [{
-        value: '-1',
-        label: 'All'
-      }, {
-        value: '1',
+        value: 'en',
         label: 'en'
       }, {
-        value: '2',
+        value: 'zh',
         label: 'zh'
       }, {
-        value: '3',
+        value: 'india',
         label: 'india'
       }],
       
@@ -247,14 +244,31 @@ export default {
       currUserUid: null,
     }
   },
+  watch:{
+  },
   mounted(){
-    this.$nextTick(()=>{
-      this.$refs.upload.addEventListener('change', e => {
-        this.readExcel(e)
-      })
-    })
   },
   methods: {
+    openDialog(){
+      this.$nextTick(()=>{
+        console.log(this.$refs)
+        let thisRef = this.$refs.upload
+        if(thisRef){
+          thisRef.removeEventListener('change')
+          thisRef.addEventListener('change', e => {
+            this.readExcel(e)
+          })
+        }
+      })
+    },
+    addlangs() {
+      this.inputLan = null
+      this.dialogTableVisible = true
+    },
+    modifylangs() {
+      this.inputLan = this.selLang
+      this.dialogTableVisible = true
+    },
     async uplang() {
       // 开始loading
       if(!this.inputLan) {
