@@ -38,7 +38,7 @@
             <el-button @click="modifylangs()" type="primary" size="small" icon="el-icon-plus">
               批量导入当前语言
             </el-button>
-            <el-button @click="exportJSON()" type="error" size="small">
+            <el-button @click="before_exportJSON()" type="error" size="small">
               导出当前语言
             </el-button>
           </div>
@@ -185,17 +185,17 @@ export default {
       showlangDialog: false, // 新增文案弹窗
       langArr: [
       {
-        StringID: 11,
+        StringID: 'aa',
         language: "中文",
         newArticle: "login",
         oldArticle: "登陆",
-        page: "home "
+        page: "home"
       },{
-        StringID: 11,
+        StringID: 'ss',
         language: "中文",
         newArticle: "login",
         oldArticle: "登陆",
-        page: "home "
+        page: "home"
       }
       ],
       selPage: '-1',
@@ -245,13 +245,32 @@ export default {
   mounted(){
   },
   methods: {
-    exportJSON(){
-      const data = JSON.stringify({
-        'home.login': 'login',
-        'aa': 'bbdfafd fdasf'
+    before_exportJSON(){
+      let newJson = {}
+      if(this.langArr && this.langArr.length>0){
+        this.langArr.forEach((item, index)=>{
+          let currStr =  `${item.page}.${item.StringID}`
+          newJson[currStr] = item.newArticle
+        })
+        this.exportJSON(newJson)
+        return true
+      }
+      this.$message({
+        type:'error',
+        message: 'exportJSON error'
       })
-      const blod = new Blob([data], {type: ''})
-      FileSaver.saveAs(blod, `ms_${this.selLang}.json`)
+    },
+    exportJSON(json){
+      try{
+        const data = JSON.stringify(json)
+        const blod = new Blob([data], {type: ''})
+        FileSaver.saveAs(blod, `ms_${this.selLang}.json`)
+      }catch(e){
+        this.$message({
+          type:'error',
+          message: 'exportJSON error'
+        })
+      }
     },
     before_js_modify(lineData){
       this.showModifyDialog = true
