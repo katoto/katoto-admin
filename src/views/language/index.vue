@@ -172,7 +172,7 @@ export default {
   data() {
     return {
       modifyDialog_label: false,
-      showModifyDialog: true,
+      showModifyDialog: false, // 修改语言弹窗
       modifyData: {}, // 修改的文案
       dialogTableVisible: false, // 上传文件
       uploading: false, // 上次loading
