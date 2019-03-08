@@ -1,9 +1,223 @@
 <template>
   <div class="app-container">
-    <p>这里是language</p>
     <input 
       ref="upload" 
       type="file" >
+    <section>
+      <div>
+        <section class="clear">
+          <!-- 新增币种选择 -->
+          <section style="float: left;">
+            <template>
+              <span style="font-size: 14px">page筛选: </span>
+              <el-select size="small" v-model="selPage" placeholder="请选择">
+                  <el-option
+                  v-for="item in selPageOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </template>
+            <template>
+              &nbsp;<span style="font-size: 14px">language筛选: </span>
+              <el-select size="small" v-model="selLang" placeholder="请选择">
+                  <el-option
+                  v-for="item in selLangOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </template>
+          </section>
+          <div style="float: right; margin-right:30px">
+            <el-button @click="searchExpectFn()" type="primary" plain size="small">
+              新增语言
+            </el-button>
+            <el-button @click="initWithdraw()" type="warning" size="small">
+              新增文案
+            </el-button>
+            <el-button @click="addGoods()" type="primary" size="small" icon="el-icon-plus">
+              批量导入
+            </el-button>
+          </div>
+        </section>
+        <el-table
+          :data="goodsList"
+          stripe
+          highlight-current-row
+          style="width: 100%">
+          <el-table-column
+            prop="index"
+            width="100"
+            label="序号">
+          </el-table-column>
+          <el-table-column
+            prop="expectId"
+            label="StringID">
+          </el-table-column>
+          <el-table-column
+            prop="goodsTypeVal"
+            label="page">
+          </el-table-column>
+          <el-table-column
+            prop="beginTime"
+            label="language">
+          </el-table-column>
+          <el-table-column
+            prop="endTime"
+            label="last Updated">
+          </el-table-column>
+          <el-table-column
+            label="状态操作">
+            <template slot-scope="scope">
+              <el-button @click="before_js_onlineFn( scope.row )" v-if="scope.row.state === '-1'" type="primary" size="small">
+                上线
+              </el-button>
+              <el-button v-else @click="before_js_onlineFn( scope.row )" type="danger" size="small">
+                下线
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @current-change="handleCurrentChange"
+            background
+            :current-page.sync="pageNumber"
+            size="small"
+            :page-size="pageSize"
+            layout="prev, pager, next,jumper"
+            :page-count="pageCounts"
+          >
+          </el-pagination>
+        </div>
+      </div>
+    </section>
+    <!-- 提款申请 -->
+
+    <!-- 上下线 -->
+    <el-dialog
+      title="注意！"
+      :visible.sync="onlineVisible"
+      width="30%">
+      <span>{{ onlineMsg }}</span>
+      <span slot="footer" class="dialog-footer">
+                <el-button @click="onlineVisible = false">取 消</el-button>
+                <el-button type="danger" @click="js_onlineFn">确 定</el-button>
+          </span>
+    </el-dialog>
+
+    <!-- 提款审核的操作弹窗 -->
+    <el-dialog title="注意！" :visible.sync="dialogTableVisible">
+      <section>
+        {{ js_withdrawMsg }}
+      </section>
+      <div>
+        <span>请输入审核备注:</span>
+        <el-input placeholder="请输入审核备注" v-model='expectId_remark'></el-input>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogTableVisible = false">取 消</el-button>
+        <el-button type="primary" @click="surePay">确 定</el-button>
+      </div>
+    </el-dialog>
+
+
+    <el-dialog :fullscreen=true size="small" width="600px" :title="goodsTitleName" center
+               :visible.sync="showAddDialog">
+      <el-form ref="form" :model="addform" label-width="80px">
+        <!--<el-form-item label="场次名称">-->
+        <!--<el-input size="small" v-model="addform.name"></el-input>-->
+        <!--</el-form-item>-->
+        <el-form-item label="代币类型">
+          <el-select size="small" v-model="addform.goodsType" placeholder="请选择代币类型">
+            <el-option label="以太币" value="2001"></el-option>
+            <el-option label="比特币" value="1001"></el-option>
+            <el-option label="CC币" value="2000"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="代币总额">
+          <el-input size="small" v-model="addform.goodsValue" class="common-input"></el-input>
+        </el-form-item>
+        <el-form-item label="总份数">
+          <el-input size="small" v-model="addform.bidsTotal" class="common-input"></el-input>
+        </el-form-item>
+        <el-form-item label="每份价格">
+          <el-input size="small" v-model="addform.bidValue" class="common-input"></el-input>
+        </el-form-item>
+        <el-form-item label="运营icon">
+          <el-input size="small" v-model="addform.goodsUrl" class="common-input"></el-input>
+        </el-form-item>
+        <el-form-item label="ROBOT">
+          <el-switch v-model="addform.isRobot"></el-switch>
+        </el-form-item>
+        <el-form-item label="场次连期">
+          <el-switch size="small" v-model="addform.renew"></el-switch>
+        </el-form-item>
+        <el-form-item label="显示权重">
+          <el-input size="small" v-model="addform.weightNum" class="common-input"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button v-if="this.goodsTitleName==='新增场次'" type="primary" @click="onAddSubmit">立即创建</el-button>
+          <el-button v-else type="primary" @click="onModifySubmit">立即修改</el-button>
+          <el-button @click="closeShowAddDialog">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog class="goodsDialog" :fullscreen=true height="50%" width="80%" title="查询该期号详情"
+               :visible.sync="showExpectMsg" center>
+      <section>
+        <p>场次派奖信息</p>
+        <el-table size="small" :data="expectMoreMsg">
+          <el-table-column prop="expectId" label="场次期号"></el-table-column>
+          <el-table-column prop="goodsValue" label="奖励价值"></el-table-column>
+          <el-table-column prop="bidsTotal" label="总份数"></el-table-column>
+          <el-table-column prop="bidValue" label="每份价格"></el-table-column>
+          <el-table-column prop="stateVal" label="派奖状态"></el-table-column>
+
+        </el-table>
+      </section>
+
+      <section>
+        <p>获奖者信息</p>
+        <el-table size="small" :data="userMoreMsg">
+          <el-table-column prop="uid" label="用户ID"></el-table-column>
+          <el-table-column prop="recharge_total" label="历史总充值"></el-table-column>
+          <el-table-column prop="withdraw_total" label="历史总提现"></el-table-column>
+          <el-table-column prop="cointypeVal" label="类型"></el-table-column>
+          <el-table-column prop="account_total" label="账号余额"></el-table-column>
+          <el-table-column prop="profit_total" label="累计盈利"></el-table-column>
+        </el-table>
+      </section>
+      <section style="margin-top: 50px;border-top: 2px solid #ccc;padding-top: 10px">
+        <p>详细流水</p>
+        <el-table :data="userMoreList">
+          <el-table-column prop="crtime" width="200" label="创建时间"></el-table-column>
+          <el-table-column prop="inoutVal" width="130" label="消费类型"></el-table-column>
+          <el-table-column prop="goodsTypeVal" width="130" label="币种类型"></el-table-column>
+          <el-table-column prop="money" width="130" label="消费数量"></el-table-column>
+          <el-table-column prop="balance" width="150" label="余额"></el-table-column>
+          <el-table-column prop="remark" label="备注信息"></el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @current-change="userCurrentChange"
+            background
+            :current-page.sync="userPageNumber"
+            size="small"
+            :page-size="userPageSize"
+            layout="prev, pager, next,jumper"
+            :page-count="userMsgCounts"
+          >
+          </el-pagination>
+        </div>
+      </section>
+    </el-dialog>
+        
+      </section>
   </div>
 </template>
 
@@ -13,7 +227,79 @@ import XLSX from 'xlsx'
 export default {
   data() {
     return {
-      langArr: []
+      langArr: [],
+      selPage: '-1',
+      selPageOptions: [{
+        value: '-1',
+        label: 'All'
+      }, {
+        value: '1001',
+        label: 'A'
+      }, {
+        value: '2001',
+        label: 'B'
+      }, {
+        value: '2000',
+        label: 'C'
+      }],
+      selLang: '-1',
+      selLangOptions: [{
+        value: '-1',
+        label: 'All'
+      }, {
+        value: '1',
+        label: 'en'
+      }, {
+        value: '2',
+        label: 'zh'
+      }, {
+        value: '3',
+        label: 'india'
+      }],
+      
+      onlineVisible: false, // 上下线
+      onlineMsg: '出错啦',
+      onlinecurrRowData: null,
+
+      modifyExpectId: null,
+      goodsTitleName: '新增场次',
+      addform: {
+        goodsUrl: '',
+        name: '',
+        goodsType: '2001',
+        goodsValue: '',
+        bidsTotal: '',
+        bidValue: '',
+        gameTime: [],
+        isRobot: false,
+        renew: false,
+        weightNum: '0'
+      },
+      showAddDialog: false, // 新增场次弹窗
+
+      expectMoreMsg: null,
+
+      userMsgCounts: 1,
+      userPageNumber: 1,
+      userPageSize: 20,
+
+      userMoreList: [],
+      userMoreMsg: [],
+      showExpectMsg: false,
+
+      pageCounts: 10,
+      pageNumber: 1,
+      pageSize: 20,
+      currPageNumber: null,
+
+      expectId_remark: '',
+      dialogTableVisible: false,
+      tableStateName: '允许',
+      goodsList: [],
+      js_withdrawMsg: null,
+      currLineData: null,
+      currType: null,
+      currUserUid: null,
     }
   },
   mounted(){
@@ -23,7 +309,7 @@ export default {
     this.$message({
       message: 'cancel!',
       type: 'warning'
-    })    
+    })
   },
   methods: {
     onSubmit() {
@@ -36,10 +322,10 @@ export default {
       })
     },
     readExcel(e){
-      // 表格导入
+        // 表格数据导入
         let that = this;
         const files = e.target.files;
-        if(files.length<=0){//如果没有文件名
+        if(files.length<=0){
           this.$message({
             message: 'error 请选择一个文件!',
             type: 'warning'
@@ -62,8 +348,6 @@ export default {
               const wsname = workbook.SheetNames[0];//取第一张表
               this.langArr = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);//生成json表格内容
               console.log(this.langArr);
-              console.log(this.langArr);
-              // this.$refs.upload.value = '';
           } catch (e) {
               return false;
           }
@@ -78,5 +362,47 @@ export default {
 .line{
   text-align: center;
 }
+  .operateReview .el-button {
+    margin-left: 0 !important;
+  }
+
+  .goodsDialog p {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .operateStyle i {
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .el-dialog__body {
+    padding-top: 0 !important;
+  }
+
+  .operateStyle i:hover {
+    background-color: #e4e4e4;
+  }
+
+  .el-button {
+    margin-bottom: 1px;
+  }
+
+  .common-input {
+      width: 195px;
+  }
+
+  .el-pagination {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .clear:after {
+    content: '';
+    clear: both;
+    display: block;
+    height: 0;
+    visibility: hidden
+  }
 </style>
 
