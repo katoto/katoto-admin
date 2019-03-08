@@ -1,8 +1,5 @@
 <template>
   <div class="app-container">
-    <input 
-      ref="upload" 
-      type="file" >
     <section>
       <div>
         <section class="clear">
@@ -97,6 +94,22 @@
     </section>
     <!-- 提款申请 -->
 
+    <!--语言弹窗 -->
+    <el-dialog title="注意！" :visible="dialogTableVisible" v-loading="uploading">
+      <div>
+        <span>请输入文件语言:</span>
+        <hr>
+        <el-input size="small" placeholder="请输入文件语言(en\zh\india)" v-model='inputLan'></el-input>
+      </div>
+      <div style="margin-top:10px">
+        <input ref="upload" type="file"/>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogTableVisible = false">取 消</el-button>
+        <el-button type="primary" @click="uplang">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <!-- 上下线 -->
     <el-dialog
       title="注意！"
@@ -104,32 +117,14 @@
       width="30%">
       <span>{{ onlineMsg }}</span>
       <span slot="footer" class="dialog-footer">
-                <el-button @click="onlineVisible = false">取 消</el-button>
-                <el-button type="danger" @click="js_onlineFn">确 定</el-button>
-          </span>
+        <el-button @click="onlineVisible = false">取 消</el-button>
+        <el-button type="danger" @click="js_onlineFn">确 定</el-button>
+      </span>
     </el-dialog>
 
-    <!-- 提款审核的操作弹窗 -->
-    <el-dialog title="注意！" :visible.sync="dialogTableVisible">
-      <section>
-        {{ js_withdrawMsg }}
-      </section>
-      <div>
-        <span>请输入审核备注:</span>
-        <el-input placeholder="请输入审核备注" v-model='expectId_remark'></el-input>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogTableVisible = false">取 消</el-button>
-        <el-button type="primary" @click="surePay">确 定</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog :fullscreen=true size="small" width="600px" :title="goodsTitleName" center
+    <el-dialog size="small" width="600px" :title="goodsTitleName" center
                :visible.sync="showAddDialog">
       <el-form ref="form" :model="addform" label-width="80px">
-        <!--<el-form-item label="场次名称">-->
-        <!--<el-input size="small" v-model="addform.name"></el-input>-->
-        <!--</el-form-item>-->
         <el-form-item label="代币类型">
           <el-select size="small" v-model="addform.goodsType" placeholder="请选择代币类型">
             <el-option label="以太币" value="2001"></el-option>
@@ -161,7 +156,7 @@
         <el-form-item>
           <el-button v-if="this.goodsTitleName==='新增场次'" type="primary" @click="onAddSubmit">立即创建</el-button>
           <el-button v-else type="primary" @click="onModifySubmit">立即修改</el-button>
-          <el-button @click="closeShowAddDialog">取消</el-button>
+          <el-button >取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -171,11 +166,27 @@
 
 <script>
 import XLSX from 'xlsx'
+import { wait } from '@/utils/utils.js'
 
 export default {
   data() {
     return {
-      langArr: [],
+      dialogTableVisible: false,
+      uploading: false, // 上次loading
+      inputLan: null,
+      langArr: [{
+        StringID: 11,
+        language: "中文",
+        newArticle: "login",
+        oldArticle: "登陆",
+        page: "home "
+      },{
+        StringID: 11,
+        language: "中文",
+        newArticle: "login",
+        oldArticle: "登陆",
+        page: "home "
+      }],
       selPage: '-1',
       selPageOptions: [{
         value: '-1',
@@ -205,7 +216,7 @@ export default {
         label: 'india'
       }],
       
-      onlineVisible: false, // 上下线
+      onlineVisible: false, // 上下线 通用弹窗
       onlineMsg: '出错啦',
       onlinecurrRowData: null,
 
@@ -232,30 +243,41 @@ export default {
       pageSize: 20,
       currPageNumber: null,
 
-      expectId_remark: '',
-      dialogTableVisible: false,
       tableStateName: '允许',
       goodsList: [],
-      js_withdrawMsg: null,
       currLineData: null,
       currType: null,
       currUserUid: null,
     }
   },
   mounted(){
-    this.$refs.upload.addEventListener('change', e => {
-      this.readExcel(e)
+    this.$nextTick(()=>{
+      this.$refs.upload.addEventListener('change', e => {
+        this.readExcel(e)
+      })
     })
   },
   methods: {
-    onSubmit() {
-      this.$message('submit!')
-    },
-    onCancel() {
-      this.$message({
-        message: 'cancel!',
-        type: 'warning'
-      })
+    async uplang() {
+      // 开始loading
+      if(!this.inputLan) {
+        this.$message({
+          type: 'error',
+          message: '请输入语言名称'
+        })
+        return false
+      }
+      if(this.langArr.length<1){
+        this.$message({
+          type: 'error',
+          message: '请选择语言文件'
+        })
+        return false
+      }
+      this.uploading = true
+      await wait(1000)
+      this.uploading = false
+      // end loading
     },
     readExcel(e){
         // 表格数据导入
