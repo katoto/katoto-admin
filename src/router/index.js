@@ -35,7 +35,7 @@ export const constantRouterMap = [
     path: '/dashboard',
     hidden: true,
     component: Layout,
-    redirect: '/madsports',
+    redirect: '/madsports'
   },
   {
     path: '/example',

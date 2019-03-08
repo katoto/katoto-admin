@@ -1,10 +1,17 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">Hello : {{ name }}</div>
-    <el-carousel :interval="5000" height="400px">
-      <el-carousel-item v-for="item in imgArr" :key="item">
+    <el-carousel 
+      :interval="5000" 
+      height="400px">
+      <el-carousel-item 
+        v-for="item in imgArr" 
+        :key="item">
         <div>
-          <img class="bannerClass" :src="item" alt="">
+          <img 
+            :src="item" 
+            class="bannerClass" 
+            alt="">
         </div>
       </el-carousel-item>
     </el-carousel>
@@ -12,18 +19,18 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-  import img_banner1 from '@/assets/madsports/banner1.png'
-  import img_banner2 from '@/assets/madsports/banner2.png'
-  import img_banner3 from '@/assets/madsports/banner3.png'
-  
+import { mapGetters } from 'vuex'
+import img_banner1 from '@/assets/madsports/banner1.png'
+import img_banner2 from '@/assets/madsports/banner2.png'
+import img_banner3 from '@/assets/madsports/banner3.png'
+
 export default {
-  data(){
+  name: 'Dashboard',
+  data() {
     return {
       imgArr: [img_banner1, img_banner2, img_banner3]
     }
   },
-  name: 'Dashboard',
   computed: {
     ...mapGetters([
       'name',
