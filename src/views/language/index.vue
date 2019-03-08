@@ -6,7 +6,7 @@
     <section>
       <div>
         <section class="clear">
-          <!-- 新增币种选择 -->
+          <!-- 语言过滤选择 -->
           <section style="float: left;">
             <template>
               <span style="font-size: 14px">page筛选: </span>
@@ -124,7 +124,6 @@
       </div>
     </el-dialog>
 
-
     <el-dialog :fullscreen=true size="small" width="600px" :title="goodsTitleName" center
                :visible.sync="showAddDialog">
       <el-form ref="form" :model="addform" label-width="80px">
@@ -166,58 +165,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
-    <el-dialog class="goodsDialog" :fullscreen=true height="50%" width="80%" title="查询该期号详情"
-               :visible.sync="showExpectMsg" center>
-      <section>
-        <p>场次派奖信息</p>
-        <el-table size="small" :data="expectMoreMsg">
-          <el-table-column prop="expectId" label="场次期号"></el-table-column>
-          <el-table-column prop="goodsValue" label="奖励价值"></el-table-column>
-          <el-table-column prop="bidsTotal" label="总份数"></el-table-column>
-          <el-table-column prop="bidValue" label="每份价格"></el-table-column>
-          <el-table-column prop="stateVal" label="派奖状态"></el-table-column>
-
-        </el-table>
-      </section>
-
-      <section>
-        <p>获奖者信息</p>
-        <el-table size="small" :data="userMoreMsg">
-          <el-table-column prop="uid" label="用户ID"></el-table-column>
-          <el-table-column prop="recharge_total" label="历史总充值"></el-table-column>
-          <el-table-column prop="withdraw_total" label="历史总提现"></el-table-column>
-          <el-table-column prop="cointypeVal" label="类型"></el-table-column>
-          <el-table-column prop="account_total" label="账号余额"></el-table-column>
-          <el-table-column prop="profit_total" label="累计盈利"></el-table-column>
-        </el-table>
-      </section>
-      <section style="margin-top: 50px;border-top: 2px solid #ccc;padding-top: 10px">
-        <p>详细流水</p>
-        <el-table :data="userMoreList">
-          <el-table-column prop="crtime" width="200" label="创建时间"></el-table-column>
-          <el-table-column prop="inoutVal" width="130" label="消费类型"></el-table-column>
-          <el-table-column prop="goodsTypeVal" width="130" label="币种类型"></el-table-column>
-          <el-table-column prop="money" width="130" label="消费数量"></el-table-column>
-          <el-table-column prop="balance" width="150" label="余额"></el-table-column>
-          <el-table-column prop="remark" label="备注信息"></el-table-column>
-        </el-table>
-        <div class="block">
-          <el-pagination
-            @current-change="userCurrentChange"
-            background
-            :current-page.sync="userPageNumber"
-            size="small"
-            :page-size="userPageSize"
-            layout="prev, pager, next,jumper"
-            :page-count="userMsgCounts"
-          >
-          </el-pagination>
-        </div>
-      </section>
-    </el-dialog>
-        
-      </section>
+    
   </div>
 </template>
 
@@ -279,14 +227,6 @@ export default {
 
       expectMoreMsg: null,
 
-      userMsgCounts: 1,
-      userPageNumber: 1,
-      userPageSize: 20,
-
-      userMoreList: [],
-      userMoreMsg: [],
-      showExpectMsg: false,
-
       pageCounts: 10,
       pageNumber: 1,
       pageSize: 20,
@@ -305,10 +245,6 @@ export default {
   mounted(){
     this.$refs.upload.addEventListener('change', e => {
       this.readExcel(e)
-    })
-    this.$message({
-      message: 'cancel!',
-      type: 'warning'
     })
   },
   methods: {
@@ -362,47 +298,39 @@ export default {
 .line{
   text-align: center;
 }
-  .operateReview .el-button {
-    margin-left: 0 !important;
-  }
-
-  .goodsDialog p {
-    text-align: center;
-    font-weight: bold;
-  }
-
-  .operateStyle i {
-    padding: 10px;
-    cursor: pointer;
-  }
-
-  .el-dialog__body {
-    padding-top: 0 !important;
-  }
-
-  .operateStyle i:hover {
-    background-color: #e4e4e4;
-  }
-
-  .el-button {
-    margin-bottom: 1px;
-  }
-
-  .common-input {
-      width: 195px;
-  }
-
-  .el-pagination {
-    text-align: center;
-    margin-top: 10px;
-  }
-
-  .clear:after {
-    content: '';
-    clear: both;
-    display: block;
-    height: 0;
-    visibility: hidden
-  }
+.operateReview .el-button {
+  margin-left: 0 !important;
+}
+.goodsDialog p {
+  text-align: center;
+  font-weight: bold;
+}
+.operateStyle i {
+  padding: 10px;
+  cursor: pointer;
+}
+.el-dialog__body {
+  padding-top: 0 !important;
+}
+.operateStyle i:hover {
+  background-color: #e4e4e4;
+}
+.el-button {
+  margin-bottom: 1px;
+}
+.common-input {
+    width: 195px;
+}
+.el-pagination {
+  text-align: center;
+  margin-top: 10px;
+}
+.clear:after {
+  content: '';
+  clear: both;
+  display: block;
+  height: 0;
+  visibility: hidden
+}
 </style>
 
