@@ -41,7 +41,7 @@
           </div>
         </section>
         <el-table
-          :data="goodsList"
+          :data="langArr"
           stripe
           highlight-current-row
           style="width: 100%">
@@ -51,29 +51,33 @@
             label="序号">
           </el-table-column>
           <el-table-column
-            prop="expectId"
+            prop="StringID"
             label="StringID">
           </el-table-column>
           <el-table-column
-            prop="goodsTypeVal"
+            prop="page"
             label="page">
           </el-table-column>
           <el-table-column
-            prop="beginTime"
+            prop="language"
             label="language">
           </el-table-column>
           <el-table-column
-            prop="endTime"
-            label="last Updated">
+            prop="modifyTime"
+            label="modifyTime">
+          </el-table-column>
+          <el-table-column
+            prop="newArticle"
+            label="newArticle">
           </el-table-column>
           <el-table-column
             label="状态操作">
             <template slot-scope="scope">
-              <el-button @click="before_js_onlineFn( scope.row )" v-if="scope.row.state === '-1'" type="primary" size="small">
-                上线
+              <el-button @click="before_js_onlineFn( scope.row )" type="primary" size="small">
+                修改
               </el-button>
-              <el-button v-else @click="before_js_onlineFn( scope.row )" type="danger" size="small">
-                下线
+              <el-button @click="before_js_onlineFn( scope.row )" type="danger" size="small">
+                删除
               </el-button>
             </template>
           </el-table-column>
@@ -135,12 +139,6 @@
         <el-form-item label="代币总额">
           <el-input size="small" v-model="addform.goodsValue" class="common-input"></el-input>
         </el-form-item>
-        <el-form-item label="总份数">
-          <el-input size="small" v-model="addform.bidsTotal" class="common-input"></el-input>
-        </el-form-item>
-        <el-form-item label="每份价格">
-          <el-input size="small" v-model="addform.bidValue" class="common-input"></el-input>
-        </el-form-item>
         <el-form-item label="运营icon">
           <el-input size="small" v-model="addform.goodsUrl" class="common-input"></el-input>
         </el-form-item>
@@ -171,7 +169,7 @@ import { wait } from '@/utils/utils.js'
 export default {
   data() {
     return {
-      dialogTableVisible: false,
+      dialogTableVisible: false, // 上传文件
       uploading: false, // 上次loading
       inputLan: null,
       langArr: [{
@@ -238,13 +236,12 @@ export default {
 
       expectMoreMsg: null,
 
-      pageCounts: 10,
+      pageCounts: 5,
       pageNumber: 1,
-      pageSize: 20,
+      pageSize: 6,
       currPageNumber: null,
 
       tableStateName: '允许',
-      goodsList: [],
       currLineData: null,
       currType: null,
       currUserUid: null,
