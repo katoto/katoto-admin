@@ -76,14 +76,14 @@
               <el-button @click="before_js_modify( scope.row )" type="primary" size="small">
                 修改
               </el-button>
-              <el-button @click="before_js_modify( scope.row )" type="danger" size="small">
+              <el-button @click="before_js_del( scope.row )" type="danger" size="small">
                 删除
               </el-button>
             </template>
           </el-table-column>
         </el-table>
         <div class="block">
-          <el-pagination
+          <!-- <el-pagination
             @current-change="handleCurrentChange"
             background
             :current-page.sync="pageNumber"
@@ -92,14 +92,14 @@
             layout="prev, pager, next,jumper"
             :page-count="pageCounts"
           >
-          </el-pagination>
+          </el-pagination> -->
         </div>
       </div>
     </section>
     <!-- 提款申请 -->
 
     <!--语言弹窗 -->
-    <el-dialog title="注意！" :visible="dialogTableVisible" @open="openDialog" v-loading="uploading">
+    <el-dialog title="注意！" :visible.sync="dialogTableVisible" @open="openDialog" v-loading="uploading">
       <div>
         <span>请输入文件语言:</span>
         <hr>
@@ -114,7 +114,7 @@
       </div>
     </el-dialog>
 
-    <!-- 上下线 -->
+    <!-- 删除语言 -->
     <el-dialog
       title="注意！"
       :visible.sync="onlineVisible"
@@ -122,43 +122,53 @@
       <span>{{ onlineMsg }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="onlineVisible = false">取 消</el-button>
-        <el-button type="danger" @click="js_modify">确 定</el-button>
+        <el-button type="danger">确 定</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog size="small" width="600px" :title="goodsTitleName" center
-               :visible.sync="showAddDialog">
+    <!-- 新增语言 -->
+    <el-dialog size="small" width="600px" :title="langTitleName" center
+               :visible.sync="showlangDialog">
       <el-form ref="form" :model="addform" label-width="80px">
-        <el-form-item label="代币类型">
-          <el-select size="small" v-model="addform.goodsType" placeholder="请选择代币类型">
-            <el-option label="以太币" value="2001"></el-option>
-            <el-option label="比特币" value="1001"></el-option>
-            <el-option label="CC币" value="2000"></el-option>
-          </el-select>
+        <el-form-item label="StringID">
+          <el-input size="small" v-model="addform.stringid" class="common-input"></el-input>
         </el-form-item>
-        <el-form-item label="代币总额">
-          <el-input size="small" v-model="addform.goodsValue" class="common-input"></el-input>
+        <el-form-item label="page">
+          <el-input size="small" v-model="addform.page" class="common-input"></el-input>
         </el-form-item>
-        <el-form-item label="运营icon">
-          <el-input size="small" v-model="addform.goodsUrl" class="common-input"></el-input>
+        <template v-for="(item,index) in selLangOptions">
+        <el-form-item :label="item.value" :key="index">
+          <el-input size="small" v-model="addform.lang[item.value]" class="common-input"></el-input>
         </el-form-item>
-        <el-form-item label="ROBOT">
-          <el-switch v-model="addform.isRobot"></el-switch>
-        </el-form-item>
-        <el-form-item label="场次连期">
-          <el-switch size="small" v-model="addform.renew"></el-switch>
-        </el-form-item>
-        <el-form-item label="显示权重">
-          <el-input size="small" v-model="addform.weightNum" class="common-input"></el-input>
-        </el-form-item>
+        </template>
         <el-form-item>
-          <el-button v-if="this.goodsTitleName==='新增场次'" type="primary" @click="onAddSubmit">立即创建</el-button>
-          <el-button v-else type="primary" @click="onModifySubmit">立即修改</el-button>
+          <el-button type="primary" @click="onAddSubmit">立即新增</el-button>
           <el-button >取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
     
+    <!-- 修改语言 -->
+    <el-dialog size="small" width="600px" title="修改语言" center
+               :visible.sync="showModifyDialog">
+      <el-form ref="form" :model="addform" label-width="80px">
+        <el-form-item label="StringID">
+          <el-input size="small" v-model="addform.stringid" class="common-input"></el-input>
+        </el-form-item>
+        <el-form-item label="page">
+          <el-input size="small" v-model="addform.page" class="common-input"></el-input>
+        </el-form-item>
+        <template v-for="(item,index) in selLangOptions">
+        <el-form-item :label="item.value" :key="index">
+          <el-input size="small" v-model="addform.lang[item.value]" class="common-input"></el-input>
+        </el-form-item>
+        </template>
+        <el-form-item>
+          <el-button type="primary" @click="onAddSubmit">立即新增</el-button>
+          <el-button >取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -169,10 +179,14 @@ import { wait } from '@/utils/utils.js'
 export default {
   data() {
     return {
+      showModifyDialog: true,
       dialogTableVisible: false, // 上传文件
       uploading: false, // 上次loading
       inputLan: null,
-      langArr: [{
+      langTitleName: '新增文案',
+      showlangDialog: false, // 新增文案弹窗
+      langArr: [
+      {
         StringID: 11,
         language: "中文",
         newArticle: "login",
@@ -184,21 +198,24 @@ export default {
         newArticle: "login",
         oldArticle: "登陆",
         page: "home "
-      }],
+      }
+      ],
       selPage: '-1',
-      selPageOptions: [{
-        value: '-1',
-        label: 'All'
-      }, {
-        value: '1001',
-        label: 'A'
-      }, {
-        value: '2001',
-        label: 'B'
-      }, {
-        value: '2000',
-        label: 'C'
-      }],
+      selPageOptions: [
+        {
+          value: '-1',
+          label: 'All'
+        }, {
+          value: '1001',
+          label: 'A'
+        }, {
+          value: '2001',
+          label: 'B'
+        }, {
+          value: '2000',
+          label: 'C'
+        }
+      ],
       selLang: 'en',
       selLangOptions: [{
         value: 'en',
@@ -210,38 +227,24 @@ export default {
         value: 'india',
         label: 'india'
       }],
-      
+      addform: {
+        stringid: '',
+        page: '',
+        lang: {},
+      },
+
       onlineVisible: false, // 上下线 通用弹窗
       onlineMsg: '出错啦',
       onlinecurrRowData: null,
 
+
       modifyExpectId: null,
-      goodsTitleName: '新增场次',
-      addform: {
-        goodsUrl: '',
-        name: '',
-        goodsType: '2001',
-        goodsValue: '',
-        bidsTotal: '',
-        bidValue: '',
-        gameTime: [],
-        isRobot: false,
-        renew: false,
-        weightNum: '0'
-      },
-      showAddDialog: false, // 新增场次弹窗
-
       expectMoreMsg: null,
-
       pageCounts: 5,
       pageNumber: 1,
       pageSize: 6,
       currPageNumber: null,
 
-      tableStateName: '允许',
-      currLineData: null,
-      currType: null,
-      currUserUid: null,
     }
   },
   watch:{
@@ -249,15 +252,34 @@ export default {
   mounted(){
   },
   methods: {
+
+    before_js_del(lineData){
+      this.onlineVisible = true
+      this.onlineMsg = `确定删除 ${lineData.oldArticle} 这条信息?`
+      this.onlinecurrRowData = lineData
+    },
+    js_del(){
+      // 执行删除
+    },
+    addLine(){
+      this.showlangDialog = true
+    },
+    onAddSubmit() {
+      if(!this.addform.stringid || !this.addform.page || Object.keys(this.addform).length <1){
+        this.$message({
+          type:'error',
+          message: '框里内容不能空'
+        })
+      }
+      console.log(this.addform)
+      // 请求
+    },
     openDialog(){
       this.$nextTick(()=>{
-        console.log(this.$refs)
         let thisRef = this.$refs.upload
         if(thisRef){
-          thisRef.removeEventListener('change')
-          thisRef.addEventListener('change', e => {
-            this.readExcel(e)
-          })
+          thisRef.removeEventListener('change', this.readExcel)
+          thisRef.addEventListener('change', this.readExcel)
         }
       })
     },
@@ -352,7 +374,7 @@ export default {
   margin-bottom: 1px;
 }
 .common-input {
-    width: 195px;
+    width: 90%;
 }
 .el-pagination {
   text-align: center;
