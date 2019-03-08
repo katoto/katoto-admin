@@ -38,6 +38,9 @@
             <el-button @click="modifylangs()" type="primary" size="small" icon="el-icon-plus">
               批量导入当前语言
             </el-button>
+            <el-button @click="exportJSON()" type="error" size="small">
+              导出当前语言
+            </el-button>
           </div>
         </section>
         <el-table
@@ -167,6 +170,7 @@
 <script>
 import XLSX from 'xlsx'
 import { wait } from '@/utils/utils.js'
+import FileSaver from 'file-saver'
 
 export default {
   data() {
@@ -224,7 +228,7 @@ export default {
         lang: {},
       },
 
-      onlineVisible: false, // 上下线 通用弹窗
+      onlineVisible: true, // 上下线 通用弹窗
       onlineMsg: '出错啦',
       onlinecurrRowData: null,
 
@@ -241,6 +245,14 @@ export default {
   mounted(){
   },
   methods: {
+    exportJSON(){
+      const data = JSON.stringify({
+        'home.login': 'login',
+        'aa': 'bbdfafd fdasf'
+      })
+      const blod = new Blob([data], {type: ''})
+      FileSaver.saveAs(blod, `ms_${this.selLang}.json`)
+    },
     before_js_modify(lineData){
       this.showModifyDialog = true
       this.modifyData = JSON.parse(JSON.stringify(lineData))
