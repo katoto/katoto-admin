@@ -1,95 +1,95 @@
 <template>
-  <div class="app-container">
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row>
-      <el-table-column 
-        align="center" 
-        label="ID" 
-        width="95">
-        <template slot-scope="scope">
-          {{ scope.$index }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Title">
-        <template slot-scope="scope">
-          {{ scope.row.title }}
-        </template>
-      </el-table-column>
-      <el-table-column 
-        label="Author" 
-        width="110" 
-        align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column 
-        label="Pageviews" 
-        width="110" 
-        align="center">
-        <template slot-scope="scope">
-          {{ scope.row.pageviews }}
-        </template>
-      </el-table-column>
-      <el-table-column 
-        class-name="status-col" 
-        label="Status" 
-        width="110" 
-        align="center">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column 
-        align="center" 
-        prop="created_at" 
-        label="Display_time" 
-        width="200">
-        <template slot-scope="scope">
-          <i class="el-icon-time"/>
-          <span>{{ scope.row.display_time }}</span>
-        </template>
-      </el-table-column>
-    </el-table>
-  </div>
+    <section class="app-container">
+        <div>
+            <section class="clear">
+                <div style="float: right">
+                <div class="block" style="display: inline-block;">
+                    <el-date-picker
+                    size="small"
+                    v-model="timeVal"
+                    type="daterange"
+                    align="right"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="pickerOptions">
+                    </el-date-picker>
+                </div>
+                <el-button @click="searchExpectFn()" type="primary" plain size="small">
+                    查询
+                </el-button>
+                </div>
+            </section>
+            <el-table
+                :data="goodsList"
+                stripe
+                highlight-current-row
+                style="width: 100%">
+                <el-table-column
+                prop="index"
+                label="序号">
+                </el-table-column>
+                <el-table-column
+                prop="msgtype"
+                label="通知类型">
+                </el-table-column>
+                <el-table-column
+                prop="msgtitle"
+                label="通知标题">
+                </el-table-column>
+                <el-table-column
+                prop="msgtime"
+                label="发送时间">
+                </el-table-column>
+                <el-table-column
+                prop="msgname"
+                label="发送人">
+                </el-table-column>
+                <el-table-column
+                label="操作"
+                width="230px">
+                <template slot-scope="scope" class="mailmsgOpera">
+                    <el-select size="small" v-model="value" placeholder="请选择">
+                        <el-option
+                        v-for="item in langOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <el-button @click="js_showmsgFn( scope.row )" type="danger" size="small">
+                        详情
+                    </el-button>
+                </template>
+                </el-table-column>
+            </el-table>
+        </div>
+
+        <!--导入UId弹窗 -->
+        <el-dialog title="已通知详情:" :visible.sync="dialogTableVisible" >
+            <div>
+                <p>{{ dialogmsg }}</p>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="dialogTableVisible = false" >知道了</el-button>
+            </div>
+        </el-dialog>
+    </section>
 </template>
 
 <script>
 import { getList } from '@/api/table'
 
 export default {
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
   data() {
     return {
-      list: null,
-      listLoading: true
     }
   },
   created() {
-    this.fetchData()
   },
   methods: {
-    fetchData() {
-      this.listLoading = true
-      getList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.listLoading = false
-      })
-    }
+
   }
 }
 </script>
