@@ -52,23 +52,15 @@
                 label="操作"
                 width="230px">
                 <template slot-scope="scope" class="mailmsgOpera">
-                    <section v-if="0">
+                    <section>
                       <el-button @click="js_showmsgFn( scope.row )" type="primary" size="small">
                           查看
                       </el-button>
-                      <el-button @click="js_showmsgFn( scope.row )" type="success" size="small">
+                      <el-button :disabled="scope.row.goodsstyle==='1'" @click="js_showmsgFn( scope.row )" type="success" size="small">
                           通过
                       </el-button>
-                      <el-button @click="js_showmsgFn( scope.row )" type="danger" size="small">
+                      <el-button :disabled="scope.row.goodsstyle==='-1'" @click="js_showmsgFn( scope.row )" type="danger" size="small">
                           拒绝
-                      </el-button>
-                    </section>
-                    <section v-else>
-                      <el-button @click="js_showmsgFn( scope.row )" type="primary" size="small">
-                          查看
-                      </el-button>
-                      <el-button disabled type="info" size="small">
-                          已操作
                       </el-button>
                     </section>
                 </template>
@@ -76,15 +68,79 @@
             </el-table>
         </div>
 
-        <!--导入UId弹窗 -->
-        <el-dialog title="已通知详情:" :visible.sync="dialogTableVisible" >
-            <div>
-                <p>{{ dialogmsg }}</p>
-            </div>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="dialogTableVisible = false" >知道了</el-button>
-            </div>
-        </el-dialog>
+      <el-dialog :fullscreen=true height="50%" width="80%" title="用户信息审核" :visible.sync="showUidMsg" center>
+        <section style="text-align:center">
+          <el-table :data="userMoreMsg">
+            <el-table-column prop="username" label="用户名"></el-table-column>
+            <el-table-column prop="uid" label="用户ID"></el-table-column>
+            <el-table-column prop="recharge_total" label="用户头像">
+                  <template slot-scope="scope">
+                      {{ Number(scope.row.profit[0].recharge_total) }}{{formateCoinType(scope.row.profit[0].cointype)}}
+                      <img />
+                  </template>
+            </el-table-column>
+            <el-table-column prop="recharge_total" label="IP 信息"></el-table-column>
+            <el-table-column prop="withdraw_total" label="注册时间"></el-table-column>
+            <el-table-column prop="account_total" label="最后登录时间"></el-table-column>
+            <el-table-column prop="profit_total" label="手机设备号"></el-table-column>
+          </el-table>
+        </section>
+        <section style="margin-top: 50px;border-top: 2px solid #ccc;padding-top: 10px">
+          <h4 style="text-align:center">关联账号信息</h4>
+          <el-table :data="userMoreList">
+            <el-table-column prop="crtime" width="200" label="关联原因"></el-table-column>
+            <el-table-column prop="inoutVal" width="130" label="用户名"></el-table-column>
+            <el-table-column prop="money" width="130" label="用户ID"></el-table-column>
+            <el-table-column prop="cointypeVal" width="130" label="用户头像"></el-table-column>
+            <el-table-column prop="balance" width="150" label="IP信息"></el-table-column>
+            <el-table-column prop="remark" label="注册时间"></el-table-column>
+            <el-table-column prop="remark" label="设备号"></el-table-column>
+          </el-table>
+        </section>
+        <section style="margin-top: 50px;border-top: 2px solid #ccc;padding-top: 10px">
+          <h4 style="text-align:center">流水信息汇总</h4>
+          <el-table :data="relateMsg" border stripe>
+            <el-table-column prop="uid" label="流水代码"></el-table-column>
+            <el-table-column prop="email" label="流水名"></el-table-column>
+            <el-table-column prop="country" label="流水总额"></el-table-column>
+            <el-table-column prop="profit_total" label="累计盈利">
+                  <template slot-scope="scope">
+                      {{ Number(scope.row.profit[0].profit_total) }}{{formateCoinType(scope.row.profit[0].cointype)}}
+                  </template>
+            </el-table-column>
+          </el-table>
+        </section>
+        <section style="margin: 50px 0;border-top: 2px solid #ccc;padding-top: 10px">
+          <h4 style="text-align:center">流水明细</h4>
+          <el-table :data="relateMsg" border stripe>
+            <el-table-column prop="uid" label="时间"></el-table-column>
+            <el-table-column prop="withdraw_total" label="流水类型">
+                  <template slot-scope="scope">
+                      {{ Number(scope.row.profit[0].withdraw_total) }}{{formateCoinType(scope.row.profit[0].cointype)}}
+                  </template>
+            </el-table-column>
+            <el-table-column prop="account_total" label="流水数量">
+                  <template slot-scope="scope">
+                      {{ Number(scope.row.profit[0].account_total) }}{{formateCoinType(scope.row.profit[0].cointype)}}
+                  </template>
+            </el-table-column>
+            <el-table-column prop="email" width="200" label="余额"></el-table-column>
+            <el-table-column prop="country" label="备注信息"></el-table-column>
+          </el-table>
+          <div class="block" style="text-align:center">
+            <el-pagination
+              @current-change="userCurrentChange"
+              background
+              :current-page.sync="userPageNumber"
+              size="small"
+              :page-size="userPageSize"
+              layout="prev, pager, next,jumper"
+              :page-count="userMsgCounts"
+            >
+            </el-pagination>
+          </div>
+        </section>
+      </el-dialog>
     </section>
 </template>
 
@@ -94,6 +150,7 @@ import { getList } from '@/api/table'
 export default {
   data() {
     return {
+      showUidMsg: true,
       goodsList: [
         {
           index: 1,
