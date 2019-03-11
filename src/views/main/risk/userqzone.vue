@@ -2,79 +2,91 @@
     <section class="app-container">
         <div>
             <section class="clear">
-                <div style="float: right">
-                <div class="block" style="display: inline-block;">
-                    <el-date-picker
-                    size="small"
-                    v-model="timeVal"
-                    type="daterange"
-                    align="right"
-                    unlink-panels
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :picker-options="pickerOptions">
-                    </el-date-picker>
+                <div style="float:left">
+                <!-- 新增币种选择 -->
+                  <section style="float: left;margin-top: 4px">
+                    <span style="font-size: 14px">用户类型: </span>
+                    <el-select size="small" v-model="userStyle" placeholder="请选择">
+                      <el-option
+                        v-for="item in userStyleOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                  </el-select>
+                  </section>
                 </div>
-                <el-button @click="searchExpectFn()" type="primary" plain size="small">
-                    查询
+                <div style="float: right" class="seaUid">
+                  <el-input v-model="searchUid" size="small" placeholder="uid 查询"></el-input>
+                  <el-button @click="searchExpectFn()" type="primary" plain size="small">
+                      查询
+                  </el-button>
+                </div>
+            </section>
+            <section style="float:right">
+                <el-button @click="toggleSelection(goodsList)" type="primary" plain size="small">
+                    全选
                 </el-button>
-                </div>
+                <span style="font-size: 14px"> 统一分类为: </span>
+                <el-select size="small" v-model="userStyle" placeholder="请选择">
+                    <el-option
+                      v-for="item in userStyleOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                </el-select>
             </section>
             <el-table
                 :data="goodsList"
                 stripe
                 highlight-current-row
+                ref="multipleTable"
                 style="width: 100%">
+                <el-table-column
+                  type="selection"
+                  width="55">
+                </el-table-column>
                 <el-table-column
                 prop="index"
                 label="序号">
                 </el-table-column>
                 <el-table-column
-                prop="msgtype"
-                label="通知类型">
+                prop="uid"
+                label="用户uid">
                 </el-table-column>
                 <el-table-column
-                prop="msgtitle"
-                label="通知标题">
+                prop="goodsname"
+                label="兑换商品">
                 </el-table-column>
                 <el-table-column
-                prop="msgtime"
-                label="发送时间">
+                prop="exchangetime"
+                label="兑换时间">
                 </el-table-column>
                 <el-table-column
-                prop="msgname"
-                label="发送人">
+                prop="goodsstyle"
+                label="审核状态">
                 </el-table-column>
                 <el-table-column
                 label="操作"
                 width="230px">
                 <template slot-scope="scope" class="mailmsgOpera">
-                    <el-select size="small" v-model="value" placeholder="请选择">
-                        <el-option
-                        v-for="item in langOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                    <el-button @click="js_showmsgFn( scope.row )" type="danger" size="small">
-                        详情
-                    </el-button>
+                    <section>
+                      <el-button @click="js_showmsgFn( scope.row )" type="primary" size="small">
+                          查看
+                      </el-button>
+                      <el-button :disabled="scope.row.goodsstyle==='1'" @click="js_showmsgFn( scope.row )" type="success" size="small">
+                          通过
+                      </el-button>
+                      <el-button :disabled="scope.row.goodsstyle==='-1'" @click="js_showmsgFn( scope.row )" type="danger" size="small">
+                          拒绝
+                      </el-button>
+                    </section>
                 </template>
                 </el-table-column>
             </el-table>
         </div>
 
-        <!--导入UId弹窗 -->
-        <el-dialog title="已通知详情:" :visible.sync="dialogTableVisible" >
-            <div>
-                <p>{{ dialogmsg }}</p>
-            </div>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="dialogTableVisible = false" >知道了</el-button>
-            </div>
-        </el-dialog>
     </section>
 </template>
 
@@ -84,12 +96,57 @@ import { getList } from '@/api/table'
 export default {
   data() {
     return {
+      goodsList: [
+        {
+          index: 1,
+          uid: 10021,
+          goodsname: '卡卡卡卡',
+          exchangetime: '234',
+          goodsstyle: '-1'
+        },
+        {}
+      ],
+      searchUid: null,
+      userStyleOptions:[
+        {
+          value: '-1',
+          label: 'All'
+        }, {
+          value: '1',
+          label: '普通用户'
+        }, {
+          value: '2',
+          label: '羊毛用户'
+        }, {
+          value: '3',
+          label: '大R用户'
+        }, {
+          value: '4',
+          label: '普通付费用户'
+        }
+      ],
+      userStyle:'-1'
     }
   },
   created() {
   },
   methods: {
-
+    toggleSelection(tableData=[]){
+      if(tableData.length>0){
+        tableData.forEach(row=>{
+          this.$refs.multipleTable.toggleRowSelection(row);
+        })
+      }
+    }
   }
 }
 </script>
+<style scope>
+  .seaUid .el-input {
+    width: 300px;
+    line-height: 40px;
+  }
+  .clear{
+    overflow: hidden;
+  }
+</style>
