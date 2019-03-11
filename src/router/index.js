@@ -38,23 +38,23 @@ export const constantRouterMap = [
     redirect: '/madsports'
   },
   {
-    path: '/example',
+    path: '/mian',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
+    redirect: '/mian/mailmsg/index',
+    name: 'Main',
+    meta: { title: '主后台', icon: 'example' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'mailmsg',
+        name: 'mailmsg',
+        component: () => import('@/views/main/mailmsg/index'),
+        meta: { title: '站内信', icon: 'table' }
       },
       {
         path: 'tree',
         name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        component: () => import('@/views/main/risk/index'),
+        meta: { title: '风控', icon: 'tree' }
       }
     ]
   },
