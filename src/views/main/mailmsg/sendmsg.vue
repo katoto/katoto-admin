@@ -34,7 +34,7 @@
       <el-button type="info" @click="clearmsg">清空</el-button>
     </section>
     
-        <!--语言弹窗 -->
+    <!--导入UId弹窗 -->
     <el-dialog title="注意！" :visible.sync="dialogTableVisible" @open="openDialog">
       <div>
         <span>导入的uid信息:</span>
