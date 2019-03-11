@@ -5,8 +5,7 @@
         <sendmsg></sendmsg>
       </el-tab-pane>
       <el-tab-pane label="通知列表" name="second">
-        通知列表22
-        <!-- <msglist></msglist> -->
+        <msglist></msglist>
       </el-tab-pane>
     </el-tabs>
   </div>

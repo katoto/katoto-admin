@@ -29,9 +29,10 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-button size="small" type="warning" @click="sendmsg">发送</el-button>
-    <el-button size="small" type="info" @click="clearmsg">清空</el-button>
-    
+    <section style="float:right;">
+      <el-button type="warning" @click="sendmsg">发送</el-button>
+      <el-button type="info" @click="clearmsg">清空</el-button>
+    </section>
     
         <!--语言弹窗 -->
     <el-dialog title="注意！" :visible.sync="dialogTableVisible" @open="openDialog">
