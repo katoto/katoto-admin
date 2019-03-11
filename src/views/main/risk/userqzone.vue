@@ -23,11 +23,11 @@
                   </el-button>
                 </div>
             </section>
-            <section style="float:right">
+            <section style="float:right;margin-right:20px">
                 <el-button @click="toggleSelection(goodsList)" type="primary" plain size="small">
                     全选
                 </el-button>
-                <span style="font-size: 14px"> 统一分类为: </span>
+                <span style="font-size: 14px"> &nbsp;统一分类为: </span>
                 <el-select size="small" v-model="userStyle" placeholder="请选择">
                     <el-option
                       v-for="item in userStyleOptions"
@@ -57,36 +57,42 @@
                 </el-table-column>
                 <el-table-column
                 prop="goodsname"
-                label="兑换商品">
+                label="注册时间">
                 </el-table-column>
                 <el-table-column
                 prop="exchangetime"
-                label="兑换时间">
-                </el-table-column>
-                <el-table-column
-                prop="goodsstyle"
-                label="审核状态">
+                label="用户分类">
                 </el-table-column>
                 <el-table-column
                 label="操作"
                 width="230px">
                 <template slot-scope="scope" class="mailmsgOpera">
                     <section>
-                      <el-button @click="js_showmsgFn( scope.row )" type="primary" size="small">
-                          查看
-                      </el-button>
-                      <el-button :disabled="scope.row.goodsstyle==='1'" @click="js_showmsgFn( scope.row )" type="success" size="small">
-                          通过
-                      </el-button>
-                      <el-button :disabled="scope.row.goodsstyle==='-1'" @click="js_showmsgFn( scope.row )" type="danger" size="small">
-                          拒绝
-                      </el-button>
+                      <el-select size="small" v-model="userStyle" placeholder="请选择">
+                          <el-option
+                            v-for="item in userStyleOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                          </el-option>
+                      </el-select>
                     </section>
                 </template>
                 </el-table-column>
             </el-table>
+            <div class="block" style="text-align:center">
+              <el-pagination
+                @current-change="userCurrentChange"
+                background
+                :current-page.sync="userPageNumber"
+                size="small"
+                :page-size="userPageSize"
+                layout="prev, pager, next,jumper"
+                :page-count="userMsgCounts"
+              >
+              </el-pagination>
+            </div>
         </div>
-
     </section>
 </template>
 
@@ -145,6 +151,9 @@ export default {
   .seaUid .el-input {
     width: 300px;
     line-height: 40px;
+  }
+  .el-input{
+    width: 150px;
   }
   .clear{
     overflow: hidden;
