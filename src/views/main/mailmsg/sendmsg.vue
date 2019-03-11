@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 勾选需要的语言 -->
-    <span style="font-size:14px;line-height:28px">勾选即选择发送该语言站内信: </span>
+    <span style="font-size:14px;line-height:28px">勾选即表示发送该语言站内信！</span>
     <el-checkbox-group v-model="langList">
       <el-checkbox label="English"></el-checkbox>
       <el-checkbox label="India"></el-checkbox>
