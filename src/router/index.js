@@ -51,10 +51,16 @@ export const constantRouterMap = [
         meta: { title: '站内信', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/main/risk/index'),
-        meta: { title: '风控', icon: 'tree' }
+        path: 'exchange',
+        name: 'exchange',
+        component: () => import('@/views/main/risk/exchange'),
+        meta: { title: '兑换审核', icon: 'tree' }
+      },
+      {
+        path: 'userqzone',
+        name: 'userqzone',
+        component: () => import('@/views/main/risk/userqzone'),
+        meta: { title: '用户后台', icon: 'tree' }
       }
     ]
   },

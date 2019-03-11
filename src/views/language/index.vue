@@ -74,7 +74,8 @@
             label="newArticle">
           </el-table-column>
           <el-table-column
-            label="状态操作">
+            label="状态操作"
+            width="200px">
             <template slot-scope="scope">
               <el-button @click="before_js_modify( scope.row )" type="primary" size="small">
                 修改
