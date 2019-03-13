@@ -8,6 +8,10 @@ import App from './App'
 import store from './store'
 import router from './router'
 
+// 1、 import icons 文件
+// 2、 引入svg  全局组件
+// 3、 通过组件props 类目进行控制加入那个icon
+
 import '@/icons' // icon
 import '@/permission' // permission control
 

@@ -8,6 +8,9 @@
 </template>
 
 <script>
+// 语义化的隐藏 aria-hidden="true"
+// xlink:href = id  id 是通过base.conf 配置的  options: { symbolId: 'icon-[name]' }
+
 export default {
   name: 'SvgIcon',
   props: {
@@ -40,7 +43,7 @@ export default {
   width: 1em;
   height: 1em;
   vertical-align: -0.15em;
-  fill: currentColor;
+  fill: currentColor; /* 填充的颜色 */
   overflow: hidden;
 }
 </style>
