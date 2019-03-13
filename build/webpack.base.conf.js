@@ -53,7 +53,6 @@ module.exports = {
         include: [
           resolve('src'),
           resolve('test'),
-          resolve('mock'),
           resolve('node_modules/webpack-dev-server/client')
         ]
       },

@@ -89,7 +89,6 @@ export default {
       this.pwdType === 'password' ? this.pwdType = '' : this.pwdType = 'password'
     },
     handleLogin() {
-      
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
