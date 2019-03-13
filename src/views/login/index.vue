@@ -86,13 +86,10 @@ export default {
   },
   methods: {
     showPwd() {
-      if (this.pwdType === 'password') {
-        this.pwdType = ''
-      } else {
-        this.pwdType = 'password'
-      }
+      this.pwdType === 'password' ? this.pwdType = '' : this.pwdType = 'password'
     },
     handleLogin() {
+      
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
@@ -107,6 +104,7 @@ export default {
           return false
         }
       })
+      
     }
   }
 }
