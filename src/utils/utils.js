@@ -108,7 +108,7 @@ export function formateCoinType (type = '2001') {
     case '1001':
       return 'BTC'
     case '2000':
-        return 'CC'      
+        return 'CC'
     default:
       return 'ETH'
   }

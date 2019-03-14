@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { getList } from '@/api/table'
 import sendmsg from '@/views/main/mailmsg/sendmsg'
 import msglist from '@/views/main/mailmsg/msglist'
 
@@ -37,10 +36,6 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      getList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.listLoading = false
-      })
     },
   }
 }

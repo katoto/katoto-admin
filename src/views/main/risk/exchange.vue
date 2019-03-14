@@ -145,7 +145,6 @@
 </template>
 
 <script>
-import { getList } from '@/api/table'
 
 export default {
   data() {
