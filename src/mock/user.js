@@ -22,14 +22,14 @@ export default {
     }
   },
   getInfo: res => {
-	const { ck } = param2Obj(res.url)
-	let info = null
-	if(ck){
-		info = {
-			"uid": 11,
-			"email": "mockjs@pmbdbr.cq"
-		}
-	}
+    const { ck } = param2Obj(res.url)
+    let info = null
+    if(ck){
+        info = {
+            "uid": 11,
+            "email": "mockjs@pmbdbr.cq"
+        }
+    }
     if (info) {
       return {
         status: "200",
