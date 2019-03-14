@@ -5,7 +5,7 @@ import 'nprogress/nprogress.css' // progress bar style
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth' // getToken from cookie
 
-NProgress.configure({ showSpinner: false })// NProgress configuration
+NProgress.configure({ showSpinner: false })// NProgress configuration 禁用进度环
 
 const whiteList = ['/login'] // 不重定向白名单
 router.beforeEach((to, from, next) => {

@@ -10,7 +10,6 @@
 <script>
 // 语义化的隐藏 aria-hidden="true"
 // xlink:href = id  id 是通过base.conf 配置的  options: { symbolId: 'icon-[name]' }
-
 export default {
   name: 'SvgIcon',
   props: {
