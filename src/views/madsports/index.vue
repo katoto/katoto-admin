@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">Hello : {{ name }}</div>
+    <div class="dashboard-text">Hello : {{ userinfo }}</div>
     <el-carousel 
       :interval="5000" 
       height="400px">
@@ -33,8 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'name',
-      'roles'
+      'userinfo'
     ])
   }
 }
