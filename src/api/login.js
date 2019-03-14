@@ -11,17 +11,6 @@ export function login(username, password) {
   })
 }
 
-// export function login(username, password) {
-//   return request({
-//     url: '/user/login',
-//     method: 'post',
-//     data: {
-//       username,
-//       password
-//     }
-//   })
-// }
-
 export function getInfo(ck) {
   return request({
     url: '/userinfo',
