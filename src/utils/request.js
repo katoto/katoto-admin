@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import store from '../store'
-import { getToken } from '@/utils/auth'
+import { getCk } from '@/utils/auth'
 
 
 // 创建axios实例
@@ -14,8 +14,8 @@ const service = axios.create({
 // request 拦截器
 service.interceptors.request.use(
   config => {
-    if (store.getters.token) {
-      config.headers['ms_ck'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    if (store.getters.ms_ck) {
+      config.headers['ms_ck'] = getCk()
     }
     return config
   },
@@ -38,7 +38,7 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-      // 50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了; todo
+      // 50008:非法的; 50012:其他客户端登录了; todo
       if (res.status === 50008 || res.status === 50012 || res.status === 50014) {
         MessageBox.confirm(
           '你已被登出，可以取消继续留在该页面，或者重新登录',

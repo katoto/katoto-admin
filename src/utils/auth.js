@@ -1,15 +1,15 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'ms-adminck'
+const ckKey = 'ms-adminck'
 
-export function getToken() {
-  return Cookies.get(TokenKey)
+export function getCk() {
+  return Cookies.get(ckKey)
 }
 
-export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+export function setCk(ck) {
+  return Cookies.set(ckKey, ck)
 }
 
-export function removeToken() {
-  return Cookies.remove(TokenKey)
+export function removeCk() {
+  return Cookies.remove(ckKey)
 }

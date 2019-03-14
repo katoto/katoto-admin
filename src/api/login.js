@@ -24,7 +24,7 @@ export function login(username, password) {
 
 export function getInfo(ck) {
   return request({
-    url: '/user/info',
+    url: '/userinfo',
     method: 'get',
     params: { ck }
   })
