@@ -15,7 +15,8 @@ module.exports = {
   //it is base on https://github.com/vuejs/eslint-config-vue
   rules: {
     "no-debugger": 0,
-    "indent": [0, 4],//缩进风格
+    "indent": ['error', 4],//缩进风格
+    "vue/html-indent": ['error', 4],
     'semi': [0],
     'semi-spacing': [0, {
       'before': false,
