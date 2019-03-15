@@ -49,13 +49,15 @@
           highlight-current-row
           style="width: 100%">
           <el-table-column
-            prop="index"
             width="100"
             label="序号">
+            <template scope="scope">
+              {{ scope.$index + 1 }}
+            </template>
           </el-table-column>
           <el-table-column
-            prop="StringID"
-            label="StringID">
+            prop="string_id"
+            label="string_id">
           </el-table-column>
           <el-table-column
             prop="page"
@@ -66,12 +68,12 @@
             label="language">
           </el-table-column>
           <el-table-column
-            prop="modifyTime"
-            label="modifyTime">
+            prop="uptime"
+            label="uptime">
           </el-table-column>
           <el-table-column
-            prop="newArticle"
-            label="newArticle">
+            prop="content"
+            label="content">
           </el-table-column>
           <el-table-column
             label="状态操作"
@@ -184,21 +186,7 @@ export default {
       inputLan: null,
       langTitleName: '新增文案',
       showlangDialog: false, // 新增文案弹窗
-      langArr: [
-      {
-        StringID: 'aa',
-        language: "中文",
-        newArticle: "login",
-        oldArticle: "登陆",
-        page: "home"
-      },{
-        StringID: 'ss',
-        language: "中文",
-        newArticle: "login",
-        oldArticle: "登陆",
-        page: "home"
-      }
-      ],
+      langArr: [],  // 语言列表
       selPage: '-1',
       selPageOptions: [
         {
@@ -240,8 +228,22 @@ export default {
   watch:{
   },
   mounted(){
+    this.pageinit()
+
   },
   methods: {
+    pageinit(){
+      let obj = {
+        language: "",
+        page: "",
+        pageno: "1",
+        pagesize: '99999'
+      }
+      this.$store.dispatch('languagePage', obj).then((res) => {
+        this.langArr = res
+        console.log(res)
+      })
+    },
     before_exportJSON(){
       let newJson = {}
       if(this.langArr && this.langArr.length>0){

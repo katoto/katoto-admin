@@ -26,10 +26,12 @@ service.interceptors.request.use(
         ...config.params
       }
     }
-    // if (store.getters.ms_ck) {
-    //   config.headers['ck'] = getCk()
-    // }
-    console.log(config)
+    if(config.data){
+      config.data = {
+        ...getCommonParams(),
+        ...config.data
+      }
+    }
     return config
   },
   error => {
