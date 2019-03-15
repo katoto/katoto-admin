@@ -345,15 +345,14 @@ export default {
       await this.$store.dispatch('languageAdd', upObj).then((res) => {
         // this.backlangArr = res
         console.log(res)
-        console.log('=========')
         // 更新列表
         this.page_lan_Evt()
+        this.dialogTableVisible = false
       }).catch(err=>{
         this.uploading = false
         console.error('languageAdd error')
       })
       this.uploading = false
-      // end loading
     },
     readExcel(e){
         // 表格数据导入
