@@ -1,4 +1,5 @@
-import { languageFilter, languageadd } from '@/api/language'
+import { languageFilter, languageadd, languagedel,
+languagemodify } from '@/api/language'
 import { getCk, setCk, removeCk } from '@/utils/auth'
 
 const language = {
@@ -30,7 +31,23 @@ const language = {
                 resolve(res.data)
             })
         })
-    }
+    },
+    // 语言删除
+    languageDel({commit}, data){
+        return new Promise((resolve, reject)=>{
+            languagedel(data).then(res =>{
+                resolve(res.data)
+            })
+        })
+    },
+    // 语言修改
+    languageModify({commit}, data){
+        return new Promise((resolve, reject)=>{
+            languagemodify(data).then(res =>{
+                resolve(res.data)
+            })
+        })
+    },    
   }
 }
 
