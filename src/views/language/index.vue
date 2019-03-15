@@ -232,7 +232,7 @@ export default {
 
   },
   methods: {
-    pageinit(){
+    getLanArr(page = '', language = ''){
       let obj = {
         language: "",
         page: "",
@@ -243,6 +243,9 @@ export default {
         this.langArr = res
         console.log(res)
       })
+    },
+    pageinit(){
+        this.getLanArr()
     },
     before_exportJSON(){
       let newJson = {}
