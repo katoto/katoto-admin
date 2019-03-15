@@ -14,9 +14,9 @@ const service = axios.create({
 // request 拦截器
 service.interceptors.request.use(
   config => {
-    if (store.getters.ms_ck) {
-      config.headers['ms_ck'] = getCk()
-    }
+    // if (store.getters.ms_ck) {
+    //   config.headers['ms_ck'] = getCk()
+    // }
     return config
   },
   error => {
@@ -32,7 +32,7 @@ service.interceptors.response.use(
      * code为非20000是抛错 可结合自己业务进行修改
      */
     const res = response.data
-    if (res.status !== "200") {
+    if (res.status !== "100") {
       Message({
         message: res.message,
         type: 'error',

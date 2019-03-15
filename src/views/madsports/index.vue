@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">Hello : {{ userinfo }}</div>
+    <div class="dashboard-text">Hello : {{ userinfo.username }}</div>
     <el-carousel 
       :interval="5000" 
       height="400px">
