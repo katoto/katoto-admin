@@ -18,10 +18,3 @@ export function getInfo(ck) {
     params: { ck }
   })
 }
-
-export function logout() {
-  return request({
-    url: '/user/logout',
-    method: 'post'
-  })
-}

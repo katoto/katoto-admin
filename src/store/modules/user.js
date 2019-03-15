@@ -5,7 +5,6 @@ const user = {
   state: {
     ms_ck: getCk(),
     userinfo: null,
-    
   },
 
   mutations: {
@@ -52,15 +51,10 @@ const user = {
 
     // 登出
     LogOut({ commit, state }) {
-      return new Promise((resolve, reject) => {
-        logout(state.ms_ck).then(() => {
-          commit('SET_ms_ck', '')
-          commit('setUserinfo', '')
-          removeCk()
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+      return new Promise(resolve => {
+        commit('SET_ms_ck', '')
+        removeCk()
+        resolve()
       })
     },
 

@@ -147,7 +147,7 @@ export default {
   }
 }
 </script>
-<style scope>
+<style scoped>
   .seaUid .el-input {
     width: 300px;
     line-height: 40px;

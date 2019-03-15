@@ -186,7 +186,7 @@ export default {
   }
 }
 </script>
-<style scope>
+<style scoped>
   .el-input {
     width: 200px;
     line-height: 40px;

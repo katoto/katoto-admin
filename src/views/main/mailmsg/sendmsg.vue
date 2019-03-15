@@ -169,7 +169,7 @@ export default {
     }
 }
 </script>
-<style scope>
+<style scoped>
 .someSend .el-input{
   width: 50%;
 }

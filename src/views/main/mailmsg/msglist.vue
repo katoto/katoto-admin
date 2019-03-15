@@ -151,7 +151,7 @@ export default {
     }
 }
 </script>
-<style scope>
+<style scoped>
     .block{
         text-align: center;
         margin: 10px auto;
