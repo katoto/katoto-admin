@@ -7,6 +7,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
+import commonPlugin from './plugin/common'
 
 // 1、 import icons 文件
 // 2、 引入svg  全局组件
@@ -16,6 +17,7 @@ import '@/icons' // icon
 import '@/permission' // permission control
 
 Vue.use(ElementUI, { locale })
+Vue.use(commonPlugin)
 
 // import '@/mock'
 
@@ -23,8 +25,8 @@ Vue.use(ElementUI, { locale })
 // Vue.config.productionTip = false
 
 new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App)
+    el: '#app',
+    router,
+    store,
+    render: h => h(App)
 })
