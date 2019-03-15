@@ -11,10 +11,12 @@ export function languageFilter(obj) {
   })
 }
 
-export function getInfo(ck) {
+export function languageadd(obj) {
   return request({
-    url: '/admin/user/info',
-    method: 'get',
-    params: { ck }
+    url: '/admin/language/add',
+    method: 'post',
+    data: {
+      ...obj
+    }
   })
 }

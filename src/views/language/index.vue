@@ -7,7 +7,7 @@
           <section style="float: left;">
             <template>
               <span style="font-size: 14px">page筛选: </span>
-              <el-select size="small" change="aa" v-model="selPage" placeholder="请选择">
+              <el-select size="small" @change="page_lan_Evt" change="aa" v-model="selPage" placeholder="请选择">
                   <el-option
                   v-for="item in selPageOptions"
                   :key="item.value"
@@ -18,7 +18,7 @@
             </template>
             <template>
               &nbsp;<span style="font-size: 14px">language筛选: </span>
-              <el-select size="small" v-model="selLang" placeholder="请选择">
+              <el-select size="small" @change="page_lan_Evt" v-model="selLang" placeholder="请选择">
                   <el-option
                   v-for="item in selLangOptions"
                   :key="item.value"
@@ -44,7 +44,7 @@
           </div>
         </section>
         <el-table
-          :data="langArr"
+          :data="backlangArr"
           stripe
           highlight-current-row
           style="width: 100%">
@@ -186,11 +186,12 @@ export default {
       inputLan: null,
       langTitleName: '新增文案',
       showlangDialog: false, // 新增文案弹窗
-      langArr: [],  // 语言列表
-      selPage: '-1',
+      langArr: [],  // excel语言列表
+      backlangArr: null, // ajax 数据
+      selPage: '',
       selPageOptions: [
         {
-          value: '-1',
+          value: '',
           label: 'All'
         }, {
           value: '1001',
@@ -203,7 +204,7 @@ export default {
           label: 'C'
         }
       ],
-      selLang: 'en',
+      selLang: '',
       selLangOptions: [{
         value: 'en',
       }, {
@@ -232,15 +233,18 @@ export default {
 
   },
   methods: {
+    page_lan_Evt(evt){
+      this.getLanArr(this.selPage, this.selLang)
+    },
     getLanArr(page = '', language = ''){
       let obj = {
-        language: "",
-        page: "",
+        language,
+        page,
         pageno: "1",
         pagesize: '99999'
       }
       this.$store.dispatch('languagePage', obj).then((res) => {
-        this.langArr = res
+        this.backlangArr = res
         console.log(res)
       })
     },
@@ -334,7 +338,16 @@ export default {
         return false
       }
       this.uploading = true
-      await wait(1000)
+      let upObj = {
+        inputLan:this.inputLan,
+        language_list: this.langArr
+      }
+      await this.$store.dispatch('languageAdd', upObj).then((res) => {
+        // this.backlangArr = res
+        console.log(res)
+        console.log('=========')
+      })
+      
       this.uploading = false
       // end loading
     },

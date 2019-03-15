@@ -1,4 +1,4 @@
-import { languageFilter } from '@/api/language'
+import { languageFilter, languageadd } from '@/api/language'
 import { getCk, setCk, removeCk } from '@/utils/auth'
 
 const language = {
@@ -23,7 +23,13 @@ const language = {
         })
       })
     },
-
+    languageAdd({commit}, data){
+        return new Promise((resolve, reject)=>{
+            languageadd(data).then(res =>{
+                resolve(res.data)
+            })
+        })
+    }
   }
 }
 
