@@ -1,14 +1,13 @@
 import request from '@/utils/request'
 
-// 登陆 & userinfo
-export function login(username, password) {
+// 多语言
+export function languageFilter(obj) {
   return request({
-    url: 'admin/user/login',
+    url: '/admin/language/filter',
     method: 'post',
     data: {
-      username,
-      password
-    }
+        ...obj
+	}
   })
 }
 
@@ -16,6 +15,6 @@ export function getInfo(ck) {
   return request({
     url: '/admin/user/info',
     method: 'get',
-    params: {}
+    params: { ck }
   })
 }

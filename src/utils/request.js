@@ -3,6 +3,12 @@ import { Message, MessageBox } from 'element-ui'
 import store from '../store'
 import { getCk } from '@/utils/auth'
 
+function getCommonParams () {
+    let ck = getCk() || ''
+    return {
+      ck
+    }
+}
 
 // 创建axios实例
 // 在config 配置
@@ -14,13 +20,19 @@ const service = axios.create({
 // request 拦截器
 service.interceptors.request.use(
   config => {
+    if(config.params){
+      config.params = {
+        ...getCommonParams(),
+        ...config.params
+      }
+    }
     // if (store.getters.ms_ck) {
-    //   config.headers['ms_ck'] = getCk()
+    //   config.headers['ck'] = getCk()
     // }
+    console.log(config)
     return config
   },
   error => {
-    console.log(error) // for debug
     Promise.reject(error)
   }
 )
