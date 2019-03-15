@@ -23,6 +23,7 @@ const language = {
         })
       })
     },
+    // 语言上传
     languageAdd({commit}, data){
         return new Promise((resolve, reject)=>{
             languageadd(data).then(res =>{

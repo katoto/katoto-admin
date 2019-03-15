@@ -346,8 +346,12 @@ export default {
         // this.backlangArr = res
         console.log(res)
         console.log('=========')
+        // 更新列表
+        this.page_lan_Evt()
+      }).catch(err=>{
+        this.uploading = false
+        console.error('languageAdd error')
       })
-      
       this.uploading = false
       // end loading
     },
