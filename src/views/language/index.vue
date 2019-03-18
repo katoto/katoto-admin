@@ -79,7 +79,7 @@
                     <el-table-column
                         width="100"
                         label="序号">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             {{ scope.$index + 1 }}
                         </template>
                     </el-table-column>
