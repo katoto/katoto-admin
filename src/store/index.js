@@ -13,10 +13,10 @@ modulePage.keys().forEach((path)=>{
     modules[modulename] = modulePage(path).default
 })
 const store = new Vuex.Store({
-  modules: {
-    ...modules
-  },
-  getters
+    modules: {
+        ...modules
+    },
+    getters
 })
 
 export default store

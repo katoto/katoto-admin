@@ -1,21 +1,21 @@
 <template>
-  <div class="dashboard-container">
-    <div class="dashboard-text">Hello : {{ userinfo.username }}</div>
-    <el-carousel 
-      :interval="5000" 
-      height="400px">
-      <el-carousel-item 
-        v-for="item in imgArr" 
-        :key="item">
-        <div>
-          <img 
-            :src="item" 
-            class="bannerClass" 
-            alt="">
-        </div>
-      </el-carousel-item>
-    </el-carousel>
-  </div>
+    <div class="dashboard-container">
+        <div class="dashboard-text">Hello : {{ userinfo.username }}</div>
+        <el-carousel 
+            :interval="5000" 
+            height="400px">
+            <el-carousel-item 
+                v-for="item in imgArr" 
+                :key="item">
+                <div>
+                    <img 
+                        :src="item" 
+                        class="bannerClass" 
+                        alt="">
+                </div>
+            </el-carousel-item>
+        </el-carousel>
+    </div>
 </template>
 
 <script>
@@ -25,17 +25,17 @@ import img_banner2 from '@/assets/madsports/banner2.png'
 import img_banner3 from '@/assets/madsports/banner3.png'
 
 export default {
-  name: 'Dashboard',
-  data() {
-    return {
-      imgArr: [img_banner1, img_banner2, img_banner3]
+    name: 'Dashboard',
+    data() {
+        return {
+            imgArr: [img_banner1, img_banner2, img_banner3]
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'userinfo'
+        ])
     }
-  },
-  computed: {
-    ...mapGetters([
-      'userinfo'
-    ])
-  }
 }
 </script>
 
