@@ -19,11 +19,13 @@
                 style="margin-top:20px">
                 <el-input 
                     v-model="someUid" 
-                    size="small" 
-                    placeholder="请输入uid用'|'区分"/>
+                    size="small"
+                    placeholder="请输入uid用','区分" 
+                    @blur="testUid"/>
                 <el-button 
                     size="small" 
                     type="primary" 
+                    disabled="disabled"
                     @click="inpUidFn">批量导入</el-button>
             </section>
         </div>
@@ -44,12 +46,12 @@
                 </el-form-item>
                 <el-form-item label="赠送金额:">
                     <el-input 
-                        v-model="item.langmsg.money" 
+                        v-model="item.langmsg.amount" 
                         placeholder="填写则发送奖励通知！"/>
                 </el-form-item>
                 <el-form-item label="站内信内容:">
                     <el-input 
-                        v-model="item.langmsg.desc" 
+                        v-model="item.langmsg.content" 
                         placeholder="输入48个字符" 
                         type="textarea"/>
                 </el-form-item>
@@ -92,7 +94,6 @@
                     @click="dialogTableVisible = false" >确 定</el-button>
             </div>
         </el-dialog>
-    
     </div>
 </template>
 
@@ -108,16 +109,16 @@ export default {
                 langtitle: 'English',
                 langmsg: {
                     title: null,
-                    money: null,
-                    desc: null
+                    amount: '',
+                    content: null
                 }
             },
             {
                 langtitle: 'India',
                 langmsg: {
                     title: null,
-                    money: null,
-                    desc: null
+                    amount: '',
+                    content: null
                 }
             }],
             selUid: '1',
@@ -134,15 +135,25 @@ export default {
                     langtitle: item,
                     langmsg: {
                         title: null,
-                        money: null,
-                        desc: null
+                        amount: '',
+                        content: null
                     }
                 })
             })
-            console.log(this.langObj)
         }
     },
+    mounted (){
+    },
     methods:{
+        testUid(val){
+            let reg = /^[0-9,]+$/g
+            if(this.someUid && !reg.test(this.someUid)){
+                this.$message({
+                    type: 'error',
+                    message: 'uid格式不正确'
+                })
+            }
+        },
         inpUidFn(){
             this.dialogTableVisible = true
         },
@@ -150,16 +161,60 @@ export default {
             this.someUid = null
             this.dialogTableVisible = false
         },
-        sendmsg(){
-            console.log(this.langObj)
+        async sendmsg(){
+            // 站内信发送
+            if(this.langObj && this.langObj.length > 0){
+                let isempty = this.langObj.some((item)=>{
+                    return item.langmsg.title === '' || item.langmsg.content === '' || !item.langmsg.title || !item.langmsg.content
+                })
+                if(isempty){
+                    this.$message({
+                        type:'error',
+                        message: '标题和内容不能为空'
+                    })
+                    return false
+                }
+                let baseamount = this.langObj[0].langmsg.amount
+                let isequ = this.langObj.every((item)=>{
+                    return item.langmsg.amount === baseamount
+                })
+                if(!isequ){
+                    this.$message({
+                        type:'error',
+                        message: '赠送金额必须一样'
+                    })
+                    return false
+                }
+                let sendObj = {}
+                let to_uids = ''
+                if(this.selUid === '-1') to_uids = this.someUid
+                Object.assign(sendObj,{
+                    to_uids
+                })
+                let obj = {}
+                this.langObj.forEach((item)=>{
+                    obj[item.langtitle] = {...item.langmsg}
+                })
+                sendObj.notice = {...obj}
+                await this.$store.dispatch('noticeAdd', sendObj).then((res) => {
+                    if(res){
+                        this.$message({
+                            type:'success',
+                            message: '发送成功'
+                        })
+                        this.clearmsg()
+                    }
+                })
+                console.log(sendObj)
+            }else return false
         },
         clearmsg() {
             if(this.langObj.length>0){
                 this.langObj.forEach((item,index)=>{
                     item.langmsg = {
                         title: null,
-                        money: null,
-                        desc: null
+                        amount: '',
+                        content: null
                     }
                 })
             }
@@ -209,7 +264,7 @@ export default {
             };
             fileReader.readAsBinaryString(files[0]);
         }
-    }
+    },
 }
 </script>
 <style scoped>

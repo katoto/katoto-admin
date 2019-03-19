@@ -9,10 +9,13 @@
                         <el-date-picker
                             v-model="timeVal"
                             :picker-options="pickerOptions"
+                            :default-value="new Date()"
                             size="small"
                             type="daterange"
                             align="right"
                             unlink-panels
+                            format="yyyy-MM-dd"
+                            value-format="yyyy-MM-dd"
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"/>
@@ -32,35 +35,43 @@
                 highlight-current-row
                 style="width: 100%">
                 <el-table-column
-                    prop="index"
-                    label="序号"/>
-                <el-table-column
-                    prop="msgtype"
+                    prop="typename"
                     label="通知类型"/>
                 <el-table-column
-                    prop="msgtitle"
-                    label="通知标题"/>
+                    label="通知标题"
+                >
+                    <template slot-scope="scope" >
+                        <div 
+                            v-for="(val, key) in scope.row.title" 
+                            :key="key">
+                            <span v-if="scope.row.currTitle === key">{{ val }}</span>
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column
-                    prop="msgtime"
-                    label="发送时间"/>
+                    prop="crtime"
+                    label="发送时间"
+                    width="200px"/>
                 <el-table-column
-                    prop="msgname"
-                    label="发送人"/>
+                    prop="from_username"
+                    label="发送人"
+                    width="150px"
+                />
                 <el-table-column
                     label="操作"
-                    width="230px">
+                    width="240px">
                     <template 
                         slot-scope="scope" 
                         class="mailmsgOpera">
-                        <el-select 
-                            v-model="value" 
+                        <el-select
+                            v-model="scope.row.currTitle" 
                             size="small" 
                             placeholder="请选择">
                             <el-option
-                                v-for="item in langOptions"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"/>
+                                v-for="(val, key) in scope.row.content"
+                                :key="key"
+                                :label="key"
+                                :value="key"/>
                         </el-select>
                         <el-button 
                             type="danger" 
@@ -78,7 +89,8 @@
             :visible.sync="dialogTableVisible" 
             title="已通知详情:" >
             <div>
-                <p>{{ dialogmsg }}</p>
+                <p>标题：{{ dialogtitle }}</p>
+                <p>内容：{{ dialogmsg }}</p>
             </div>
             <div 
                 slot="footer" 
@@ -91,12 +103,16 @@
     </section>
 </template>
 <script>
+import {formatCoinTime} from '@/utils/utils'
+
 export default {
     data(){
         return{
+            currTitle: 'English',
             dialogTableVisible: false, // 详情弹窗
             dialogmsg: null, // 详情信息
-            timeVal: '',
+            dialogtitle: null,
+            timeVal: '', // 时间
             pickerOptions: {
                 shortcuts: [{
                     text: '最近一周',
@@ -131,13 +147,6 @@ export default {
                     msgtitle: '比赛不打了',
                     msgtime: '11',
                     msgname: 'aa'
-                },
-                {
-                    index:1,
-                    msgtype: '普通通知',
-                    msgtitle: '比赛不打了',
-                    msgtime: '11',
-                    msgname: 'aa'
                 }
             ],
             langOptions: [
@@ -153,15 +162,44 @@ export default {
             value: 'englist'
         }
     },
+    async mounted() {
+        // this.timeVal = [, new Date()]
+        this.timeVal = [this.formatCoinTime(new Date(new Date().getTime() - 3600 * 1000 * 24 * 7)), this.formatCoinTime(new Date())]
+        this.getnoticeList()
+    },
     methods:{
+        formatCoinTime,
         searchExpectFn(){
-            
+            this.$nextTick(()=>{
+                this.getnoticeList()
+            })
         },
-        js_showmsgFn(){
+        js_showmsgFn(row){
             this.dialogTableVisible = true
-            this.dialogmsg = 'ssfdafewr测试'
+            this.dialogtitle = row.title[row.currTitle]
+            this.dialogmsg = row.content[row.currTitle]
+        },
+        formateNotice(notice){
+            if(notice && notice.length > 0){
+                notice.forEach((item, index)=>{
+                    item.currTitle = Object.keys(item.title)[0]
+                })
+            }
+            return [...notice]
+        },
+        async getnoticeList(){
+            let sendObj = {}
+            sendObj.start_date = this.timeVal[0]
+            sendObj.end_date = this.timeVal[1]
+            sendObj.pageno = '1'
+            sendObj.pagesize = '99999'
+            await this.$store.dispatch('noticeList', sendObj).then((res) => {
+                if(res){
+                    this.goodsList = this.formateNotice(res.notice_list)
+                }
+            })
         }
-    }
+    },
 }
 </script>
 <style scoped>
