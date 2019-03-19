@@ -91,6 +91,7 @@
             <div>
                 <p>标题：{{ dialogtitle }}</p>
                 <p>内容：{{ dialogmsg }}</p>
+                <p>发送目标：{{ dialogTo }}</p>
             </div>
             <div 
                 slot="footer" 
@@ -112,6 +113,7 @@ export default {
             dialogTableVisible: false, // 详情弹窗
             dialogmsg: null, // 详情信息
             dialogtitle: null,
+            dialogTo: null, 
             timeVal: '', // 时间
             pickerOptions: {
                 shortcuts: [{
@@ -178,6 +180,7 @@ export default {
             this.dialogTableVisible = true
             this.dialogtitle = row.title[row.currTitle]
             this.dialogmsg = row.content[row.currTitle]
+            this.dialogTo = row.to_uid === '0'? '所有人' : row.to_uid
         },
         formateNotice(notice){
             if(notice && notice.length > 0){
