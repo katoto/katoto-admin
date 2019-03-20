@@ -1,0 +1,81 @@
+<template>
+    <a href="javascript:;" :class="[scrollTop<400?'hide':'']" class="scrollTop"  @click="toTop">
+        ScrollTop
+    </a>
+</template>
+
+<script>
+export default {
+    data () {
+        return {
+            scrollTop: 0
+        }
+    },
+    watch: {},
+    methods: {
+        handleScroll () {
+            this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+        },
+        handleScroll2 () {
+            this.scrollTop = document.getElementById('app').scrollTop
+        },
+        toTop () {
+            const c = this.scrollTop
+            if (c > 0) {
+                window.requestAnimationFrame(this.toTop)
+                if (this.hadFlexHtml) {
+                    document.getElementById('app').scrollTo(0, c - c / 8)
+                } else {
+                    window.scrollTo(0, c - c / 8)
+                }
+            }
+        }
+    },
+    computed: {},
+    components: {},
+    mounted () {
+        this.$nextTick(() => {
+            this.hadFlexHtml = document.documentElement.className.indexOf('flexhtml') !== -1
+            if (this.hadFlexHtml) {
+                document.getElementById('app').addEventListener('scroll', this.handleScroll2, false)
+            } else {
+                window.addEventListener('scroll', this.handleScroll, false)
+            }
+        })
+    },
+    destroyed () {
+        if (this.hadFlexHtml) {
+            document.getElementById('app').removeEventListener('scroll', this.handleScroll2, false)
+        } else {
+            window.removeEventListener('scroll', this.handleScroll, true)
+        }
+    }
+}
+</script>
+<style scoped lang="less">
+.scrollTop {
+  position: fixed;
+  bottom: 100px;
+  right: 10px;
+  z-index: 6;
+  display: block;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  border-radius: 4px;
+  font-size: 0;
+  text-indent: -9999px;
+  background: rgba(0, 0, 0, 0.25) url("../assets/img/icon-arrow-down.png")
+    no-repeat center;
+  background-size: 14px;
+  transform: rotate(180deg);
+}
+@media (max-width: 768px) {
+  .scrollTop {
+    bottom: 10/75rem;
+    right: 10/75rem;
+    width: 70/75rem;
+    height: 70/75rem;
+  }
+}
+</style>
