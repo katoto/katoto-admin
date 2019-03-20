@@ -104,7 +104,7 @@ export default {
     data () {
         return {
             dialogTableVisible: false,
-            langList: ['English', 'India'],
+            langList: ['English'],
             langObj: [{
                 langtitle: 'English',
                 langmsg: {
@@ -113,14 +113,15 @@ export default {
                     content: null
                 }
             },
-            {
-                langtitle: 'India',
-                langmsg: {
-                    title: null,
-                    amount: '',
-                    content: null
-                }
-            }],
+            // {
+            //     langtitle: 'India',
+            //     langmsg: {
+            //         title: null,
+            //         amount: '',
+            //         content: null
+            //     }
+            // }
+            ],
             selUid: '1',
             someUid: null,
             langUidArr: []
