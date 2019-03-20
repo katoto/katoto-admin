@@ -16,18 +16,11 @@ export default {
         handleScroll () {
             this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop
         },
-        handleScroll2 () {
-            this.scrollTop = document.getElementById('app').scrollTop
-        },
         toTop () {
             const c = this.scrollTop
             if (c > 0) {
                 window.requestAnimationFrame(this.toTop)
-                if (this.hadFlexHtml) {
-                    document.getElementById('app').scrollTo(0, c - c / 8)
-                } else {
-                    window.scrollTo(0, c - c / 8)
-                }
+                window.scrollTo(0, c - c / 8)
             }
         }
     },
@@ -35,20 +28,11 @@ export default {
     components: {},
     mounted () {
         this.$nextTick(() => {
-            this.hadFlexHtml = document.documentElement.className.indexOf('flexhtml') !== -1
-            if (this.hadFlexHtml) {
-                document.getElementById('app').addEventListener('scroll', this.handleScroll2, false)
-            } else {
-                window.addEventListener('scroll', this.handleScroll, false)
-            }
+            window.addEventListener('scroll', this.handleScroll, false)
         })
     },
     destroyed () {
-        if (this.hadFlexHtml) {
-            document.getElementById('app').removeEventListener('scroll', this.handleScroll2, false)
-        } else {
-            window.removeEventListener('scroll', this.handleScroll, true)
-        }
+        window.removeEventListener('scroll', this.handleScroll, true)
     }
 }
 </script>
