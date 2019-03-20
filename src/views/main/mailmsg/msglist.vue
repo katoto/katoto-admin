@@ -265,7 +265,7 @@ export default {
                     if(isFirst) this.mailStyle = ''
                     this.mailPageNumber = parseFloat(res.pageno)
                     this.mailPageSize = parseFloat(res.pagesize)
-                    this.mailMsgCounts = parseFloat(res.pages) + 3
+                    this.mailMsgCounts = parseFloat(res.pages)
                 }
             })
         }
