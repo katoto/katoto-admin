@@ -295,7 +295,6 @@ export default {
         },
         create () {
             this.selectObj = {
-                type: '100'
             }
             this.showCreate = true
         },
