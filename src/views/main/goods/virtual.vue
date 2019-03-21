@@ -316,12 +316,19 @@ export default {
                     });
                     const wsname = workbook.SheetNames[0];//取第一张表
                     let result = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);//生成json表格内容
-                    if (result && result.__EMPTY){
+                    let oneData = result[0]
+                    if (result.length === 0 || result.length === 1) {
+                        this.error('没有数据，第一行表头填写goodsid、cardno、password')
+                    } if (oneData[0] && oneData[0].__EMPTY){
                         this.error('文档应该加密了,请重新选择!')
                     } else {
-                        console.log(result)
+                        if (oneData.goodsid && oneData.cardno && oneData.password) {
+                            this.importIt(result)
+                        } else {
+                            this.error('格式错误，第一行表头填写goodsid、cardno、password')
+                        }
                     }
-                    // this.importIt(result)
+                    this.$refs.file.value = ''
                 } catch (e) {
                     return false;
                 }

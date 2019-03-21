@@ -30,7 +30,6 @@
             </el-table-column>
             <el-table-column
                 label="商品简介"
-                width="180"
             >
                 <template slot-scope="scope">
                     {{ scope.row.goodsdesc.English || scope.row.goodsdesc.India || '' }}
@@ -39,12 +38,15 @@
             <el-table-column
                 label="商品价值"
                 prop="needgolds"
-                width="180"
             />
             <el-table-column
                 label="剩余数量"
                 prop="remain"
-                width="180"
+            />
+            <el-table-column
+                label="商品ID"
+                prop="goodsid"
+                align="center"
             />
             <el-table-column
                 align="center"
