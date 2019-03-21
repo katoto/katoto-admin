@@ -17,7 +17,7 @@ MyPlugin.install = function (Vue) {
         })
     }
 
-    Vue.prototype.success = message => {
+    Vue.prototype.success = (message = '操作成功') => {
         Message({
             message: message,
             type: 'success',

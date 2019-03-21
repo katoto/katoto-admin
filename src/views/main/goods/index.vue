@@ -51,7 +51,9 @@
                 label="操作">
                 <template slot-scope="scope">
                     <div>
-                        <el-button type="primary">
+                        <el-button 
+                            type="primary" 
+                            @click.native="lineChange(scope.row)">
                             {{ scope.row.isUpLine ? '下线' : '上线' }}
                             <i :class="[scope.row.isUpLine ? 'el-icon-download' : 'el-icon-upload2']"/>
                         </el-button>
@@ -155,7 +157,7 @@
 </template>
 
 <script>
-import {getGoodList, setGood} from '@/api/main/good'
+import {getGoodList, setGood, changeLine} from '@/api/main/good'
 export default {
     data () {
         return {
@@ -171,14 +173,7 @@ export default {
         }
     },
     mounted () {
-        getGoodList().then(res => {
-            this.tableData = res.data.goods_config_list.map((item, index) => {
-                item.index = index + 1
-                item.isUpLine = Number(item.status) === 1
-                return item
-            })
-            this.tableData.sort((a, b) => Number(a.weight) > Number(b.weight) ? -1 : 1)
-        })
+        this.getList()
     },
     methods: {
         // getFile () {
@@ -188,8 +183,18 @@ export default {
         //     param.append('img', file, file.name)
         //     return param
         // },
+        getList () {
+            getGoodList().then(res => {
+                this.tableData = res.data.goods_config_list.map((item, index) => {
+                    item.index = index + 1
+                    item.isUpLine = Number(item.status) === 1
+                    return item
+                })
+                this.tableData.sort((a, b) => Number(a.weight) > Number(b.weight) ? -1 : 1)
+            })
+        },
         modify (item) {
-            this.selectObj = item
+            this.selectObj = JSON.parse(JSON.stringify(item))
             this.showConfirm = true
         },
         create () {
@@ -217,11 +222,21 @@ export default {
             }
             setGood(this.selectObj).then(res => {
                 if (res.status === '100') {
-                    this.success('操作成功')
+                    this.success()
+                    this.getList()
                     this.showConfirm = false
                 } else {
                     this.error(res.message)
                 }
+            })
+        },
+        lineChange (item) {
+            changeLine({
+                goodsid: item.goodsid,
+                status: item.status === '0' ? '1' : '0'
+            }).then(res => {
+                this.success()
+                this.getList()
             })
         }
     }
