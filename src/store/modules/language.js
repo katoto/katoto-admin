@@ -4,13 +4,9 @@ import { getCk, setCk, removeCk } from '@/utils/auth'
 
 const language = {
     state: {
-        aa: null,
     },
 
     mutations: {
-        setUserinfo: (state, info) => {
-            state.userinfo = info
-        },
     },
 
     actions: {

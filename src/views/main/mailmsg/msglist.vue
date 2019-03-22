@@ -153,7 +153,7 @@ export default {
                 value: ''
             }],
             mailStyle: '',
-            currTitle: 'English',
+            currTitle: 'en',
             dialogTableVisible: false, // 详情弹窗
             dialogmsgArr: null, // 详情信息
             dialogtitle: null,
@@ -196,15 +196,15 @@ export default {
             ],
             langOptions: [
                 {
-                    value: 'englist',
-                    label: 'englist'
+                    value: 'en',
+                    label: 'en'
                 },
                 {
-                    value: 'india',
-                    label: 'india'
+                    value: 'hi',
+                    label: 'hi'
                 }
             ],
-            value: 'englist'
+            value: 'en'
         }
     },
     async mounted() {
