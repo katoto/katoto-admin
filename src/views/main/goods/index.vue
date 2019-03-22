@@ -4,7 +4,7 @@
         <el-button 
             type="primary" 
             icon="el-icon-plus" 
-            style="float: right" 
+            style="float: right; margin-bottom:20px;" 
             size="mini"
             @click="create"/>
         <el-table
@@ -12,27 +12,25 @@
             border
             style="width: 100%">
             <el-table-column
-                label="商品排序"
+                label="No."
                 prop="index"
                 width="80"
-                align="center"
             />
             <el-table-column
                 label="商品名称"
-                width="180"
             >
                 <template slot-scope="scope">
                     <a 
                         href="javascript:;"
                         class="link"
-                        @click="modify(scope.row)">{{ scope.row.goodsname.English || scope.row.goodsname.India || '' }}</a>
+                        @click="modify(scope.row)">{{ scope.row.goodsname.en || scope.row.goodsname.hi || '' }}</a>
                 </template>
             </el-table-column>
             <el-table-column
                 label="商品简介"
             >
                 <template slot-scope="scope">
-                    {{ scope.row.goodsdesc.English || scope.row.goodsdesc.India || '' }}
+                    {{ scope.row.goodsdesc.en || scope.row.goodsdesc.hi || '' }}
                 </template>
             </el-table-column>
             <el-table-column
@@ -46,15 +44,14 @@
             <el-table-column
                 label="商品ID"
                 prop="goodsid"
-                align="center"
             />
             <el-table-column
-                align="center"
                 label="操作">
                 <template slot-scope="scope">
                     <div>
                         <el-button 
-                            type="primary" 
+                            type="primary"
+                            size="mini"
                             @click.native="lineChange(scope.row)">
                             {{ scope.row.isUpLine ? '下线' : '上线' }}
                             <i :class="[scope.row.isUpLine ? 'el-icon-download' : 'el-icon-upload2']"/>
@@ -95,13 +92,13 @@
                         <el-form-item 
                             label="商品名称">
                             <el-input 
-                                v-model="selectObj.goodsname.English" 
+                                v-model="selectObj.goodsname.en" 
                                 autocomplete="off"/>
                         </el-form-item>
                         <el-form-item 
                             label="商品简介">
                             <el-input 
-                                v-model="selectObj.goodsdesc.English" 
+                                v-model="selectObj.goodsdesc.en" 
                                 autocomplete="off"/>
                         </el-form-item>
                     </el-tab-pane>
@@ -111,13 +108,13 @@
                         <el-form-item 
                             label="商品名称">
                             <el-input 
-                                v-model="selectObj.goodsname['India-south']" 
+                                v-model="selectObj.goodsname.hi" 
                                 autocomplete="off"/>
                         </el-form-item>
                         <el-form-item 
                             label="商品简介">
                             <el-input 
-                                v-model="selectObj.goodsdesc['India-south']" 
+                                v-model="selectObj.goodsdesc.hi" 
                                 autocomplete="off"/>
                         </el-form-item>
                     </el-tab-pane>
@@ -178,13 +175,11 @@ export default {
         this.getList()
     },
     methods: {
-        // getFile () {
-        // post FormData with headers 'Content-Type': 'multipart/form-data'
-        //     let param = new FormData()
-        //     let file = this.$refs.file.files[0]
-        //     param.append('img', file, file.name)
-        //     return param
-        // },
+        filterTableData (pageno, pagesize, index) {
+            pageno = Number(pageno)
+            pagesize = Number(pagesize)
+            return (index >= (pageno - 1) * pagesize) && (index <= (pageno - 1) * pagesize + (pagesize - 1))
+        },
         getList () {
             getGoodList().then(res => {
                 this.tableData = res.data.goods_config_list.map((item, index) => {
@@ -212,13 +207,13 @@ export default {
             this.selectObj = {
                 ...this.selectObj,
                 contents: {
-                    English: {
-                        goodsname: this.selectObj.goodsname.English,
-                        goodsdesc: this.selectObj.goodsdesc.English
+                    en: {
+                        goodsname: this.selectObj.goodsname.en,
+                        goodsdesc: this.selectObj.goodsdesc.en
                     },
-                    "India-south": {
-                        goodsname: this.selectObj.goodsname["India-south"],
-                        goodsdesc: this.selectObj.goodsdesc["India-south"]
+                    hi: {
+                        goodsname: this.selectObj.goodsname.hi,
+                        goodsdesc: this.selectObj.goodsdesc.hi
                     }
                 }
             }

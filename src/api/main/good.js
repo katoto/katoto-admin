@@ -29,3 +29,11 @@ export function deleteVirtualGood (data = {}) {
 export function virtualGoodModify (data = {}) {
     return post('/admin/goods/immaterial/modify', data)
 }
+
+export function getMaterialList (data = {}) {
+    return get('/admin/goods/material/list', data)
+}
+
+export function materialModify (data = {}) {
+    return post('/admin/goods/material/modify', data)
+}

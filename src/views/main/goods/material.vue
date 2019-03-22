@@ -2,72 +2,72 @@
     <div class="page">
         <h2>实物奖品派发</h2>
         <el-select 
-            v-model="type"
+            v-model="goodsid"
             style="float: left">
             <el-option 
                 label="All" 
-                value="all"/>
+                value=""/>
             <el-option 
                 v-for="item in types"
-                :key="item"
-                label="item" 
-                value="item"/>
+                :key="item.goodsname"
+                :label="item.goodsname" 
+                :value="item.goodsid"/>
         </el-select>
         <el-table
-            :data="tableData.filter((item, index) => filterTableData(pageno, pagesize, index))"
+            :data="tableData"
+            border
             style="width: 100%">
             <el-table-column
+                label="No."
+                prop="index"
+                width="80"
+            />
+            <el-table-column
                 label="领取时间"
-                prop="time"
-                width="180"
-                align="center"
+                prop="crtime"
             />
             <el-table-column
                 label="订单编号"
-                prop="no"
-                width="180"
+                prop="orderid"
             >
                 <template slot-scope="scope">
                     <a 
                         href="javascript:;"
                         class="link"
-                        @click="modify(scope.row)">{{ scope.row.name }}</a>
+                        @click="modify(scope.row)">{{ scope.row.orderid }}</a>
                 </template>
             </el-table-column>
             <el-table-column
                 label="商品种类"
-                prop="type"
-                width="180"
+                prop="goodsname"
             />
             <el-table-column
                 label="收件人姓名"
-                prop="name"
-                width="180"
+                prop="consignee"
             />
             <el-table-column
                 label="收件人联系电话"
-                prop="phone"
-                width="180"
+                prop="mobile"
             />
             <el-table-column
                 label="物流单号"
-                prop="order"
-                width="180"
+                prop="trackingno"
             />
             <el-table-column
                 label="订单状态"
-                prop="status"
-                width="180"
-            />
+            >
+                <template slot-scope="scope">
+                    {{ formatStatus(scope.row.orderstatus) }}
+                </template>
+            </el-table-column>
             <el-table-column
                 label="详细地址"
                 prop="address"
-                width="180"
             />
         </el-table>
         <el-pagination
             :page-size="pagesize"
-            :total="tableData.length"
+            :total="pages"
             :current-page.sync="pageno"
             background
             layout="prev, pager, next"/>
@@ -77,19 +77,19 @@
             <el-form>
                 <el-form-item 
                     label="订单编号">
-                    <div>{{ selectObj.order }}</div>
+                    <div>{{ selectObj.orderid }}</div>
                 </el-form-item>
                 <el-form-item 
                     label="奖品类型">
-                    <div>{{ selectObj.type }}</div>
+                    <div>{{ selectObj.goodsname }}</div>
                 </el-form-item>
                 <el-form-item 
                     label="收件人">
-                    <div>{{ selectObj.user }}</div>
+                    <div>{{ selectObj.consignee }}</div>
                 </el-form-item>
                 <el-form-item 
                     label="联系方式">
-                    <div>{{ selectObj.phone }}</div>
+                    <div>{{ selectObj.mobile }}</div>
                 </el-form-item>
                 <el-form-item 
                     label="详细地址">
@@ -99,9 +99,12 @@
                     label="物流状态"
                 >
                     <el-select 
-                        v-model="selectObj.status">
+                        v-model="selectObj.orderstatus">
                         <el-option 
-                            label="代发货" 
+                            label="失败退款" 
+                            value="-1"/>
+                        <el-option 
+                            label="待发货" 
                             value="1"/>
                         <el-option 
                             label="在途" 
@@ -114,7 +117,7 @@
                 <el-form-item 
                     label="物流单号">
                     <el-input 
-                        v-model="selectObj.order"/>
+                        v-model="selectObj.trackingno"/>
             </el-form-item></el-form>
             <div 
                 slot="footer" 
@@ -125,7 +128,7 @@
                 </el-button>
                 <el-button 
                     type="primary" 
-                    @click="showConfirm = false">
+                    @click="modifyIt">
                     确 定
                 </el-button>
             </div>
@@ -134,58 +137,75 @@
 </template>
 
 <script>
+import {getMaterialList, materialModify} from '@/api/main/good'
+
 export default {
     data () {
         return {
             pagesize: 20,
             pageno: 1,
-            type: 'all',
+            pages: 0,
+            goodsid: '',
             types: [],
-            tableData: [{
-                name: '疯狂猜球',
-                no: '1000001',
-                password: '111',
-                type: '金条',
-                user: 'siked',
-                time: '2019.08.14',
-                phone: '18824999254',
-                order: '178943724230489',
-                status: '待发货',
-                address: '深圳市XXXX'
-            }, {
-                name: '疯狂猜球',
-                no: '1000002',
-                password: '222',
-                type: '手机',
-                user: 'fdasfr',
-                time: '2019.08.04',
-                phone: '18824999254',
-                order: '178943724230489',
-                status: '在途',
-                address: '深圳市XXXX'
-            }, {
-                name: '疯狂猜球',
-                no: '1000003',
-                password: '333',
-                type: '手机',
-                user: 'qweqwrr',
-                time: '2019.08.01',
-                phone: '18824999254',
-                order: '178943724230489',
-                status: '已签收',
-                address: '深圳市XXXX'
-            }],
+            tableData: [],
             selectObj: {},
             showConfirm: false
         }
     },
+    watch: {
+        pageno () {
+            this.getList()
+        },
+        goodsid () {
+            this.getList()
+        }
+    },
     mounted () {
         window._this = this
+        this.getList()
     },
     methods: {
         modify (item) {
-            this.selectObj = item
+            this.selectObj = JSON.parse(JSON.stringify(item))
             this.showConfirm = true
+        },
+        getList () {
+            getMaterialList({
+                goodsid: this.goodsid,
+                pageno: this.pageno,
+                pagesize: this.pagesize
+            }).then(res => {
+                this.tableData = res.data.material_list.map((item, index) => {
+                    item.index = (Number(this.pageno) - 1) * Number(this.pagesize) + index + 1
+                    return item
+                })
+                this.types = res.data.filter
+                this.pages = Number(res.data.pages) * Number(res.data.pagesize)
+                console.log(res)
+            })
+        },
+        formatStatus (status) {
+            if (status === '-1') {
+                return '失败退款'
+            } else if (status === '1') {
+                return '代发货'
+            } else if (status === '2') {
+                return '在途'
+            } else if (status === '3') {
+                return '签收'
+            }
+            return `未知状态：${status}`
+        },
+        modifyIt () {
+            materialModify({
+                orderid: this.selectObj.orderid,
+                trackingno: this.selectObj.trackingno,
+                orderstatus: this.selectObj.orderstatus
+            }).then(() => {
+                this.success()
+                this.showConfirm = false
+                this.getList()
+            })
         }
     }
 }
@@ -204,5 +224,8 @@ export default {
 }
 .el-button /deep/ .el-icon-back {
     transform: rotate(90deg);
+}
+.el-select {
+    margin-bottom: 20px;
 }
 </style>

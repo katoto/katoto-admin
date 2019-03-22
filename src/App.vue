@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <router-view/>
-        <scrollTop></scrollTop>
+        <scrollTop/>
     </div>
 </template>
 
@@ -9,7 +9,6 @@
 import scrollTop from '@/components/scrollTop.vue'
 
 export default {
-    name: 'App',
     components:{
         scrollTop
     }
