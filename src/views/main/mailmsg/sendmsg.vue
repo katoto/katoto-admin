@@ -3,8 +3,8 @@
         <!-- 勾选需要的语言 -->
         <span style="font-size:14px;line-height:28px">勾选即表示发送该语言站内信！</span>
         <el-checkbox-group v-model="langList">
-            <el-checkbox label="English"/>
-            <el-checkbox label="India"/>
+            <el-checkbox label="en"/>
+            <el-checkbox label="hi"/>
         </el-checkbox-group>
         <div style="margin:14px 0;border:1px solid #ccc;padding:8px">
             <el-radio 
@@ -104,9 +104,9 @@ export default {
     data () {
         return {
             dialogTableVisible: false,
-            langList: ['English'],
+            langList: ['en'],
             langObj: [{
-                langtitle: 'English',
+                langtitle: 'en',
                 langmsg: {
                     title: null,
                     amount: '',

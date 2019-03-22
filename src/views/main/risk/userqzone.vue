@@ -7,11 +7,13 @@
                     <section style="float: left;margin-top: 4px">
                         <span style="font-size: 14px">用户类型: </span>
                         <el-select 
-                            v-model="userStyle" 
+                            v-model="level" 
                             size="small" 
-                            placeholder="请选择">
+                            placeholder="请选择"
+                            @change="userzoneChange"
+                            >
                             <el-option
-                                v-for="item in userStyleOptions"
+                                v-for="item in levelStyleOptions"
                                 :key="item.value"
                                 :label="item.label"
                                 :value="item.value"/>
@@ -24,7 +26,7 @@
                     <el-input 
                         v-model="searchUid" 
                         size="small" 
-                        placeholder="uid 查询"/>
+                        placeholder="uid查询 (多个用，分隔)"/>
                     <el-button 
                         type="primary" 
                         plain 
@@ -39,7 +41,7 @@
                     type="primary" 
                     plain 
                     size="small" 
-                    @click="toggleSelection(goodsList)">
+                    @click="toggleSelection(userslist)">
                     全选
                 </el-button>
                 <span style="font-size: 14px"> &nbsp;统一分类为: </span>
@@ -56,7 +58,7 @@
             </section>
             <el-table
                 ref="multipleTable"
-                :data="goodsList"
+                :data="userslist"
                 stripe
                 highlight-current-row
                 style="width: 100%">
@@ -64,16 +66,13 @@
                     type="selection"
                     width="55"/>
                 <el-table-column
-                    prop="index"
-                    label="序号"/>
-                <el-table-column
                     prop="uid"
                     label="用户uid"/>
                 <el-table-column
-                    prop="goodsname"
+                    prop="regtime"
                     label="注册时间"/>
                 <el-table-column
-                    prop="exchangetime"
+                    prop="levelStr"
                     label="用户分类"/>
                 <el-table-column
                     label="操作"
@@ -119,41 +118,83 @@
 export default {
     data() {
         return {
-            goodsList: [
-                {
-                    index: 1,
-                    uid: 10021,
-                    goodsname: '卡卡卡卡',
-                    exchangetime: '234',
-                    goodsstyle: '-1'
-                },
-                {}
+            userPageNumber: 1,
+            userPageSize: 10,
+            userMsgCounts: 3,
+            
+            userStyle: '',
+            userStyleOptions:[],
+            userslist: [
             ],
-            searchUid: null,
-            userStyleOptions:[
+            searchUid: "",
+            levelStyleOptions:[
                 {
-                    value: '-1',
+                    value: '-2',
                     label: 'All'
                 }, {
-                    value: '1',
+                    value: '0',
                     label: '普通用户'
                 }, {
-                    value: '2',
-                    label: '羊毛用户'
+                    value: '1',
+                    label: '普通付费用户'
                 }, {
-                    value: '3',
+                    value: '2',
                     label: '大R用户'
                 }, {
-                    value: '4',
-                    label: '普通付费用户'
+                    value: '-1',
+                    label: '羊毛党'
                 }
             ],
-            userStyle:'-1'
+            level:'-2',
+            levelObj:{
+                '1': '普通付费用户',
+                '-1': '羊毛党',
+                '0': '普通用户',
+                '-2': '普通付费用户',
+                '2': '大R用户',
+            }
         }
     },
     created() {
+        this.userslistFn()
     },
     methods: {
+        searchExpectFn(){
+            this.userslistFn()
+        },
+        userzoneChange(){
+            this.userslistFn()
+        },
+        userCurrentChange(num=1){
+            this.userPageNumber = num.toString()
+            this.userslistFn()
+        },
+        formateUserList(list){
+            if(list && list.length>0){
+                list.forEach((item)=>{
+                    item.levelStr = this.levelObj[item.level]
+                })
+            }
+            return list
+        },
+        async userslistFn(){
+            let obj = {
+                level: this.level.toString(),
+                pageno: this.userPageNumber.toString(),
+                pagesize: this.userPageSize.toString(),
+                uid: this.searchUid
+            }
+            let exchangeList = await this.$store.dispatch('risk_userlist', obj)
+            if(exchangeList){
+                if(exchangeList.userinfos) this.userslist = this.formateUserList(exchangeList.userinfos)
+                if(exchangeList.pages) this.userMsgCounts = parseFloat(exchangeList.pages)
+            } else {
+                this.$message({
+                    type: 'error',
+                    message: '操作失败'
+                })
+            }
+        },
         toggleSelection(tableData=[]){
             if(tableData.length>0){
                 tableData.forEach(row=>{
