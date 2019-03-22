@@ -9,51 +9,56 @@
             @click="create"/>
         <el-table
             :data="tableData.filter((item, index) => filterTableData(pageno, pagesize, index))"
+            border
             style="width: 100%">
             <el-table-column
                 label="商品排序"
                 prop="index"
-                width="180"
+                width="80"
                 align="center"
             />
             <el-table-column
                 label="商品名称"
-                prop="name"
                 width="180"
             >
                 <template slot-scope="scope">
                     <a 
                         href="javascript:;"
                         class="link"
-                        @click="modify(scope.row)">{{ scope.row.name }}</a>
+                        @click="modify(scope.row)">{{ scope.row.goodsname.English || scope.row.goodsname.India || '' }}</a>
                 </template>
             </el-table-column>
             <el-table-column
                 label="商品简介"
-                prop="profile"
-                width="180"
-            />
+            >
+                <template slot-scope="scope">
+                    {{ scope.row.goodsdesc.English || scope.row.goodsdesc.India || '' }}
+                </template>
+            </el-table-column>
             <el-table-column
                 label="商品价值"
-                prop="value"
-                width="180"
+                prop="needgolds"
             />
             <el-table-column
                 label="剩余数量"
-                prop="amount"
-                width="180"
+                prop="remain"
             />
             <el-table-column
+                label="商品ID"
+                prop="goodsid"
+                align="center"
+            />
+            <el-table-column
+                align="center"
                 label="操作">
                 <template slot-scope="scope">
                     <div>
-                        <el-button type="primary">
+                        <el-button 
+                            type="primary" 
+                            @click.native="lineChange(scope.row)">
                             {{ scope.row.isUpLine ? '下线' : '上线' }}
                             <i :class="[scope.row.isUpLine ? 'el-icon-download' : 'el-icon-upload2']"/>
                         </el-button>
-                        <el-button 
-                            v-if="scope.$index !== 0" 
-                            icon="el-icon-back"/>
                     </div>
                 </template>
             </el-table-column>
@@ -72,13 +77,13 @@
                     label="类别"
                 >
                     <el-select 
-                        v-model="selectObj.type">
+                        v-model="selectObj.goodstype">
                         <el-option 
                             label="卡类" 
-                            value="card"/>
+                            value="1"/>
                         <el-option 
                             label="实物类" 
-                            value="object"/>
+                            value="2"/>
                     </el-select>
                 </el-form-item>
                 <el-tabs
@@ -90,13 +95,13 @@
                         <el-form-item 
                             label="商品名称">
                             <el-input 
-                                v-model="selectObj.english_name" 
+                                v-model="selectObj.goodsname.English" 
                                 autocomplete="off"/>
                         </el-form-item>
                         <el-form-item 
                             label="商品简介">
                             <el-input 
-                                v-model="selectObj.english_profile" 
+                                v-model="selectObj.goodsdesc.English" 
                                 autocomplete="off"/>
                         </el-form-item>
                     </el-tab-pane>
@@ -106,13 +111,13 @@
                         <el-form-item 
                             label="商品名称">
                             <el-input 
-                                v-model="selectObj.india_name" 
+                                v-model="selectObj.goodsname['India-south']" 
                                 autocomplete="off"/>
                         </el-form-item>
                         <el-form-item 
                             label="商品简介">
                             <el-input 
-                                v-model="selectObj.india_profile" 
+                                v-model="selectObj.goodsdesc['India-south']" 
                                 autocomplete="off"/>
                         </el-form-item>
                     </el-tab-pane>
@@ -120,15 +125,20 @@
                 <el-form-item 
                     label="商品价值">
                     <el-input 
-                        v-model="selectObj.value" 
+                        v-model="selectObj.needgolds" 
                         autocomplete="off"/>
                 </el-form-item>
                 <el-form-item 
-                    label="图片">
-                    <input 
-                        ref="file" 
-                        type="file" 
-                        name="image">
+                    label="图片URL">
+                    <el-input 
+                        v-model="selectObj.img_url" 
+                        autocomplete="off"/>
+                </el-form-item>
+                <el-form-item 
+                    label="权重">
+                    <el-input 
+                        v-model="selectObj.weight" 
+                        autocomplete="off"/>
                 </el-form-item>
             </el-form>
             <div 
@@ -140,7 +150,7 @@
                 </el-button>
                 <el-button 
                     type="primary" 
-                    @click="showConfirm = false">
+                    @click="confirm">
                     确 定
                 </el-button>
             </div>
@@ -149,57 +159,87 @@
 </template>
 
 <script>
+import {getGoodList, setGood, changeLine} from '@/api/main/good'
 export default {
     data () {
         return {
             pagesize: 20,
             pageno: 1,
-            tableData: [{
-                index: 1,
-                name: '100 Amazon cards',
-                profile: '$100 gift cards',
-                value: '10000',
-                amount: '50',
-                isUpLine: false
-            }, {
-                index: 2,
-                name: '300 Amazon cards',
-                profile: '$300 gift cards',
-                value: '30000',
-                amount: '20',
-                isUpLine: true
-            }, {
-                index: 3,
-                name: '200 Amazon cards',
-                profile: '$200 gift cards',
-                value: '50000',
-                amount: '30',
-                isUpLine: true
-            }],
-            selectObj: {},
-            showConfirm: false
+            tableData: [],
+            selectObj: {
+                goodsname: {},
+                goodsdesc: {}
+            },
+            showConfirm: false,
+            active: ''
         }
     },
     mounted () {
-        window._this = this
+        this.getList()
     },
     methods: {
-        getFile () {
-            // post FormData with headers 'Content-Type': 'multipart/form-data'
-            let param = new FormData()
-            let file = this.$refs.file.files[0]
-            param.append('img', file, file.name)
-            return param
+        // getFile () {
+        // post FormData with headers 'Content-Type': 'multipart/form-data'
+        //     let param = new FormData()
+        //     let file = this.$refs.file.files[0]
+        //     param.append('img', file, file.name)
+        //     return param
+        // },
+        getList () {
+            getGoodList().then(res => {
+                this.tableData = res.data.goods_config_list.map((item, index) => {
+                    item.index = index + 1
+                    item.isUpLine = Number(item.status) === 1
+                    return item
+                })
+                this.tableData.sort((a, b) => Number(a.weight) > Number(b.weight) ? -1 : 1)
+            })
         },
         modify (item) {
-            this.selectObj = item
+            this.selectObj = JSON.parse(JSON.stringify(item))
             this.showConfirm = true
         },
         create () {
             this.selectObj = {
-                type: 'card'
+                goodsid: '',
+                goodstype: '1',
+                goodsname: {},
+                goodsdesc: {}
             }
             this.showConfirm = true
+        },
+        confirm () {
+            this.selectObj = {
+                ...this.selectObj,
+                contents: {
+                    English: {
+                        goodsname: this.selectObj.goodsname.English,
+                        goodsdesc: this.selectObj.goodsdesc.English
+                    },
+                    "India-south": {
+                        goodsname: this.selectObj.goodsname["India-south"],
+                        goodsdesc: this.selectObj.goodsdesc["India-south"]
+                    }
+                }
+            }
+            setGood(this.selectObj).then(res => {
+                if (res.status === '100') {
+                    this.success()
+                    this.getList()
+                    this.showConfirm = false
+                } else {
+                    this.error(res.message)
+                }
+            })
+        },
+        lineChange (item) {
+            changeLine({
+                goodsid: item.goodsid,
+                status: item.status === '0' ? '1' : '0'
+            }).then(res => {
+                this.success()
+                this.getList()
+            })
         }
     }
 }
