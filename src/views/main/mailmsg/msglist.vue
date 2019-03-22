@@ -278,6 +278,6 @@ export default {
         margin: 10px auto;
     }
     .el-select{
-        width: 158px;
+        width: 148px;
     }
 </style>
