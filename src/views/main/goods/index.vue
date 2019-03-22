@@ -207,11 +207,11 @@ export default {
             this.selectObj = {
                 ...this.selectObj,
                 contents: {
-                    English: {
+                    en: {
                         goodsname: this.selectObj.goodsname.English,
                         goodsdesc: this.selectObj.goodsdesc.English
                     },
-                    "India-south": {
+                    hi: {
                         goodsname: this.selectObj.goodsname["India-south"],
                         goodsdesc: this.selectObj.goodsdesc["India-south"]
                     }
