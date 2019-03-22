@@ -1,17 +1,31 @@
 <template>
-    <a href="javascript:;" :class="[scrollTop<400?'hide':'']" class="scrollTop"  @click="toTop">
+    <a 
+        :class="[scrollTop<400?'hide':'']" 
+        href="javascript:;" 
+        class="scrollTop" 
+        @click="toTop">
         ScrollTop
     </a>
 </template>
 
 <script>
 export default {
+    components: {},
     data () {
         return {
             scrollTop: 0
         }
     },
+    computed: {},
     watch: {},
+    mounted () {
+        this.$nextTick(() => {
+            window.addEventListener('scroll', this.handleScroll, false)
+        })
+    },
+    destroyed () {
+        window.removeEventListener('scroll', this.handleScroll, true)
+    },
     methods: {
         handleScroll () {
             this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop
@@ -24,16 +38,6 @@ export default {
             }
         }
     },
-    computed: {},
-    components: {},
-    mounted () {
-        this.$nextTick(() => {
-            window.addEventListener('scroll', this.handleScroll, false)
-        })
-    },
-    destroyed () {
-        window.removeEventListener('scroll', this.handleScroll, true)
-    }
 }
 </script>
 <style scoped lang="less">

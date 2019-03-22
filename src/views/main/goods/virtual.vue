@@ -24,10 +24,9 @@
             border
             style="width: 100%">
             <el-table-column
-                label="编号"
+                label="No."
                 prop="index"
                 width="80"
-                align="center"
             />
             <el-table-column
                 label="卡号"
@@ -200,7 +199,7 @@ export default {
         this.getList()
         this.$refs.file.addEventListener('change', this.readExcel)
     },
-    destroyed () {
+    beforeDestroy () {
         this.$refs.file.removeEventListener('change', this.readExcel)
     },
     methods: {
