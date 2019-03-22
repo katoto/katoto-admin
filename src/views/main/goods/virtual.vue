@@ -145,6 +145,10 @@
                     <el-button 
                         type="primary" 
                         @click="$refs.file.click()">批量导入</el-button>
+                    <a 
+                        href="javascript:;"
+                        class="download-btn"
+                        @click="download">xls模板下载</a>
                 </el-form-item>
             </el-form>
             <div 
@@ -333,6 +337,12 @@ export default {
                 }
             };
             fileReader.readAsBinaryString(files[0]);
+        },
+        download () {
+            const ws = XLSX.utils.aoa_to_sheet([['goodsid', 'cardno', 'password'], ['商品id', '虚拟卡卡号', '虚拟卡密码'], ['商品id', '虚拟卡卡号', '虚拟卡密码']])
+            const wb = XLSX.utils.book_new()
+            XLSX.utils.book_append_sheet(wb, ws, 'demo')
+            XLSX.writeFile(wb, "demo.xls")
         }
     },
 }
@@ -354,5 +364,12 @@ export default {
 }
 .el-select {
     margin-bottom: 20px;
+}
+.download-btn {
+    margin-left: 30px;
+    text-decoration: underline;
+    font-size: 14px;
+    color: #409EFF;
+    vertical-align: middle;
 }
 </style>
