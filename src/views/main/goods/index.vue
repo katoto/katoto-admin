@@ -204,6 +204,34 @@ export default {
             this.showConfirm = true
         },
         confirm () {
+            if (!this.selectObj.weight) {
+                this.error('请填写权重')
+                return
+            }
+            if (!this.selectObj.img_url) {
+                this.error('请填写图片url')
+                return 
+            }
+            if (!this.selectObj.needgolds) {
+                this.error('请填写商品价值')
+                return 
+            }
+            if (!this.selectObj.goodsname.en) {
+                this.error('请填写英文商品名称')
+                return 
+            }
+            if (!this.selectObj.goodsdesc.en) {
+                this.error('请填写英文商品简介')
+                return 
+            }
+            if (!this.selectObj.goodsname.hi) {
+                this.error('请填写印度语商品名称')
+                return 
+            }
+            if (!this.selectObj.goodsdesc.hi) {
+                this.error('请填写印度语商品简介')
+                return 
+            }
             this.selectObj = {
                 ...this.selectObj,
                 contents: {

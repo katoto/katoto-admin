@@ -323,11 +323,14 @@ export default {
                     if (result.length === 0 || result.length === 1) {
                         this.error('没有数据，第一行表头填写goodsid、cardno、password')
                     } if (oneData[0] && oneData[0].__EMPTY){
-                        this.error('文档应该加密了,请重新选择!')
+                        this.error('文档应该加密了, 需要先解锁文档!')
                     } else {
                         if (oneData.goodsid && oneData.cardno && oneData.password) {
                             this.importIt(result)
-                        } else {
+                        } else if (!oneData.goodsid && !oneData.cardno && !oneData.password) {
+                            this.error('文档应该加密了, 需要先解锁文档!')
+                        }
+                        else {
                             this.error('格式错误，第一行表头填写goodsid、cardno、password')
                         }
                     }
