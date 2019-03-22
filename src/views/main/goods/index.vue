@@ -23,14 +23,14 @@
                     <a 
                         href="javascript:;"
                         class="link"
-                        @click="modify(scope.row)">{{ scope.row.goodsname.English || scope.row.goodsname.India || '' }}</a>
+                        @click="modify(scope.row)">{{ scope.row.goodsname.en || scope.row.goodsname.hi || '' }}</a>
                 </template>
             </el-table-column>
             <el-table-column
                 label="商品简介"
             >
                 <template slot-scope="scope">
-                    {{ scope.row.goodsdesc.English || scope.row.goodsdesc.India || '' }}
+                    {{ scope.row.goodsdesc.en || scope.row.goodsdesc.hi || '' }}
                 </template>
             </el-table-column>
             <el-table-column
@@ -92,13 +92,13 @@
                         <el-form-item 
                             label="商品名称">
                             <el-input 
-                                v-model="selectObj.goodsname.English" 
+                                v-model="selectObj.goodsname.en" 
                                 autocomplete="off"/>
                         </el-form-item>
                         <el-form-item 
                             label="商品简介">
                             <el-input 
-                                v-model="selectObj.goodsdesc.English" 
+                                v-model="selectObj.goodsdesc.en" 
                                 autocomplete="off"/>
                         </el-form-item>
                     </el-tab-pane>
@@ -108,13 +108,13 @@
                         <el-form-item 
                             label="商品名称">
                             <el-input 
-                                v-model="selectObj.goodsname['India-south']" 
+                                v-model="selectObj.goodsname.hi" 
                                 autocomplete="off"/>
                         </el-form-item>
                         <el-form-item 
                             label="商品简介">
                             <el-input 
-                                v-model="selectObj.goodsdesc['India-south']" 
+                                v-model="selectObj.goodsdesc.hi" 
                                 autocomplete="off"/>
                         </el-form-item>
                     </el-tab-pane>
@@ -208,12 +208,12 @@ export default {
                 ...this.selectObj,
                 contents: {
                     en: {
-                        goodsname: this.selectObj.goodsname.English,
-                        goodsdesc: this.selectObj.goodsdesc.English
+                        goodsname: this.selectObj.goodsname.en,
+                        goodsdesc: this.selectObj.goodsdesc.en
                     },
                     hi: {
-                        goodsname: this.selectObj.goodsname["India-south"],
-                        goodsdesc: this.selectObj.goodsdesc["India-south"]
+                        goodsname: this.selectObj.goodsname.hi,
+                        goodsdesc: this.selectObj.goodsdesc.hi
                     }
                 }
             }
