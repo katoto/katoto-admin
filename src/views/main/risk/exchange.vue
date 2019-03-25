@@ -235,7 +235,7 @@ export default {
             sumAccountMsg: [],
             
             logNumber: 1,
-            logSize: 5,
+            logSize: 8,
             logCounts: 3,
             
             userinfo: [],  // 用户信息
@@ -243,7 +243,7 @@ export default {
             
             
             listPageNumber: 1,
-            listPageSize: 12,
+            listPageSize: 10,
             listMsgCounts: 3,
             
             activeNames: [],
