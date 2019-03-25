@@ -53,9 +53,9 @@
                 <el-form-item label="站内信内容:">
                     <el-input 
                         v-model="item.langmsg.content" 
-                        placeholder="输入48个字符"
+                        placeholder="输入120个字符"
                         type="textarea" 
-                        @input="checklen"/>
+                        @input="checklen_content"/>
                 </el-form-item>
             </el-form>
         </div>
@@ -140,6 +140,14 @@ export default {
     mounted (){
     },
     methods:{
+        checklen_content(val){
+            if(val && val.length >= 120){
+                this.$message({
+                    type:'error',
+                    message: '超过120字符限制长度'
+                })
+            }            
+        },
         checklen(val){
             if(val && val.length >= 48){
                 this.$message({
@@ -179,9 +187,13 @@ export default {
                 }
                 let tipsmsg = null
                 let islen = this.langObj.some((item)=>{
-                    if(item.langmsg.content.length>=48 || item.langmsg.title.length>=48){
-                        tipsmsg = item.langtitle + ' 通知下的标题或者内容超过48字符限制'
+                    if(item.langmsg.title.length>=48){
+                        tipsmsg = item.langtitle + ' 通知下的标题超过48字符限制'
                         return true
+                    }
+                    if(item.langmsg.content.length>=120){
+                        tipsmsg = item.langtitle + ' 通知下的内容超过120字符限制'
+                        return true 
                     }
                 })
                 if(islen) {
