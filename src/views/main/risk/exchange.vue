@@ -10,7 +10,7 @@
                             size="small" 
                             placeholder="请选择"
                             @change="exchangeFn"
-                            >
+                        >
                             <el-option
                                 v-for="item in selstyleOptions"
                                 :key="item.value"
@@ -164,61 +164,65 @@
                 </el-table>
             </section>
             
-            <el-collapse v-model="activeNames" @change="collChange">
-            <el-collapse-item title="流水信息汇总(点击查看)" name="1">
-                <el-table 
-                    :data="sumAccountMsg" 
-                    border 
-                    stripe>
-                    <el-table-column 
-                        prop="inout" 
-                        label="流水代码"/>
-                    <el-table-column 
-                        prop="desc" 
-                        label="流水名"/>
-                    <el-table-column 
-                        prop="golds" 
-                        label="流水总额"/>
-                </el-table>
-            </el-collapse-item>
-            <el-collapse-item title="流水明细(点击查看)" name="2">
-                <el-table 
-                    :data="accountlogs" 
-                    border 
-                    stripe>
-                    <el-table-column 
-                        prop="crtime" 
-                        label="时间"/>
-                    <el-table-column 
-                        prop="desc" 
-                        label="流水类型">
-                    </el-table-column>
-                    <el-table-column 
-                        prop="golds" 
-                        label="流水数量">
-                    </el-table-column>
-                    <el-table-column 
-                        prop="balance" 
-                        width="200" 
-                        label="余额"/>
-                    <el-table-column 
-                        prop="remark" 
-                        label="备注信息"/>
-                </el-table>
-                <div 
-                    class="block" 
-                    style="text-align:center">
-                    <el-pagination
-                        :current-page.sync="logNumber"
-                        :page-size="logSize"
-                        :page-count="logCounts"
-                        background
-                        size="small"
-                        layout="prev, pager, next,jumper"
-                        @current-change="logCurrentChange"
-                    />
-                </div>
-            </el-collapse-item>
+            <el-collapse 
+                v-model="activeNames" 
+                @change="collChange">
+                <el-collapse-item 
+                    title="流水信息汇总(点击查看)" 
+                    name="1">
+                    <el-table 
+                        :data="sumAccountMsg" 
+                        border 
+                        stripe>
+                        <el-table-column 
+                            prop="inout" 
+                            label="流水代码"/>
+                        <el-table-column 
+                            prop="desc" 
+                            label="流水名"/>
+                        <el-table-column 
+                            prop="golds" 
+                            label="流水总额"/>
+                    </el-table>
+                </el-collapse-item>
+                <el-collapse-item 
+                    title="流水明细(点击查看)" 
+                    name="2">
+                    <el-table 
+                        :data="accountlogs" 
+                        border 
+                        stripe>
+                        <el-table-column 
+                            prop="crtime" 
+                            label="时间"/>
+                        <el-table-column 
+                            prop="desc" 
+                            label="流水类型"/>
+                        <el-table-column 
+                            prop="golds" 
+                            label="流水数量"/>
+                        <el-table-column 
+                            prop="balance" 
+                            width="200" 
+                            label="余额"/>
+                        <el-table-column 
+                            prop="remark" 
+                            label="备注信息"/>
+                    </el-table>
+                    <div 
+                        class="block" 
+                        style="text-align:center">
+                        <el-pagination
+                            :current-page.sync="logNumber"
+                            :page-size="logSize"
+                            :page-count="logCounts"
+                            background
+                            size="small"
+                            layout="prev, pager, next,jumper"
+                            @current-change="logCurrentChange"
+                        />
+                    </div>
+                </el-collapse-item>
             </el-collapse>
             
         </el-dialog>
@@ -283,6 +287,9 @@ export default {
     },
     created() {
         this.goodslist()
+    },
+    mounted() {
+        // this.js_useMsg()
     },
     methods: {
         logCurrentChange(num){
@@ -412,9 +419,6 @@ export default {
             }
         },        
     },
-    mounted() {
-        // this.js_useMsg()
-    }
 }
 </script>
 <style scoped>

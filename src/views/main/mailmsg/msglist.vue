@@ -11,7 +11,7 @@
                             size="small" 
                             placeholder="请选择"
                             @change="page_mail_Evt"
-                            >
+                        >
                             <el-option
                                 v-for="item in mailStyleOptions"
                                 :key="item.value"
@@ -113,7 +113,9 @@
             <div>
                 <p>标题：{{ dialogtitle }}</p>
                 <p>内容：</p>
-                <p v-for="(val, key) in dialogmsgArr" :key="key">{{ key }}: {{ val }}</p>
+                <p 
+                    v-for="(val, key) in dialogmsgArr" 
+                    :key="key">{{ key }}: {{ val }}</p>
             </div>
             <div 
                 slot="footer" 

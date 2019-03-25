@@ -7,7 +7,7 @@ export function noticeadd(obj) {
         method: 'post',
         data: {
             ...obj
-       }
+        }
     })
 }
 

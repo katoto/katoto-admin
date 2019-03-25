@@ -42,8 +42,8 @@
                 <el-form-item label="站内信标题:">
                     <el-input 
                         v-model="item.langmsg.title"
-                        @input="checklen"
-                        placeholder="输入48个字符"/>
+                        placeholder="输入48个字符"
+                        @input="checklen"/>
                 </el-form-item>
                 <el-form-item label="赠送金额:">
                     <el-input 
@@ -53,9 +53,9 @@
                 <el-form-item label="站内信内容:">
                     <el-input 
                         v-model="item.langmsg.content" 
-                        @input="checklen"
-                        placeholder="输入48个字符" 
-                        type="textarea"/>
+                        placeholder="输入48个字符"
+                        type="textarea" 
+                        @input="checklen"/>
                 </el-form-item>
             </el-form>
         </div>

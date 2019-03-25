@@ -11,7 +11,7 @@
                             size="small" 
                             placeholder="请选择"
                             @change="userzoneChange"
-                            >
+                        >
                             <el-option
                                 v-for="item in levelStyleOptions"
                                 :key="item.value"
