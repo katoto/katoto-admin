@@ -188,7 +188,7 @@ export default {
             if (status === '-1') {
                 return '失败退款'
             } else if (status === '1') {
-                return '代发货'
+                return '待发货'
             } else if (status === '2') {
                 return '在途'
             } else if (status === '3') {
