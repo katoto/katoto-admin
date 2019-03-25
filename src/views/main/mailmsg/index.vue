@@ -12,7 +12,7 @@
             <el-tab-pane 
                 label="通知列表" 
                 name="second">
-                <msglist/>
+                <msglist ref="msglistDom"/>
             </el-tab-pane>
         </el-tabs>
     </div>
@@ -39,6 +39,9 @@ export default {
     },
     methods: {
         handleClick(tab, event) {
+            if(tab && tab.name === 'second'){
+                this.$refs.msglistDom.getnoticeList(1, true)
+            }
         },
         fetchData() {
             this.listLoading = true
