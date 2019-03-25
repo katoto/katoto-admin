@@ -60,7 +60,7 @@
                             <el-button 
                                 type="primary" 
                                 size="small" 
-                                @click="js_showmsgFn111( scope.row )">
+                                @click="js_useMsg( scope.row )">
                                 查看
                             </el-button>
                             <el-button 
@@ -104,7 +104,7 @@
             title="用户信息审核" 
             center>
             <section style="text-align:center">
-                <el-table :data="userMoreMsg">
+                <el-table :data="userinfo">
                     <el-table-column 
                         prop="username" 
                         label="用户名"/>
@@ -115,27 +115,26 @@
                         prop="recharge_total" 
                         label="用户头像">
                         <template slot-scope="scope">
-                            {{ Number(scope.row.profit[0].recharge_total) }}{{ formateCoinType(scope.row.profit[0].cointype) }}
-                            <img >
+                            <img :src="scope.row.photo">
                         </template>
                     </el-table-column>
                     <el-table-column 
-                        prop="recharge_total" 
+                        prop="ip" 
                         label="IP 信息"/>
                     <el-table-column 
-                        prop="withdraw_total" 
+                        prop="regtime" 
                         label="注册时间"/>
                     <el-table-column 
-                        prop="account_total" 
+                        prop="logintime" 
                         label="最后登录时间"/>
                     <el-table-column 
-                        prop="profit_total" 
+                        prop="deviceid" 
                         label="手机设备号"/>
                 </el-table>
             </section>
             <section style="margin-top: 50px;border-top: 2px solid #ccc;padding-top: 10px">
                 <h4 style="text-align:center">关联账号信息</h4>
-                <el-table :data="userMoreList">
+                <el-table :data="userinfosimilar">
                     <el-table-column 
                         prop="crtime" 
                         width="200" 
@@ -168,70 +167,57 @@
             <el-collapse v-model="activeNames" @change="collChange">
             <el-collapse-item title="流水信息汇总(点击查看)" name="1">
                 <el-table 
-                    :data="relateMsg" 
+                    :data="sumAccountMsg" 
                     border 
                     stripe>
                     <el-table-column 
-                        prop="uid" 
+                        prop="inout" 
                         label="流水代码"/>
                     <el-table-column 
-                        prop="email" 
+                        prop="desc" 
                         label="流水名"/>
                     <el-table-column 
-                        prop="country" 
+                        prop="golds" 
                         label="流水总额"/>
-                    <el-table-column 
-                        prop="profit_total" 
-                        label="累计盈利">
-                        <template slot-scope="scope">
-                            {{ Number(scope.row.profit[0].profit_total) }}{{ formateCoinType(scope.row.profit[0].cointype) }}
-                        </template>
-                    </el-table-column>
                 </el-table>
             </el-collapse-item>
             <el-collapse-item title="流水明细(点击查看)" name="2">
                 <el-table 
-                    :data="relateMsg" 
+                    :data="accountlogs" 
                     border 
                     stripe>
                     <el-table-column 
-                        prop="uid" 
+                        prop="crtime" 
                         label="时间"/>
                     <el-table-column 
-                        prop="withdraw_total" 
+                        prop="desc" 
                         label="流水类型">
-                        <template slot-scope="scope">
-                            {{ Number(scope.row.profit[0].withdraw_total) }}{{ formateCoinType(scope.row.profit[0].cointype) }}
-                        </template>
                     </el-table-column>
                     <el-table-column 
-                        prop="account_total" 
+                        prop="golds" 
                         label="流水数量">
-                        <template slot-scope="scope">
-                            {{ Number(scope.row.profit[0].account_total) }}{{ formateCoinType(scope.row.profit[0].cointype) }}
-                        </template>
                     </el-table-column>
                     <el-table-column 
-                        prop="email" 
+                        prop="balance" 
                         width="200" 
                         label="余额"/>
                     <el-table-column 
-                        prop="country" 
+                        prop="remark" 
                         label="备注信息"/>
                 </el-table>
-                <!-- <div 
+                <div 
                     class="block" 
                     style="text-align:center">
                     <el-pagination
-                        :current-page.sync="userPageNumber"
-                        :page-size="userPageSize"
-                        :page-count="userMsgCounts"
+                        :current-page.sync="logNumber"
+                        :page-size="logSize"
+                        :page-count="logCounts"
                         background
                         size="small"
                         layout="prev, pager, next,jumper"
-                        @current-change="userCurrentChange"
+                        @current-change="logCurrentChange"
                     />
-                </div> -->
+                </div>
             </el-collapse-item>
             </el-collapse>
             
@@ -244,6 +230,18 @@
 export default {
     data() {
         return {
+            accountUid: '10015471',
+            accountlogs: [],
+            sumAccountMsg: [],
+            
+            logNumber: 1,
+            logSize: 5,
+            logCounts: 3,
+            
+            userinfo: [],  // 用户信息
+            userinfosimilar: [],  // 关联账户信息
+            
+            
             listPageNumber: 1,
             listPageSize: 12,
             listMsgCounts: 3,
@@ -278,8 +276,8 @@ export default {
                 '1': '审核通过',
                 '-2': 'All',
                 '-1': '审核拒绝',
-                '2': '待审核',
-                '3': '已删除',
+                '3': '待审核',
+                '2': '已删除',
             }
         }
     },
@@ -287,6 +285,52 @@ export default {
         this.goodslist()
     },
     methods: {
+        logCurrentChange(num){
+            this.logNumber = parseFloat(num)
+            this.$nextTick((item)=>{
+                this.getAccountLogs()
+            })
+        },
+        async getAccountLogs(){
+            let obj = {
+                pageno: this.logNumber,
+                pagesize: this.logSize,
+                uid: this.accountUid
+            }
+            let logs = await this.$store.dispatch('risk_logs', obj)
+            console.log(logs)
+            if(logs){
+                this.accountlogs = []
+                this.accountlogs = logs.account_logs
+                this.logCounts = parseFloat(logs.pages)
+            } else {
+                this.$message({
+                    type: 'error',
+                    message: '用户流水log'
+                })
+            }
+        },
+        js_useMsg(row){
+            this.getAccountinf(row.uid)
+            this.accountUid = row.uid
+            this.showUidMsg = true
+        },
+        async getAccountinf(uid = '10015471'){
+            let obj = {
+                uid
+            }
+            let accountinf = await this.$store.dispatch('risk_accountinf', obj)
+            if(accountinf){
+                this.userinfo = []
+                this.userinfo.push(accountinf.userinfo)
+                this.userinfosimilar = accountinf.similar_userinfo
+            } else {
+                this.$message({
+                    type: 'error',
+                    message: '用户信息获取失败'
+                })
+            }
+        },
         async js_showmsgFn(row, orderstatus){
             // 通过 or 拒绝
             let obj = {
@@ -344,11 +388,32 @@ export default {
             
         },
         collChange(val) {
+            if(val.indexOf('2')>-1){
+                this.getAccountLogs()
+            }
+            if(val.indexOf('1')>-1){
+                this.getAllinfo()
+            }
             console.log(val);
         },
-        
+        async getAllinfo(uid = '10015471'){
+            let obj = {
+                uid
+            }
+            let accountinf = await this.$store.dispatch('risk_sumlogs', obj)
+            if(accountinf){
+                this.sumAccountMsg = []
+                this.sumAccountMsg = accountinf.account_summary
+            } else {
+                this.$message({
+                    type: 'error',
+                    message: '用户信息获取失败'
+                })
+            }
+        },        
     },
     mounted() {
+        // this.js_useMsg()
     }
 }
 </script>

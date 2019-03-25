@@ -16,3 +16,15 @@ export function goodsList(data = {}) {
 export function userlist(data = {}) {
     return post('/user/info/list', data)
 }
+
+export function accountinf(data = {}) {
+    return post('/user/account/info', data)
+}
+
+export function logs(data = {}) {
+    return post('/user/account/logs', data)
+}
+
+export function sumlogs(data = {}) {
+    return post('/user/account/summary', data)
+}

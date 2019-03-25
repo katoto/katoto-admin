@@ -1,4 +1,4 @@
-import { goodsReview, goodsList, userlist } from '@/api/main/risk'
+import { goodsReview, goodsList, userlist, accountinf, logs, sumlogs } from '@/api/main/risk'
 import { getCk, setCk, removeCk } from '@/utils/auth'
 
 const mailmsg = {
@@ -34,7 +34,34 @@ const mailmsg = {
                     reject(error)
                 })
             })
-        }         
+        },
+        risk_accountinf({ commit }, obj) {
+            return new Promise((resolve, reject) => {
+                accountinf(obj).then(response => {
+                    resolve(response.data)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+        risk_logs({ commit }, obj) {
+            return new Promise((resolve, reject) => {
+                logs(obj).then(response => {
+                    resolve(response.data)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+        risk_sumlogs({ commit }, obj) {
+            return new Promise((resolve, reject) => {
+                sumlogs(obj).then(response => {
+                    resolve(response.data)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },        
     }
 }
 

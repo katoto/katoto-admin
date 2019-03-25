@@ -41,7 +41,8 @@
                 label-width="110px">
                 <el-form-item label="站内信标题:">
                     <el-input 
-                        v-model="item.langmsg.title" 
+                        v-model="item.langmsg.title"
+                        @input="checklen"
                         placeholder="输入48个字符"/>
                 </el-form-item>
                 <el-form-item label="赠送金额:">
@@ -52,6 +53,7 @@
                 <el-form-item label="站内信内容:">
                     <el-input 
                         v-model="item.langmsg.content" 
+                        @input="checklen"
                         placeholder="输入48个字符" 
                         type="textarea"/>
                 </el-form-item>
@@ -112,15 +114,7 @@ export default {
                     amount: '',
                     content: null
                 }
-            },
-            // {
-            //     langtitle: 'India',
-            //     langmsg: {
-            //         title: null,
-            //         amount: '',
-            //         content: null
-            //     }
-            // }
+            }
             ],
             selUid: '1',
             someUid: null,
@@ -146,6 +140,14 @@ export default {
     mounted (){
     },
     methods:{
+        checklen(val){
+            if(val && val.length >= 48){
+                this.$message({
+                    type:'error',
+                    message: '超过48字符限制长度'
+                })
+            }
+        },
         testUid(val){
             let reg = /^[0-9,]+$/g
             if(this.someUid && !reg.test(this.someUid)){
@@ -172,6 +174,20 @@ export default {
                     this.$message({
                         type:'error',
                         message: '标题和内容不能为空'
+                    })
+                    return false
+                }
+                let tipsmsg = null
+                let islen = this.langObj.some((item)=>{
+                    if(item.langmsg.content.length>=48 || item.langmsg.title.length>=48){
+                        tipsmsg = item.langtitle + ' 通知下的标题或者内容超过48字符限制'
+                        return true
+                    }
+                })
+                if(islen) {
+                    this.$message({
+                        type:'error',
+                        message: tipsmsg
                     })
                     return false
                 }
