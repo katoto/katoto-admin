@@ -46,7 +46,7 @@
                         @input="checklen"/><span class="formTitle">{{ item.langmsg.title.length }}/48字符</span>
                 </el-form-item>
                 <el-form-item label="赠送金额:">
-                    <el-input 
+                    <el-input type="number"
                         v-model="item.langmsg.amount" 
                         placeholder="填写则发送奖励通知！"/>
                 </el-form-item>
@@ -146,7 +146,7 @@ export default {
                     type:'error',
                     message: '超过120字符限制长度'
                 })
-            }            
+            }
         },
         checklen(val){
             if(val && val.length > 48){
@@ -182,6 +182,16 @@ export default {
                     this.$message({
                         type:'error',
                         message: '标题和内容不能为空'
+                     })
+                    return false
+                }
+                let istestNaN = this.langObj.some((item)=>{
+                    return isNaN(item.langmsg.amount)
+                })
+                if(istestNaN){
+                    this.$message({
+                        type:'error',
+                        message: '赠送金额只能是数字'
                     })
                     return false
                 }

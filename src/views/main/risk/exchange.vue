@@ -112,7 +112,6 @@
                         prop="uid" 
                         label="用户ID"/>
                     <el-table-column 
-                        prop="recharge_total" 
                         label="用户头像">
                         <template slot-scope="scope">
                             <img :src="scope.row.photo">
@@ -136,30 +135,33 @@
                 <h4 style="text-align:center">关联账号信息</h4>
                 <el-table :data="userinfosimilar">
                     <el-table-column 
-                        prop="crtime" 
-                        width="200" 
+                        prop="matchStr" 
+                        width="110" 
                         label="关联原因"/>
                     <el-table-column 
-                        prop="inoutVal" 
+                        prop="username" 
                         width="130" 
                         label="用户名"/>
                     <el-table-column 
-                        prop="money" 
+                        prop="uid" 
                         width="130" 
                         label="用户ID"/>
                     <el-table-column 
-                        prop="cointypeVal" 
-                        width="130" 
-                        label="用户头像"/>
+                        width="130"
+                        label="用户头像">
+                        <template slot-scope="scope">
+                            <img :src="scope.row.photo" >
+                        </template>
+                    </el-table-column>
                     <el-table-column 
-                        prop="balance" 
+                        prop="ip" 
                         width="150" 
                         label="IP信息"/>
                     <el-table-column 
-                        prop="remark" 
+                        prop="regtime" 
                         label="注册时间"/>
                     <el-table-column 
-                        prop="remark" 
+                        prop="deviceid" 
                         label="设备号"/>
                 </el-table>
             </section>
@@ -269,10 +271,10 @@ export default {
                     label: '审核通过'
                 }, {
                     value: '2',
-                    label: '待审核'
+                    label: '已删除'
                 }, {
                     value: '3',
-                    label: '已删除'
+                    label: '待审核'
                 }
             ],
             selStyle:'-2',
@@ -320,7 +322,18 @@ export default {
         js_useMsg(row){
             this.getAccountinf(row.uid)
             this.accountUid = row.uid
+            this.activeNames = []
             this.showUidMsg = true
+        },
+        formateSim(arr){
+            if(arr && arr.length){
+                arr.forEach((item, index) =>{
+                    if(item.match_deviceid==='1') item.matchStr = '设备码'
+                    if(item.match_ip==='1') item.matchStr = 'ip匹配'
+                    if(item.match_username==='1') item.matchStr = '用户名匹配'
+                })
+            }
+            return arr
         },
         async getAccountinf(uid = '10015471'){
             let obj = {
@@ -330,7 +343,8 @@ export default {
             if(accountinf){
                 this.userinfo = []
                 this.userinfo.push(accountinf.userinfo)
-                this.userinfosimilar = accountinf.similar_userinfo
+                this.userinfosimilar = this.formateSim(accountinf.similar_userinfo)
+                
             } else {
                 this.$message({
                     type: 'error',
@@ -399,7 +413,7 @@ export default {
                 this.getAccountLogs()
             }
             if(val.indexOf('1')>-1){
-                this.getAllinfo()
+                this.getAllinfo( this.accountUid )
             }
             console.log(val);
         },
