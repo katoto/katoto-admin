@@ -46,11 +46,13 @@
                 </el-button>
                 <span style="font-size: 14px"> &nbsp;统一分类为: </span>
                 <el-select 
-                    v-model="userStyle" 
+                    v-model="allLevelStyle" 
                     size="small" 
-                    placeholder="请选择">
+                    placeholder="请选择"
+                    @change="allOpenLevFn"
+                    >
                     <el-option
-                        v-for="item in userStyleOptions"
+                        v-for="item in allLevelOptions"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"/>
@@ -61,6 +63,7 @@
                 :data="userslist"
                 stripe
                 highlight-current-row
+                @selection-change="selectionChange"
                 style="width: 100%">
                 <el-table-column
                     type="selection"
@@ -80,18 +83,7 @@
                     <template 
                         slot-scope="scope" 
                         class="mailmsgOpera">
-                        <section>
-                            <el-select 
-                                v-model="userStyle" 
-                                size="small" 
-                                placeholder="请选择">
-                                <el-option
-                                    v-for="item in userStyleOptions"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"/>
-                            </el-select>
-                        </section>
+                        <el-button size="small" @click="showOpt(scope.row)">操作</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -109,21 +101,67 @@
                 />
             </div>
         </div>
+        
+        <!--导入UId弹窗 -->
+        <el-dialog 
+            :visible.sync="dialogTableVisible" 
+            title="注意！" >
+            <div>
+                <span>设置用户 {{ opeUId }} 等级:</span>
+                <el-select 
+                    v-model="opelevel" 
+                    size="small" 
+                    placeholder="请选择">
+                    <el-option
+                        v-for="item in opelevelObj"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"/>
+                </el-select>
+            </div>
+            <div 
+                slot="footer" 
+                class="dialog-footer">
+                <el-button @click="dialogTableVisible = false" >取 消</el-button>
+                <el-button 
+                    type="primary" 
+                    @click="uplevelFn">确 定</el-button>
+            </div>
+        </el-dialog>
+        
     </section>
 </template>
 
 <script>
-// import { getList } from '@/api/table'
 
 export default {
     data() {
         return {
+            dialogTableVisible: false,
+            
             userPageNumber: 1,
             userPageSize: 10,
             userMsgCounts: 3,
             
-            userStyle: '',
-            userStyleOptions:[],
+            allLevelStyle: '-2',
+            allLevelOptions:[
+                {
+                    value: '-2',
+                    label: 'All'
+                }, {
+                    value: '0',
+                    label: '普通用户'
+                }, {
+                    value: '1',
+                    label: '普通付费用户'
+                }, {
+                    value: '2',
+                    label: '大R用户'
+                }, {
+                    value: '-1',
+                    label: '羊毛党'
+                }
+            ],
             userslist: [
             ],
             searchUid: "",
@@ -150,17 +188,90 @@ export default {
                 '1': '普通付费用户',
                 '-1': '羊毛党',
                 '0': '普通用户',
-                '-2': '普通付费用户',
+                '-2': 'All',
                 '2': '大R用户',
-            }
+            },
+            opelevel:'-2',
+            opeUId: '',
+            opelevelObj:[
+                {
+                    value: '-2',
+                    label: 'All'
+                }, {
+                    value: '0',
+                    label: '普通用户'
+                }, {
+                    value: '1',
+                    label: '普通付费用户'
+                }, {
+                    value: '2',
+                    label: '大R用户'
+                }, {
+                    value: '-1',
+                    label: '羊毛党'
+                }
+            ],
+            selArr:[],
         }
     },
     created() {
         this.userslistFn()
     },
     methods: {
+        allOpenLevFn(){
+            if(this.selArr.length>0){
+                this.opelevel = this.allLevelStyle.toString()
+                this.$nextTick(()=>{
+                    this.uplevelFn()
+                })
+            }else{
+                this.$message({
+                    type: 'warn',
+                    message: '请勾选用户'
+                })
+            }
+        },
+        selectionChange(val){
+            this.selArr = [...val]
+            let baseStr = ''
+            if(this.selArr && this.selArr.length>0){
+                this.selArr.forEach((item)=>{
+                    baseStr += item.uid + ','
+                })
+                this.opeUId = baseStr.slice(0, -1)
+                console.log(this.opeUId)
+            }
+        },
+        async uplevelFn(){
+            // 更新用户等级
+            let obj = {
+                level: this.opelevel.toString(),
+                uid: this.opeUId
+            }
+            let level = await this.$store.dispatch('risk_levelUpdate', obj)
+            if(level){
+                this.$message({
+                    type: 'success',
+                    message: '操作用户等级成功'
+                })
+                this.dialogTableVisible = false
+                this.userslistFn()
+            } else {
+                this.$message({
+                    type: 'error',
+                    message: '操作用户等级error'
+                })
+            }
+        },
+        showOpt(row){
+            this.dialogTableVisible = true
+            this.opeUId = row.uid
+            this.opelevel = row.level
+        },
         searchExpectFn(){
-            this.userslistFn()
+            this.$nextTick(()=>{
+                this.userslistFn()
+            })
         },
         userzoneChange(){
             this.userslistFn()
@@ -197,9 +308,7 @@ export default {
         },
         toggleSelection(tableData=[]){
             if(tableData.length>0){
-                tableData.forEach(row=>{
-                    this.$refs.multipleTable.toggleRowSelection(row);
-                })
+                this.$refs.multipleTable.toggleAllSelection(tableData)
             }
         }
     }

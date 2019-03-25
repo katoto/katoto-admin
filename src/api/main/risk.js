@@ -28,3 +28,7 @@ export function logs(data = {}) {
 export function sumlogs(data = {}) {
     return post('/user/account/summary', data)
 }
+
+export function uslevel(data = {}) {
+    return post('/user/level/update', data)
+}

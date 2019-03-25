@@ -1,4 +1,4 @@
-import { goodsReview, goodsList, userlist, accountinf, logs, sumlogs } from '@/api/main/risk'
+import { goodsReview, goodsList, userlist, accountinf, logs, sumlogs, uslevel } from '@/api/main/risk'
 import { getCk, setCk, removeCk } from '@/utils/auth'
 
 const mailmsg = {
@@ -61,7 +61,16 @@ const mailmsg = {
                     reject(error)
                 })
             })
-        },        
+        },
+        risk_levelUpdate({ commit }, obj) {
+            return new Promise((resolve, reject) => {
+                uslevel(obj).then(response => {
+                    resolve(response.data)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },                
     }
 }
 
