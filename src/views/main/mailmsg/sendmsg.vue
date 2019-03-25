@@ -43,7 +43,7 @@
                     <el-input 
                         v-model="item.langmsg.title"
                         placeholder="输入48个字符"
-                        @input="checklen"/>
+                        @input="checklen"/><span class="formTitle">{{ item.langmsg.title.length }}/48字符</span>
                 </el-form-item>
                 <el-form-item label="赠送金额:">
                     <el-input 
@@ -55,7 +55,7 @@
                         v-model="item.langmsg.content" 
                         placeholder="输入120个字符"
                         type="textarea" 
-                        @input="checklen_content"/>
+                        @input="checklen_content"/><span class="formContent">{{ item.langmsg.content.length }}/120字符</span>
                 </el-form-item>
             </el-form>
         </div>
@@ -110,9 +110,9 @@ export default {
             langObj: [{
                 langtitle: 'en',
                 langmsg: {
-                    title: null,
+                    title: '',
                     amount: '',
-                    content: null
+                    content: ''
                 }
             }
             ],
@@ -129,9 +129,9 @@ export default {
                 this.langObj.push({
                     langtitle: item,
                     langmsg: {
-                        title: null,
+                        title: '',
                         amount: '',
-                        content: null
+                        content: ''
                     }
                 })
             })
@@ -241,9 +241,9 @@ export default {
             if(this.langObj.length>0){
                 this.langObj.forEach((item,index)=>{
                     item.langmsg = {
-                        title: null,
+                        title: '',
                         amount: '',
-                        content: null
+                        content: ''
                     }
                 })
             }
@@ -297,6 +297,15 @@ export default {
 }
 </script>
 <style scoped>
+.el-form {
+    position: relative;
+}
+.el-form .formTitle, .el-form .formContent{
+    position: absolute;
+    right: 10px;
+    top: 0;
+    color: #ddd;
+}
 .someSend .el-input{
   width: 50%;
 }
