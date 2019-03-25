@@ -129,13 +129,14 @@
             @open="openDialog">
             <div>
                 <span>文件语言以Excel中language 字段为准 !!</span>
-                <!-- <el-input size="small" disabled="disabled" placeholder="请输入文件语言(en\zh\india)"></el-input> -->
             </div>
             <div style="margin-top:10px">
                 <input 
                     ref="upload" 
                     type="file">
             </div>
+            <br>
+            <el-button size="small" @click="downDemo">excel模板下载</el-button>
             <div 
                 slot="footer" 
                 class="dialog-footer">
@@ -285,7 +286,7 @@ export default {
             langTitleName: '新增文案',
             showlangDialog: false, // 新增文案弹窗
             langArr: [],  // excel语言列表
-            backlangArr: null, // ajax 数据
+            backlangArr: [], // ajax 数据
             selPage: '',
             selPageOptions: [
                 {
@@ -317,6 +318,24 @@ export default {
         this.pageinit()
     },
     methods: {
+        downDemo(){
+            let ws
+            let wb
+            let newExp = [{
+                content: "这里是内容(覆盖)",
+                language: "填写语言(覆盖)",
+                origin_content: "原文(覆盖)",
+                page: "页面id(覆盖)",
+                string_id: "字段id(覆盖)"
+            }]
+            /* 创建worksheet */
+            ws = XLSX.utils.json_to_sheet(newExp)
+            /* 新建空workbook，然后加入worksheet */
+            wb = XLSX.utils.book_new()
+            XLSX.utils.book_append_sheet(wb, ws, "language")
+            /* 生成xlsx文件 */
+            XLSX.writeFile(wb, `ms_langdemo.xlsx`)
+        },
         page_lan_Evt(evt){
             this.getLanArr(this.selPage, this.selLang)
         },
