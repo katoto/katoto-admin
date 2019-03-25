@@ -141,7 +141,7 @@ export default {
     },
     methods:{
         checklen_content(val){
-            if(val && val.length >= 120){
+            if(val && val.length > 120){
                 this.$message({
                     type:'error',
                     message: '超过120字符限制长度'
@@ -149,7 +149,7 @@ export default {
             }            
         },
         checklen(val){
-            if(val && val.length >= 48){
+            if(val && val.length > 48){
                 this.$message({
                     type:'error',
                     message: '超过48字符限制长度'
@@ -187,11 +187,11 @@ export default {
                 }
                 let tipsmsg = null
                 let islen = this.langObj.some((item)=>{
-                    if(item.langmsg.title.length>=48){
+                    if(item.langmsg.title.length>48){
                         tipsmsg = item.langtitle + ' 通知下的标题超过48字符限制'
                         return true
                     }
-                    if(item.langmsg.content.length>=120){
+                    if(item.langmsg.content.length>120){
                         tipsmsg = item.langtitle + ' 通知下的内容超过120字符限制'
                         return true 
                     }
