@@ -589,11 +589,9 @@ export default {
                     });
                     const wsname = workbook.SheetNames[0];//取第一张表
                     this.langArr = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);//生成json表格内容
-                    if(this.langArr[0] && this.langArr[0].__EMPTY){
-                        this.$message({
-                            message: '文档应该加密了,请重新选择',
-                            type: 'error'
-                        })
+                    let oneData = this.langArr[0]
+                    if ((oneData[0] && oneData[0].__EMPTY) || ( !oneData.string_id && !oneData.page && !oneData.language )){
+                        this.error('文档应该加密了, 需要先解锁文档!')
                         this.$refs.upload.value = ''
                         this.langArr = []
                     }
