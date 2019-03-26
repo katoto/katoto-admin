@@ -50,7 +50,7 @@
                     size="small" 
                     placeholder="请选择"
                     @change="allOpenLevFn"
-                    >
+                >
                     <el-option
                         v-for="item in allLevelOptions"
                         :key="item.value"
@@ -63,8 +63,8 @@
                 :data="userslist"
                 stripe
                 highlight-current-row
-                @selection-change="selectionChange"
-                style="width: 100%">
+                style="width: 100%"
+                @selection-change="selectionChange">
                 <el-table-column
                     type="selection"
                     width="55"/>
@@ -83,7 +83,9 @@
                     <template 
                         slot-scope="scope" 
                         class="mailmsgOpera">
-                        <el-button size="small" @click="showOpt(scope.row)">操作</el-button>
+                        <el-button 
+                            size="small" 
+                            @click="showOpt(scope.row)">操作</el-button>
                     </template>
                 </el-table-column>
             </el-table>

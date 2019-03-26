@@ -136,7 +136,9 @@
                     type="file">
             </div>
             <br>
-            <el-button size="small" @click="downDemo">excel模板下载</el-button>
+            <el-button 
+                size="small" 
+                @click="downDemo">excel模板下载</el-button>
             <div 
                 slot="footer" 
                 class="dialog-footer">

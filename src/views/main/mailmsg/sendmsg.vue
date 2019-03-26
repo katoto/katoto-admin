@@ -47,8 +47,9 @@
                         @input="checklen"/><span class="formTitle">{{ item.langmsg.title.length }}/48字符</span>
                 </el-form-item>
                 <el-form-item label="赠送金额:">
-                    <el-input type="number"
-                        v-model="item.langmsg.amount" 
+                    <el-input 
+                        v-model="item.langmsg.amount"
+                        type="number" 
                         placeholder="填写则发送奖励通知！"/>
                 </el-form-item>
                 <el-form-item label="站内信内容:">
@@ -190,7 +191,7 @@ export default {
                     this.$message({
                         type:'error',
                         message: '标题和内容不能为空'
-                     })
+                    })
                     return false
                 }
                 let istestNaN = this.langObj.some((item)=>{
