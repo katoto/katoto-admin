@@ -7,6 +7,13 @@
             <el-checkbox label="hi"/>
         </el-checkbox-group>
         <div style="margin:14px 0;border:1px solid #ccc;padding:8px">
+              <el-radio-group v-model="isPlatform">
+                <el-radio :label="1">所有平台</el-radio>
+                <el-radio :label="2">纯安卓</el-radio>
+                <el-radio :label="3">纯IOS</el-radio>
+            </el-radio-group>
+        </div>
+        <div style="margin:14px 0;border:1px solid #ccc;padding:8px">
             <el-radio 
                 v-model="selUid" 
                 label="1">全体发送</el-radio>
@@ -105,6 +112,7 @@ import XLSX from 'xlsx'
 export default {
     data () {
         return {
+            isPlatform: 1,
             dialogTableVisible: false,
             langList: ['en'],
             langObj: [{
@@ -228,7 +236,8 @@ export default {
                 let to_uids = ''
                 if(this.selUid === '-1') to_uids = this.someUid
                 Object.assign(sendObj,{
-                    to_uids
+                    to_uids,
+                    toplatfrom: this.isPlatform.toString()
                 })
                 let obj = {}
                 this.langObj.forEach((item)=>{

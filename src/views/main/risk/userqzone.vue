@@ -289,6 +289,15 @@ export default {
             return list
         },
         async userslistFn(){
+            // 测试uid
+            let reg = /^[0-9,]+$/g
+            if(this.searchUid && !reg.test(this.searchUid)){
+                this.$message({
+                    type: 'error',
+                    message: 'uid格式不正确'
+                })
+                return false
+            }
             let obj = {
                 level: this.level.toString(),
                 pageno: this.userPageNumber.toString(),
