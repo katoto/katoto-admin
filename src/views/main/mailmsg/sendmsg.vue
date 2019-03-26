@@ -1,11 +1,12 @@
 <template>
     <div>
         <!-- 勾选需要的语言 -->
-        <span style="font-size:14px;line-height:28px">勾选即表示发送该语言站内信！</span>
-        <el-checkbox-group v-model="langList">
+        <span style="font-size:14px;line-height:28px">语言通知为必填项！</span>
+        <!-- <span style="font-size:14px;line-height:28px">勾选即表示发送该语言站内信！</span> -->
+        <!-- <el-checkbox-group v-model="langList">
             <el-checkbox label="en"/>
             <el-checkbox label="hi"/>
-        </el-checkbox-group>
+        </el-checkbox-group> -->
         <div style="margin:14px 0;border:1px solid #ccc;padding:8px">
             <el-radio-group v-model="selUid">
                 <el-radio :label="'1'">全体发送</el-radio>
@@ -20,7 +21,7 @@
                 <el-input 
                     v-model="someUid" 
                     size="small"
-                    placeholder="请输入uid用','区分" 
+                    placeholder="请输入uid用','区分（部分发送不区分平台哦~）" 
                     @blur="testUid"/>
                 <el-button 
                     size="small" 
@@ -106,9 +107,16 @@ export default {
     data () {
         return {
             dialogTableVisible: false,
-            langList: ['en'],
+            // langList: ['en', 'hi'],
             langObj: [{
                 langtitle: 'en',
+                langmsg: {
+                    title: '',
+                    amount: '',
+                    content: ''
+                }
+            },{
+                langtitle: 'hi',
                 langmsg: {
                     title: '',
                     amount: '',
@@ -122,20 +130,20 @@ export default {
         }
     },
     watch:{
-        langList(val){
-        // 展现对应的语言
-            this.langObj = []
-            val.forEach((item, index)=>{
-                this.langObj.push({
-                    langtitle: item,
-                    langmsg: {
-                        title: '',
-                        amount: '',
-                        content: ''
-                    }
-                })
-            })
-        }
+        // langList(val){
+        // // 展现对应的语言
+        //     this.langObj = []
+        //     val.forEach((item, index)=>{
+        //         this.langObj.push({
+        //             langtitle: item,
+        //             langmsg: {
+        //                 title: '',
+        //                 amount: '',
+        //                 content: ''
+        //             }
+        //         })
+        //     })
+        // }
     },
     mounted (){
     },
