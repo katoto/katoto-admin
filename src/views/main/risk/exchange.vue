@@ -391,6 +391,14 @@ export default {
             return order
         },
         async goodslist(){
+            let reg = /^[0-9,]+$/g
+            if(this.searchUid && !reg.test(this.searchUid)){
+                this.$message({
+                    type: 'error',
+                    message: 'uid格式不正确'
+                })
+                return false
+            }
             // -2 all
             let obj = {
                 orderstatus: this.selStyle.toString(),

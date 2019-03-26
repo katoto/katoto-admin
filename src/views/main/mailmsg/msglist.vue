@@ -112,6 +112,7 @@
             title="已通知详情:" >
             <div>
                 <p>标题：{{ dialogtitle }}</p>
+                <p>用户：{{ dialogUid }}</p>
                 <p>内容：</p>
                 <p 
                     v-for="(val, key) in dialogmsgArr" 
@@ -158,6 +159,7 @@ export default {
             currTitle: 'en',
             dialogTableVisible: false, // 详情弹窗
             dialogmsgArr: null, // 详情信息
+            dialogUid: null,
             dialogtitle: null,
             timeVal: '', // 时间
             pickerOptions: {
@@ -188,13 +190,6 @@ export default {
                 }]
             },
             goodsList:[
-                {
-                    index:1,
-                    msgtype: '普通通知',
-                    msgtitle: '比赛不打了',
-                    msgtime: '11',
-                    msgname: 'aa'
-                }
             ],
             langOptions: [
                 {
@@ -229,6 +224,7 @@ export default {
         js_showmsgFn(row){
             this.dialogTableVisible = true
             this.dialogtitle = row.title[row.currTitle]
+            this.dialogUid = row.to_uid
             this.dialogmsgArr = row.content
             
         },
@@ -237,6 +233,8 @@ export default {
                 notice.forEach((item, index)=>{
                     item.currTitle = Object.keys(item.title)[0]
                     if(item.to_uid === '0') item.to_uid = '所有人'
+                    if(item.to_uid === '-2') item.to_uid = 'ios'
+                    if(item.to_uid === '-1') item.to_uid = '安卓'
                 })
             }
             return [...notice]
