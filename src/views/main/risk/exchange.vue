@@ -255,8 +255,6 @@ export default {
             activeNames: [],
             showUidMsg: false, // 详细弹窗
             goodsList: [
-                {
-                }
             ],
             searchUid: '',
             selstyleOptions:[
