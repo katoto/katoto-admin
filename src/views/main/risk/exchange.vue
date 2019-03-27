@@ -255,8 +255,6 @@ export default {
             activeNames: [],
             showUidMsg: false, // 详细弹窗
             goodsList: [
-                {
-                }
             ],
             searchUid: '',
             selstyleOptions:[
@@ -277,7 +275,7 @@ export default {
                     label: '待审核'
                 }
             ],
-            selStyle:'-2',
+            selStyle:'4',
             baseObj:{
                 '1': '审核通过',
                 '-2': 'All',
