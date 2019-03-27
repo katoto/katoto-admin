@@ -275,7 +275,7 @@ export default {
                     label: '待审核'
                 }
             ],
-            selStyle:'-2',
+            selStyle:'4',
             baseObj:{
                 '1': '审核通过',
                 '-2': 'All',
