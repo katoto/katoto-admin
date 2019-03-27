@@ -264,16 +264,16 @@ export default {
                     value: '-2',
                     label: 'All'
                 }, {
-                    value: '-1',
+                    value: '6',
                     label: '审核拒绝'
                 }, {
                     value: '1',
                     label: '审核通过'
                 }, {
-                    value: '2',
+                    value: '5',
                     label: '已删除'
                 }, {
-                    value: '3',
+                    value: '4',
                     label: '待审核'
                 }
             ],
@@ -281,9 +281,9 @@ export default {
             baseObj:{
                 '1': '审核通过',
                 '-2': 'All',
-                '-1': '审核拒绝',
-                '3': '待审核',
-                '2': '已删除',
+                '6': '审核拒绝',
+                '4': '待审核',
+                '5': '已删除',
             }
         }
     },
