@@ -71,10 +71,10 @@
                                 通过
                             </el-button>
                             <el-button 
-                                :disabled="scope.row.orderstatus==='-1'" 
+                                :disabled="scope.row.orderstatus==='6'" 
                                 type="danger" 
                                 size="small" 
-                                @click="js_showmsgFn( scope.row, '-1' )">
+                                @click="js_showmsgFn( scope.row, '6' )">
                                 拒绝
                             </el-button>
                         </section>
