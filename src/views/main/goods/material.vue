@@ -54,6 +54,14 @@
                 prop="trackingno"
             />
             <el-table-column
+                label="用户ID"
+                prop="uid"
+            >
+                <template slot-scope="scope">
+                    {{scope.row.uid || '-'}}
+                </template>
+            </el-table-column>
+            <el-table-column
                 label="订单状态"
             >
                 <template slot-scope="scope">
@@ -104,14 +112,14 @@
                             label="失败退款" 
                             value="-1"/>
                         <el-option 
-                            label="待发货" 
-                            value="1"/>
-                        <el-option 
-                            label="在途" 
+                            label="发货" 
                             value="2"/>
                         <el-option 
-                            label="已签收" 
+                            label="签收" 
                             value="3"/>
+                        <el-option 
+                            label="待审核" 
+                            value="4"/>
                     </el-select>
                 </el-form-item>
                 <el-form-item 
@@ -185,14 +193,24 @@ export default {
             })
         },
         formatStatus (status) {
-            if (status === '-1') {
+            if (status === null) {
+                return '未领取'
+            } else if (status === '-1') {
                 return '失败退款'
+            } else if (status === '0') {
+                return '已兑奖'
             } else if (status === '1') {
-                return '待发货'
+                return `兑奖成功`
             } else if (status === '2') {
-                return '在途'
+                return '发货'
             } else if (status === '3') {
                 return '签收'
+            } else if (status === '4') {
+                return '待审核'
+            } else if (status === '5') {
+                return '已删除'
+            } else if (status === '6') {
+                return '已拒绝'
             }
             return `未知状态：${status}`
         },
