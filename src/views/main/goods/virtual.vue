@@ -54,7 +54,7 @@
                 </template>
             </el-table-column>
             <el-table-column
-                label="领取用户"
+                label="状态"
                 width="180"
             >
                 <template slot-scope="scope">
@@ -222,12 +222,24 @@ export default {
             })
         },
         formatStatus (item) {
-            if (item.status === '0') {
+            if (item.status === null) {
                 return '未领取'
+            } else if (item.status === '-1') {
+                return '失败退款'
+            } else if (item.status === '0') {
+                return '已兑奖'
             } else if (item.status === '1') {
-                return item.uid
+                return `兑奖成功 兑奖ID: ${item.uid}`
+            } else if (item.status === '2') {
+                return '发货'
             } else if (item.status === '3') {
+                return '签收'
+            } else if (item.status === '4') {
+                return '待审核'
+            } else if (item.status === '5') {
                 return '已删除'
+            } else if (item.status === '6') {
+                return '已拒绝'
             }
             return `未知状态：${item.status}`
         },
