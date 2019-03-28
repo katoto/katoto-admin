@@ -605,7 +605,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .el-select{
   width: 150px;
 }
