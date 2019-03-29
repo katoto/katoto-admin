@@ -95,6 +95,19 @@ export const constantRouterMap = [
             }
         ]
     },
+    {
+        path: '/football',
+        component: Layout,
+        redirect: '/football/index',
+        children: [
+            {
+                path: 'index',
+                name: '足球订阅后台',
+                component: () => import('@/views/football/index'),
+                meta: { title: '足球订阅后台', icon: 'form' }
+            }
+        ]
+    },    
     { path: '*', redirect: '/404', hidden: true }
 ]
 

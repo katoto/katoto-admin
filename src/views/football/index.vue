@@ -166,7 +166,7 @@
 </template>
 
 <script>
-import {mTypes, aTypes} from '@/store/modules/football'
+// import {mTypes, aTypes} from '@/store/modules/football'
 import {formateCoinType, formatCoinTime} from '@/utils/index.js'
 
 let formatTime = function (picker, time) {
@@ -245,7 +245,7 @@ export default {
                     operateState: '1'
                 })
             } else {
-                this.onlineMsg = '确定取消订阅(比赛ID' + rowData.expectId + ')？';
+                this.onlineMsg = '确定取消订阅(比赛ID' + rowData.MatchID + ')？';
                 Object.assign(rowData, {
                     operateState: '0'
                 })
@@ -255,7 +255,11 @@ export default {
         },
         async js_onlineFn() {
         // 提交订阅修改
-            let setGoodsOperateData = await this.$store.dispatch(aTypes.setsubscribeOperate, this.onlinecurrRowData);
+            let data = {
+                matchid: this.onlinecurrRowData.MatchID,
+                subscribe: this.onlinecurrRowData.operateState
+            }
+            let setGoodsOperateData = await this.$store.dispatch("football_setsubscribeOperate", data);
             if (setGoodsOperateData) {
                 this.onlineVisible = false;
                 this.onlineMsg = '??';
@@ -288,11 +292,15 @@ export default {
             Object.assign(this.score_currMsg, {
                 result: this.score_Home + ':' + this.score_Away
             });
-            surePayBack = await this.$store.dispatch(aTypes.setScoreOperate, this.score_currMsg);
+            let data = {
+                matchid: this.score_currMsg.MatchID,
+                result: this.score_currMsg.result
+            }
+            surePayBack = await this.$store.dispatch("football_setScoreOperate", data);
             if (surePayBack) {
                 this.dialogTableVisible = false;
-                //   this.ajaxfootList(1);
-		  this.searchExpectFn()
+                this.ajaxfootList(1);
+		        this.searchExpectFn()
                 this.$message({
                     message: '操作成功',
                     type: 'success',
@@ -329,7 +337,7 @@ export default {
                 ;break
             }		
             // 查询场次详情
-            let withDrawMsg = await this.$store.dispatch(aTypes.getsearchList, baseObj);
+            let withDrawMsg = await this.$store.dispatch('football_getsearchList', baseObj);
             if (withDrawMsg) {
                 this.goodsListFormat(withDrawMsg)
             }
@@ -373,34 +381,29 @@ export default {
             this.currLineData = lineData;
             this.currType = type;
         },
-        //   async handleCurrentChange(val) {
-        //     let withDrawMsg = null;
-        //     this.currPageNumber = Number(val);
-        //     this.ajaxfootList(Number(val))
-        //   },
         // 弹窗里头的分页
-        async userCurrentChange(val) {
-            let msgBottom = null;
-            if (this.currUserUid !== '') {
-                msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
-                    'pageno': Number(val),
-                    'pageSize': 8,
-                    'uid': this.currUserUid
-                })
-            } else {
-                msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
-                    'pageno': Number(val),
-                    'pageSize': 8
-                })
-            }
-            this.userPageNumber = Number(msgBottom.currentPage);
-            this.userMsgCounts = Number(msgBottom.pages);
-            this.ordersFormate(msgBottom)
+        // async userCurrentChange(val) {
+        //     let msgBottom = null;
+        //     if (this.currUserUid !== '') {
+        //         msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
+        //             'pageno': Number(val),
+        //             'pageSize': 8,
+        //             'uid': this.currUserUid
+        //         })
+        //     } else {
+        //         msgBottom = await this.$store.dispatch(aTypes.getAccountDetail, {
+        //             'pageno': Number(val),
+        //             'pageSize': 8
+        //         })
+        //     }
+        //     this.userPageNumber = Number(msgBottom.currentPage);
+        //     this.userMsgCounts = Number(msgBottom.pages);
+        //     this.ordersFormate(msgBottom)
 
-            if (withDrawMsg) {
-                this.pageCounts = Number(withDrawMsg.pages);
-            }
-        },
+        //     if (withDrawMsg) {
+        //         this.pageCounts = Number(withDrawMsg.pages);
+        //     }
+        // },
         ordersFormate(msgBottom) {
             if (msgBottom) {
                 if (msgBottom.orders) {
@@ -437,7 +440,8 @@ export default {
                 'pageno': parseFloat(pagenum),
                 'pageSize': this.pageSize
             })
-            withDrawMsg = await this.$store.dispatch(aTypes.getGoodsList, goodListObj);
+            
+            withDrawMsg = await this.$store.dispatch('football_getGoodsList', goodListObj);
             if (withDrawMsg) {
                 this.goodsListFormat(withDrawMsg)
             }
