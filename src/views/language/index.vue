@@ -392,7 +392,7 @@ export default {
             }
             this.$message({
                 type:'error',
-                message: 'exportJSON error'
+                message: 'exportJSON 当前没有数据可以导出'
             })
         },
         exportJSON(json){
