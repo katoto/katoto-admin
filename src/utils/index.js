@@ -97,40 +97,40 @@ export function mapMutations (muts, ns) {
  *   金币类型
  * */
 export function formateCoinType (type = '2001') {
-  type = type.toString()
-  switch (type) {
+    type = type.toString()
+    switch (type) {
     case '2001':
-      return 'ETH'
+        return 'ETH'
     case '1001':
-      return 'BTC'
+        return 'BTC'
     case '2000':
         return 'CC'      
     default:
-      return 'ETH'
-  }
+        return 'ETH'
+    }
 }
 
 export function formatCoinTime (time, format = 'yyyy-MM-dd') {
-  let t = new Date(time)
-  let tf = function (i) {
-    return (i < 10 ? '0' : '') + i
-  }
-  return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
-    switch (a) {
-      case 'yyyy':
-        return tf(t.getFullYear())
-      case 'MM':
-        return tf(t.getMonth() + 1)
-      case 'mm':
-        return tf(t.getMinutes())
-      case 'dd':
-        return tf(t.getDate())
-      case 'HH':
-        return tf(t.getHours())
-      case 'ss':
-        return tf(t.getSeconds())
+    let t = new Date(time)
+    let tf = function (i) {
+        return (i < 10 ? '0' : '') + i
     }
-  })
+    return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+        switch (a) {
+        case 'yyyy':
+            return tf(t.getFullYear())
+        case 'MM':
+            return tf(t.getMonth() + 1)
+        case 'mm':
+            return tf(t.getMinutes())
+        case 'dd':
+            return tf(t.getDate())
+        case 'HH':
+            return tf(t.getHours())
+        case 'ss':
+            return tf(t.getSeconds())
+        }
+    })
 }
 
 export function formatCommonTime () {

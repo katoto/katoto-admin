@@ -58,7 +58,7 @@
                 prop="uid"
             >
                 <template slot-scope="scope">
-                    {{scope.row.uid || '-'}}
+                    {{ scope.row.uid || '-' }}
                 </template>
             </el-table-column>
             <el-table-column
