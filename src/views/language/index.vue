@@ -372,6 +372,12 @@ export default {
                 pageno: "1",
                 pagesize: '99999',
             }
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.$store.dispatch('languagePage', obj).then((res) => {
                 this.backlangArr = res.lang_list
                 if(res.filters){
@@ -398,7 +404,10 @@ export default {
                     }
                     this.selPageOptions = basePage
                     this.selLangOptions = baseLang
+                    loading.close();
                 }
+            }).catch(()=>{
+                loading.close();
             })
         },
         pageinit(){
