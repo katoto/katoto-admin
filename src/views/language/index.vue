@@ -7,11 +7,11 @@
                     <section style="float: left;">
                         <template>
                             <span style="font-size: 14px">page筛选: </span>
-                            <el-select 
-                                v-model="selPage" 
-                                size="small" 
-                                change="aa" 
-                                placeholder="请选择" 
+                            <el-select
+                                v-model="selPage"
+                                size="small"
+                                change="aa"
+                                placeholder="请选择"
                                 @change="page_lan_Evt">
                                 <el-option
                                     v-for="item in selPageOptions"
@@ -22,10 +22,10 @@
                         </template>
                         <template>
                             &nbsp;<span style="font-size: 14px">lang筛选: </span>
-                            <el-select 
-                                v-model="selLang" 
-                                size="small" 
-                                placeholder="请选择" 
+                            <el-select
+                                v-model="selLang"
+                                size="small"
+                                placeholder="请选择"
                                 @change="page_lan_Evt">
                                 <el-option
                                     v-for="item in selLangOptions"
@@ -36,10 +36,10 @@
                         </template>
                         <template>
                             &nbsp;<span style="font-size: 14px">平台筛选: </span>
-                            <el-select 
-                                v-model="selPlat" 
-                                size="small" 
-                                placeholder="h5&客户端" 
+                            <el-select
+                                v-model="selPlat"
+                                size="small"
+                                placeholder="h5&客户端"
                                 @change="page_lan_Evt">
                                 <el-option
                                     v-for="item in selPlatOptions"
@@ -50,35 +50,35 @@
                         </template>
                     </section>
                     <div style="float: right; margin-right:30px">
-                        <el-button 
-                            type="primary" 
-                            plain 
-                            size="small" 
+                        <el-button
+                            type="primary"
+                            plain
+                            size="small"
                             @click="addlangs()">
                             新增{{ platName }}语言
                         </el-button>
-                        <el-button 
-                            type="warning" 
-                            size="small" 
+                        <el-button
+                            type="warning"
+                            size="small"
                             @click="addLine()">
                             新增{{ platName }}文案
                         </el-button>
-                        <el-button 
-                            type="primary" 
-                            size="small" 
-                            icon="el-icon-plus" 
+                        <el-button
+                            type="primary"
+                            size="small"
+                            icon="el-icon-plus"
                             @click="modifylangs()">
                             批量导入
                         </el-button>
-                        <el-button 
-                            type="error" 
-                            size="small" 
+                        <el-button
+                            type="error"
+                            size="small"
                             @click="before_exportJSON()">
                             导出JSON
                         </el-button>
-                        <el-button 
-                            type="error" 
-                            size="small" 
+                        <el-button
+                            type="error"
+                            size="small"
                             @click="exportExcel()">
                             导出Excel
                         </el-button>
@@ -116,15 +116,15 @@
                         label="状态操作"
                         width="200px">
                         <template slot-scope="scope">
-                            <el-button 
-                                type="primary" 
-                                size="small" 
+                            <el-button
+                                type="primary"
+                                size="small"
                                 @click="before_js_modify( scope.row )">
                                 修改
                             </el-button>
-                            <el-button 
-                                type="danger" 
-                                size="small" 
+                            <el-button
+                                type="danger"
+                                size="small"
                                 @click="before_js_del( scope.row )">
                                 删除
                             </el-button>
@@ -136,29 +136,29 @@
         <!-- 提款申请 -->
 
         <!--语言弹窗 -->
-        <el-dialog 
-            v-loading="uploading" 
-            :visible.sync="dialogTableVisible" 
-            title="注意！" 
+        <el-dialog
+            v-loading="uploading"
+            :visible.sync="dialogTableVisible"
+            title="注意！"
             @open="openDialog">
             <div>
                 <span>文件语言以Excel中language 字段为准 !!</span>
             </div>
             <div style="margin-top:10px">
-                <input 
-                    ref="upload" 
+                <input
+                    ref="upload"
                     type="file">
             </div>
             <br>
-            <el-button 
-                size="small" 
+            <el-button
+                size="small"
                 @click="downDemo">excel模板下载</el-button>
-            <div 
-                slot="footer" 
+            <div
+                slot="footer"
                 class="dialog-footer">
                 <el-button @click="dialogTableVisible = false">取 消</el-button>
-                <el-button 
-                    type="primary" 
+                <el-button
+                    type="primary"
                     @click="uplang">确 定</el-button>
             </div>
         </el-dialog>
@@ -169,114 +169,114 @@
             title="注意！"
             width="30%">
             <span>{{ onlineMsg }}</span>
-            <span 
-                slot="footer" 
+            <span
+                slot="footer"
                 class="dialog-footer">
                 <el-button @click="onlineVisible = false">取 消</el-button>
-                <el-button 
-                    type="danger" 
+                <el-button
+                    type="danger"
                     @click="js_del()">确 定</el-button>
             </span>
         </el-dialog>
 
         <!-- 新增语言 -->
-        <el-dialog 
-            :title="langTitleName" 
-            :visible.sync="showlangDialog" 
+        <el-dialog
+            :title="langTitleName"
+            :visible.sync="showlangDialog"
             width="600px"
             center>
-            <el-form 
-                ref="form" 
-                :model="addform" 
+            <el-form
+                ref="form"
+                :model="addform"
                 label-width="80px">
                 <el-form-item label="StringID">
-                    <el-input 
-                        v-model="addform.string_id" 
-                        size="small" 
+                    <el-input
+                        v-model="addform.string_id"
+                        size="small"
                         class="common-input"/>
                 </el-form-item>
                 <el-form-item label="page">
-                    <el-input 
-                        v-model="addform.page" 
-                        size="small" 
+                    <el-input
+                        v-model="addform.page"
+                        size="small"
                         class="common-input"/>
                 </el-form-item>
                 <el-form-item label="原文">
-                    <el-input 
-                        v-model="addform.origin_content" 
-                        size="small" 
+                    <el-input
+                        v-model="addform.origin_content"
+                        size="small"
                         class="common-input"/>
                 </el-form-item>
                 <template v-for="(item,index) in selLangOptions">
-                    <el-form-item 
-                        :label="item.value" 
+                    <el-form-item
+                        :label="item.value"
                         :key="index">
-                        <el-input 
-                            v-model="addform.lang[item.value]" 
-                            size="small" 
+                        <el-input
+                            v-model="addform.lang[item.value]"
+                            size="small"
                             class="common-input"/>
                     </el-form-item>
                 </template>
                 <el-form-item>
-                    <el-button 
-                        type="primary" 
+                    <el-button
+                        type="primary"
                         @click="onAddSubmit">立即新增</el-button>
                     <el-button @click="showlangDialog=false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
-    
+
         <!-- 修改语言 -->
-        <el-dialog 
-            :visible.sync="showModifyDialog" 
-            width="600px" 
-            title="修改语言" 
+        <el-dialog
+            :visible.sync="showModifyDialog"
+            width="600px"
+            title="修改语言"
             center>
-            <el-form 
-                ref="form" 
-                :model="modifyData" 
+            <el-form
+                ref="form"
+                :model="modifyData"
                 label-width="80px">
                 <el-form-item label="StringID">
-                    <el-input 
-                        v-model="modifyData.string_id" 
-                        size="small" 
-                        disabled="disabled" 
+                    <el-input
+                        v-model="modifyData.string_id"
+                        size="small"
+                        disabled="disabled"
                         class="common-input"/>
                 </el-form-item>
                 <el-form-item label="page">
-                    <el-input 
-                        v-model="modifyData.page" 
-                        size="small" 
-                        disabled="disabled" 
+                    <el-input
+                        v-model="modifyData.page"
+                        size="small"
+                        disabled="disabled"
                         class="common-input"/>
                 </el-form-item>
                 <el-form-item label="language">
-                    <el-input 
-                        v-model="modifyData.language" 
-                        size="small" 
-                        disabled="disabled" 
+                    <el-input
+                        v-model="modifyData.language"
+                        size="small"
+                        disabled="disabled"
                         class="common-input"/>
                 </el-form-item>
                 <el-form-item label="原文">
-                    <el-input 
-                        v-model="modifyData.origin_content" 
-                        size="small" 
-                        disabled="disabled" 
+                    <el-input
+                        v-model="modifyData.origin_content"
+                        size="small"
+                        disabled="disabled"
                         class="common-input"/>
                 </el-form-item>
-                <el-form-item 
-                    label="translation" 
+                <el-form-item
+                    label="translation"
                     class="addHeight">
-                    <el-input 
-                        v-model="modifyData.content" 
-                        size="small" 
-                        placeholder="输入修改的文案" 
+                    <el-input
+                        v-model="modifyData.content"
+                        size="small"
+                        placeholder="输入修改的文案"
                         class="common-input"/>
                 </el-form-item>
                 <el-checkbox v-model="modifyDialog_label">是否有通配符？</el-checkbox>
                 <el-form-item class="common-input">
-                    <el-button 
-                        type="primary" 
+                    <el-button
+                        type="primary"
                         @click="onModifySubmit">立即修改</el-button>
                     <el-button @click="showModifyDialog=false">取消</el-button>
                 </el-form-item>
@@ -417,7 +417,7 @@ export default {
             let newJson = {}
             if(this.backlangArr && this.backlangArr.length>0){
                 this.backlangArr.forEach((item, index)=>{
-                    let currStr =  `${item.page}.${item.string_id}`
+                    let currStr =  item.page+'.'+ item.string_id
                     newJson[currStr] = item.content
                 })
                 this.exportJSON(newJson)
@@ -430,8 +430,9 @@ export default {
         },
         exportJSON(json){
             try{
-                const data = JSON.stringify(json)
-                const blod = new Blob([data], {type: ''})
+                console.log(json)
+                const data = JSON.stringify(json, null ,2)
+                const blod = new Blob([data], {type: ""})
                 FileSaver.saveAs(blod, `ms_${this.selLang}.json`)
             }catch(e){
                 this.$message({
@@ -486,7 +487,7 @@ export default {
             }).catch(err=>{
                 console.error('languageModify error')
             })
-        }, 
+        },
         before_js_del(lineData){
             this.onlineVisible = true
             this.onlineMsg = `确定删除: ${lineData.content} ,原文：${lineData.origin_content} ?`
@@ -511,7 +512,7 @@ export default {
         addLine(){
             this.showlangDialog = true
             this.selPlat === '0'? this.langTitleName = '新增客户端文案' : this.langTitleName = '新增h5文案'
-            
+
             this.addform = {
                 string_id: '',
                 page: '',
