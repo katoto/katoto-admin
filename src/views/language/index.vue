@@ -21,7 +21,7 @@
                             </el-select>
                         </template>
                         <template>
-                            &nbsp;<span style="font-size: 14px">language筛选: </span>
+                            &nbsp;<span style="font-size: 14px">lang筛选: </span>
                             <el-select 
                                 v-model="selLang" 
                                 size="small" 
@@ -29,6 +29,20 @@
                                 @change="page_lan_Evt">
                                 <el-option
                                     v-for="item in selLangOptions"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value"/>
+                            </el-select>
+                        </template>
+                        <template>
+                            &nbsp;<span style="font-size: 14px">平台筛选: </span>
+                            <el-select 
+                                v-model="selPlat" 
+                                size="small" 
+                                placeholder="h5&客户端" 
+                                @change="page_lan_Evt">
+                                <el-option
+                                    v-for="item in selPlatOptions"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value"/>
@@ -54,19 +68,19 @@
                             size="small" 
                             icon="el-icon-plus" 
                             @click="modifylangs()">
-                            批量导入当前语言
+                            批量导入
                         </el-button>
                         <el-button 
                             type="error" 
                             size="small" 
                             @click="before_exportJSON()">
-                            导出当前JSON语言
+                            导出JSON
                         </el-button>
                         <el-button 
                             type="error" 
                             size="small" 
                             @click="exportExcel()">
-                            导出当前Excel语言
+                            导出Excel
                         </el-button>
                     </div>
                 </section>
@@ -300,12 +314,19 @@ export default {
             selLangOptions: [{
                 value: 'English',
             }],
+            selPlat: '0',
+            selPlatOptions: [{
+                value: '0',
+                label: '客户端 *'
+            },{
+                value: '1',
+                label: 'h5'
+            }],
             addform: {
                 string_id: '',
                 page: '',
                 lang: {},
             },
-
             onlineVisible: false, // 上下线 通用弹窗
             onlineMsg: '出错啦',
             delRowData: null,
@@ -339,14 +360,15 @@ export default {
             XLSX.writeFile(wb, `ms_langdemo.xlsx`)
         },
         page_lan_Evt(evt){
-            this.getLanArr(this.selPage, this.selLang)
+            this.getLanArr(this.selPage, this.selLang, this.selPlat )
         },
-        getLanArr(page = '', language = ''){
+        getLanArr(page = '', language = 'English', plat = '0'){
             let obj = {
                 language,
                 page,
+                plat,
                 pageno: "1",
-                pagesize: '99999'
+                pagesize: '99999',
             }
             this.$store.dispatch('languagePage', obj).then((res) => {
                 this.backlangArr = res.lang_list
@@ -476,6 +498,8 @@ export default {
         },
         addLine(){
             this.showlangDialog = true
+            this.selPlat === '0'? this.langTitleName = '新增客户端文案' : this.langTitleName = '新增h5文案'
+            
             this.addform = {
                 string_id: '',
                 page: '',
@@ -498,6 +522,7 @@ export default {
                     let obj = {}
                     obj.string_id = this.addform.string_id
                     obj.page = this.addform.page
+                    obj.plat = this.selPlat
                     obj.language = item
                     obj.origin_content = this.addform.origin_content
                     obj.content = this.addform.lang[item]
@@ -547,6 +572,7 @@ export default {
             this.uploading = true
             let upObj = {
                 inputLan:this.inputLan,
+                plat: this.selPlat,
                 language_list: this.langArr
             }
             await this.$store.dispatch('languageAdd', upObj).then((res) => {
@@ -607,7 +633,7 @@ export default {
 
 <style scoped lang="less">
 .el-select{
-  width: 150px;
+  width: 120px;
 }
 .line{
   text-align: center;
