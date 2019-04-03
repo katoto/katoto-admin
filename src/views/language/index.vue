@@ -55,13 +55,13 @@
                             plain 
                             size="small" 
                             @click="addlangs()">
-                            新增语言
+                            新增{{ platName }}语言
                         </el-button>
                         <el-button 
                             type="warning" 
                             size="small" 
                             @click="addLine()">
-                            新增文案
+                            新增{{ platName }}文案
                         </el-button>
                         <el-button 
                             type="primary" 
@@ -333,6 +333,7 @@ export default {
 
             modifyExpectId: null,
             expectMoreMsg: null,
+            platName: '客户端'
         }
     },
     watch:{
@@ -360,6 +361,7 @@ export default {
             XLSX.writeFile(wb, `ms_langdemo.xlsx`)
         },
         page_lan_Evt(evt){
+            this.selPlat === '0' ? this.platName = '客户端' : this.platName = 'h5'
             this.getLanArr(this.selPage, this.selLang, this.selPlat )
         },
         getLanArr(page = '', language = 'English', plat = '0'){
@@ -437,6 +439,7 @@ export default {
                 if(item){
                     if(item.language_id) delete item.language_id
                     if(item.uptime) delete item.uptime
+                    if(item.plat) delete item.plat
                 }
             })
             /* 创建worksheet */
@@ -515,6 +518,7 @@ export default {
                 return false
             }
             let base = {
+                plat : this.selPlat,
                 language_list: []
             }
             if(this.addform.lang && Object.keys(this.addform.lang).length > 0){
@@ -522,7 +526,6 @@ export default {
                     let obj = {}
                     obj.string_id = this.addform.string_id
                     obj.page = this.addform.page
-                    obj.plat = this.selPlat
                     obj.language = item
                     obj.origin_content = this.addform.origin_content
                     obj.content = this.addform.lang[item]
