@@ -1,10 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue"
+import Router from "vue-router"
 
 Vue.use(Router)
 
 /* Layout */
-import Layout from '../views/layout/Layout'
+import Layout from "../views/layout/Layout"
 
 /**
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
@@ -17,102 +17,159 @@ import Layout from '../views/layout/Layout'
   }
 **/
 export const constantRouterMap = [
-    { path: '/login', component: () => import('@/views/login/index'), hidden: true },
-    { path: '/404', component: () => import('@/views/404'), hidden: true },
+    {
+        path: "/login",
+        component: () => import("@/views/login/index"),
+        hidden: true
+    },
+    {
+        path: "/404",
+        component: () => import("@/views/404"),
+        hidden: true
+    },
 
     {
-        path: '/',
+        path: "/",
         component: Layout,
-        redirect: '/madsports',
-        name: 'madsports',
+        redirect: "/madsports",
+        name: "madsports",
         hidden: true,
         children: [{
-            path: 'madsports',
-            component: () => import('@/views/madsports/index')
+            path: "madsports",
+            component: () => import("@/views/madsports/index")
         }]
     },
     {
-        path: '/dashboard',
+        path: "/dashboard",
         hidden: true,
         component: Layout,
-        redirect: '/madsports'
+        redirect: "/madsports"
     },
     {
-        path: '/mian',
+        path: "/mian",
         component: Layout,
-        redirect: '/mian/mailmsg/index',
-        name: 'Main',
-        meta: { title: '主后台', icon: 'example' },
+        redirect: "/mian/mailmsg/index",
+        name: "Main",
+        meta: {
+            title: "主后台",
+            icon: "example"
+        },
         children: [
             {
-                path: 'goods',
-                name: 'goods',
-                component: () => import('@/views/main/goods/index'),
-                meta: { title: '商品配置', icon: 'table' }
+                path: "goods",
+                name: "goods",
+                component: () => import("@/views/main/goods/index"),
+                meta: {
+                    title: "商品配置",
+                    icon: "table"
+                }
             },
             {
-                path: 'virtual',
-                name: 'virtual',
-                component: () => import('@/views/main/goods/virtual'),
-                meta: { title: '虚拟奖品派发', icon: 'table' }
+                path: "virtual",
+                name: "virtual",
+                component: () => import("@/views/main/goods/virtual"),
+                meta: {
+                    title: "虚拟奖品派发",
+                    icon: "table"
+                }
             },
             {
-                path: 'material',
-                name: 'material',
-                component: () => import('@/views/main/goods/material'),
-                meta: { title: '实物奖品派发', icon: 'table' }
+                path: "material",
+                name: "material",
+                component: () => import("@/views/main/goods/material"),
+                meta: {
+                    title: "实物奖品派发",
+                    icon: "table"
+                }
             },
             {
-                path: 'mailmsg',
-                name: 'mailmsg',
-                component: () => import('@/views/main/mailmsg/index'),
-                meta: { title: '站内信', icon: 'table' }
+                path: "mailmsg",
+                name: "mailmsg",
+                component: () => import("@/views/main/mailmsg/index"),
+                meta: {
+                    title: "站内信",
+                    icon: "table"
+                }
             },
             {
-                path: 'exchange',
-                name: 'exchange',
-                component: () => import('@/views/main/risk/exchange'),
-                meta: { title: '兑换审核', icon: 'tree' }
+                path: "exchange",
+                name: "exchange",
+                component: () => import("@/views/main/risk/exchange"),
+                meta: {
+                    title: "兑换审核",
+                    icon: "tree"
+                }
             },
             {
-                path: 'userqzone',
-                name: 'userqzone',
-                component: () => import('@/views/main/risk/userqzone'),
-                meta: { title: '用户后台', icon: 'tree' }
+                path: "userqzone",
+                name: "userqzone",
+                component: () => import("@/views/main/risk/userqzone"),
+                meta: {
+                    title: "用户后台",
+                    icon: "tree"
+                }
             }
         ]
     },
     {
-        path: '/language',
+        path: "/language",
         component: Layout,
-        redirect: '/language/index',
+        redirect: "/language/index",
         children: [
             {
-                path: 'index',
-                name: '多语言后台',
-                component: () => import('@/views/language/index'),
-                meta: { title: '多语言后台', icon: 'form' }
+                path: "index",
+                name: "多语言后台",
+                component: () => import("@/views/language/index"),
+                meta: {
+                    title: "多语言后台",
+                    icon: "form"
+                }
             }
         ]
     },
     {
-        path: '/football',
+        path: "/football",
         component: Layout,
-        redirect: '/football/index',
+        redirect: "/football/index",
         children: [
             {
-                path: 'index',
-                name: '足球订阅后台',
-                component: () => import('@/views/football/index'),
-                meta: { title: '足球订阅后台', icon: 'form' }
+                path: "index",
+                name: "足球订阅后台",
+                component: () => import("@/views/football/index"),
+                meta: {
+                    title: "足球订阅后台",
+                    icon: "form"
+                }
             }
         ]
-    },    
-    { path: '*', redirect: '/404', hidden: true }
+    },
+    {
+        path: "/table",
+        component: Layout,
+        redirect: "/table/index",
+        children: [
+            {
+                path: "index",
+                name: "表格编辑器",
+                component: () => import("@/views/table/index"),
+                meta: {
+                    title: "表格编辑器",
+                    icon: "form"
+                }
+            }
+        ]
+    },
+    {
+        path: "*",
+        redirect: "/404",
+        hidden: true
+    }
 ]
 
 export default new Router({
     // mode: 'history', // 后端得配合
-    scrollBehavior: () => ({ y: 0 }),
+    scrollBehavior: () => ({
+        y: 0
+    }),
     routes: constantRouterMap
 })
