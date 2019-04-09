@@ -6,15 +6,14 @@
                     <!-- 语言过滤选择 -->
                     <section style="float: left;">
                         <template>
-                            <span style="font-size: 14px">page筛选: </span>
+                            &nbsp;<span style="font-size: 14px">平台筛选: </span>
                             <el-select
-                                v-model="selPage"
+                                v-model="selPlat"
                                 size="small"
-                                change="aa"
-                                placeholder="请选择"
+                                placeholder="h5&客户端"
                                 @change="page_lan_Evt">
                                 <el-option
-                                    v-for="item in selPageOptions"
+                                    v-for="item in selPlatOptions"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value"/>
@@ -35,14 +34,15 @@
                             </el-select>
                         </template>
                         <template>
-                            &nbsp;<span style="font-size: 14px">平台筛选: </span>
+                            <span style="font-size: 14px">page筛选: </span>
                             <el-select
-                                v-model="selPlat"
+                                v-model="selPage"
                                 size="small"
-                                placeholder="h5&客户端"
+                                change="aa"
+                                placeholder="请选择"
                                 @change="page_lan_Evt">
                                 <el-option
-                                    v-for="item in selPlatOptions"
+                                    v-for="item in selPageOptions"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value"/>
@@ -108,7 +108,9 @@
                         label="language"/>
                     <el-table-column
                         prop="uptime"
-                        label="uptime"/>
+                        label="uptime"
+                        width="156"
+                        />
                     <el-table-column
                         prop="content"
                         label="content"/>
@@ -184,6 +186,7 @@
             :title="langTitleName"
             :visible.sync="showlangDialog"
             width="600px"
+            :close-on-click-modal="false"
             center>
             <el-form
                 ref="form"
