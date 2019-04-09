@@ -234,6 +234,7 @@
             :visible.sync="showModifyDialog"
             width="600px"
             title="修改语言"
+            :close-on-click-modal="false"
             center>
             <el-form
                 ref="form"
