@@ -107,8 +107,8 @@
                         prop="language"
                         label="language"/>
                     <el-table-column
-                        prop="uptime"
-                        label="uptime"
+                        prop="origin_content"
+                        label="原文"
                         width="156"
                         />
                     <el-table-column
@@ -261,6 +261,13 @@
                         disabled="disabled"
                         class="common-input"/>
                 </el-form-item>
+                <el-form-item label="修改时间">
+                    <el-input
+                        v-model="modifyData.uptime"
+                        size="small"
+                        disabled="disabled"
+                        class="common-input"/>
+                </el-form-item>
                 <el-form-item label="原文">
                     <el-input
                         v-model="modifyData.origin_content"
@@ -325,6 +332,9 @@ export default {
             },{
                 value: '1',
                 label: 'h5'
+            },{
+                value: '2',
+                label: '服务端'
             }],
             addform: {
                 string_id: '',
