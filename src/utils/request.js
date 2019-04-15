@@ -1,10 +1,14 @@
-import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
-import store from '../store'
-import { getCk } from '@/utils/auth'
+import axios from "axios"
+import {
+    Message, MessageBox
+} from "element-ui"
+import store from "../store"
+import {
+    getCk
+} from "@/utils/auth"
 
 function getCommonParams () {
-    let ck = getCk() || ''
+    let ck = getCk() || ""
     return {
         ck
     }
@@ -20,13 +24,13 @@ const service = axios.create({
 // request 拦截器
 service.interceptors.request.use(
     config => {
-        if(config.params){
+        if (config.params) {
             config.params = {
                 ...getCommonParams(),
                 ...config.params
             }
         }
-        if(config.data){
+        if (config.data) {
             config.data = {
                 ...getCommonParams(),
                 ...config.data
@@ -49,36 +53,36 @@ service.interceptors.response.use(
         if (res.status !== "100") {
             Message({
                 message: res.message,
-                type: 'error',
+                type: "error",
                 duration: 5 * 1000
             })
             // 50008:非法的; 50012:其他客户端登录了; todo
             if (res.status === 50008 || res.status === 50012 || res.status === 50014) {
                 MessageBox.confirm(
-                    '你已被登出，可以取消继续留在该页面，或者重新登录',
-                    '确定登出',
+                    "你已被登出，可以取消继续留在该页面，或者重新登录",
+                    "确定登出",
                     {
-                        confirmButtonText: '重新登录',
-                        cancelButtonText: '取消',
-                        type: 'warning'
+                        confirmButtonText: "重新登录",
+                        cancelButtonText: "取消",
+                        type: "warning"
                     }
                 ).then(() => {
-                    store.dispatch('FedLogOut').then(() => {
+                    store.dispatch("FedLogOut").then(() => {
                         location.reload() // 为了重新实例化vue-router对象 避免bug
                     })
                 })
-        
+
             }
-            return Promise.reject('error')
+            return Promise.reject("error")
         } else {
             return response.data
         }
     },
     error => {
-        console.log('err' + error) // for debug
+        console.log("err" + error) // for debug
         Message({
             message: error.message,
-            type: 'error',
+            type: "error",
             duration: 5 * 1000
         })
         return Promise.reject(error)
