@@ -85,13 +85,19 @@
                     </div>
                 </section>
                 <el-table
+                    ref="multi_table"
                     id="out-table"
                     :data="backlangArr"
                     stripe
                     highlight-current-row
+                    @selection-change="handleSelectionChange"
                     style="width: 100%">
                     <el-table-column
-                        width="100"
+                    type="selection"
+                    width="50">
+                    </el-table-column>
+                    <el-table-column
+                        width="80"
                         label="序号">
                         <template slot-scope="scope">
                             {{ scope.$index + 1 }}
@@ -133,6 +139,9 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <div v-if="allSelArr && allSelArr.length>0">
+                    <el-button type="danger" @click="rmMoreList">批量删除选中</el-button>
+                </div>
             </div>
         </section>
         <!-- 提款申请 -->
@@ -349,7 +358,9 @@ export default {
 
             modifyExpectId: null,
             expectMoreMsg: null,
-            platName: '客户端'
+            platName: '客户端',
+
+            allSelArr: [],
         }
     },
     watch:{
@@ -358,6 +369,39 @@ export default {
         this.pageinit()
     },
     methods: {
+        handleSelectionChange(val){
+            this.allSelArr = val
+        },
+        async rmMoreList(){
+            if(this.allSelArr){
+                console.log(this.allSelArr)
+                let isSure = window.confirm('确定批量删除？删除个数为'+ this.allSelArr.length)
+                if(isSure){
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    for(var item of this.allSelArr){
+                        // 执行删除
+                        await this.$store.dispatch('languageDel', item).then((res) => {
+                        }).catch(err=>{
+                            console.error('rmMoreList error')
+                        })
+                    }
+                    this.$nextTick(()=>{
+                        this.$message({
+                            type:'success',
+                            message: '删除成功'
+                        })
+                        // 更新列表
+                        this.page_lan_Evt()
+                        loading.close()
+                    })
+                }
+            }
+        },
         downDemo(){
             let ws
             let wb
