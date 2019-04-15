@@ -215,6 +215,7 @@
                         :label="item.value"
                         :key="index">
                         <el-input
+                            type="textarea"
                             v-model="addform.lang[item.value]"
                             size="small"
                             class="common-input"/>
@@ -280,6 +281,7 @@
                     class="addHeight">
                     <el-input
                         v-model="modifyData.content"
+                        type="textarea"
                         size="small"
                         placeholder="输入修改的文案"
                         class="common-input"/>
