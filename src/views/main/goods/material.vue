@@ -126,7 +126,11 @@
               value="-1"
             />
             <el-option
-              label="发货"
+              label="待发货"
+              value="1"
+            />
+            <el-option
+              label="已发货"
               value="2"
             />
             <el-option
@@ -251,7 +255,6 @@ export default {
                 })
                 this.types = res.data.filter
                 this.pages = Number(res.data.pages) * Number(res.data.pagesize)
-                console.log(res)
             })
         },
         clear () {
@@ -267,7 +270,7 @@ export default {
             } else if (status === "0") {
                 return "已兑奖"
             } else if (status === "1") {
-                return "兑奖成功"
+                return "待发货"
             } else if (status === "2") {
                 return "发货"
             } else if (status === "3") {

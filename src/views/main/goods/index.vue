@@ -81,6 +81,9 @@
                         <el-option 
                             label="实物类" 
                             value="2"/>
+                        <el-option 
+                            label="其他" 
+                            value="3"/>
                     </el-select>
                 </el-form-item>
                 <el-tabs
