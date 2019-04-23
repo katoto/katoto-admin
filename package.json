@@ -6,6 +6,8 @@
   "author": "",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "prebuild-release": "npm run clean",
+    "build-release": "cross-env ISPre=true node build/build.js",
     "prebuild": "npm run clean",
     "build": "node build/build.js",
     "lint": "eslint --ext .js,.vue src",
@@ -41,6 +43,7 @@
     "chalk": "2.4.1",
     "compression-webpack-plugin": "2.0.0",
     "copy-webpack-plugin": "4.5.2",
+    "cross-env": "^5.2.0",
     "css-loader": "1.0.0",
     "eslint": "4.19.1",
     "eslint-friendly-formatter": "4.0.1",

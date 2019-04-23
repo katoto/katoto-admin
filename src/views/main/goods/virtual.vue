@@ -144,7 +144,7 @@
             <el-option
               v-for="item in types"
               :key="item.goodsname"
-              :label="item.goodsname"
+              :label="`${item.goodsname}(${item.goodsid})`"
               :value="item.goodsid"
             />
           </el-select>
@@ -177,6 +177,15 @@
             class="download-btn"
             @click="download"
           >xls模板下载</a>
+          <a
+            href="javascript:;"
+            class="download-btn"
+            @click="downloadTxt"
+          >txt模板下载</a>
+          <a
+            ref="txt"
+            style="display: none;"
+          />
         </el-form-item>
       </el-form>
       <div
@@ -335,13 +344,23 @@ export default {
                 this.showCreate = false
             })
         },
-        importIt (data) {
-            virtualGoodImport({
-                immaterial_list: data
+        importIt (data, filename) {
+            this.$confirm(`确认上传文件 ${filename} 吗?`, "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
             }).then(() => {
-                this.getList()
-                this.success()
-                this.showCreate = false
+                let load = this.$load()
+                virtualGoodImport({
+                    immaterial_list: data
+                }).then(() => {
+                    this.getList()
+                    this.success()
+                    this.showCreate = false
+                    load.close()
+                }).catch(() => {
+                    load.close()
+                })
             })
         },
         create () {
@@ -354,7 +373,7 @@ export default {
             if (files.length <= 0) {
                 this.error("请选择一个文件!")
                 return false
-            } else if (!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())) {
+            } else if (!/\.(xls|xlsx|txt)$/.test(files[0].name.toLowerCase())) {
                 this.error("上传格式不正确，请上传xls或者xlsx格式!")
                 return false
             }
@@ -362,24 +381,43 @@ export default {
             fileReader.onload = (ev) => {
                 try {
                     const data = ev.target.result
-                    const workbook = XLSX.read(data, {
-                        type: "binary"
-                    })
-                    const wsname = workbook.SheetNames[0]// 取第一张表
-                    let result = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])// 生成json表格内容
-                    let oneData = result[0]
-                    if (result.length === 0 || result.length === 1) {
-                        this.error("没有数据，第一行表头填写goodsid、cardno、password")
-                    } if (oneData[0] && oneData[0].__EMPTY) {
-                        this.error("文档应该加密了, 需要先解锁文档!")
-                    } else {
-                        if (oneData.goodsid && oneData.cardno && oneData.password) {
-                            this.importIt(result)
-                        } else if (!oneData.goodsid && !oneData.cardno && !oneData.password) {
-                            this.error("文档应该加密了, 需要先解锁文档!")
+                    if (/\.(txt)$/.test(files[0].name.toLowerCase())) {
+                        let arr = []
+                        try {
+                            data.split("\r\n").map(item => {
+                                if (item !== "") {
+                                    let _item = item.split(":")
+                                    arr.push({
+                                        goodsid: _item[2],
+                                        cardno: _item[0],
+                                        password: _item[1]
+                                    })
+                                }
+                            })
+                            this.importIt(arr, files[0].name)
+                        } catch (e) {
+                            this.error("格式错误")
                         }
-                        else {
-                            this.error("格式错误，第一行表头填写goodsid、cardno、password")
+                    } else {
+                        const workbook = XLSX.read(data, {
+                            type: "binary"
+                        })
+                        const wsname = workbook.SheetNames[0]// 取第一张表
+                        let result = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])// 生成json表格内容
+                        let oneData = result[0]
+                        if (result.length === 0 || result.length === 1) {
+                            this.error("没有数据，第一行表头填写goodsid、cardno、password")
+                        } if (oneData[0] && oneData[0].__EMPTY) {
+                            this.error("文档应该加密了, 需要先解锁文档!")
+                        } else {
+                            if (oneData.goodsid && oneData.cardno && oneData.password) {
+                                this.importIt(result, files[0].name)
+                            } else if (!oneData.goodsid && !oneData.cardno && !oneData.password) {
+                                this.error("文档应该加密了, 需要先解锁文档!")
+                            }
+                            else {
+                                this.error("格式错误，第一行表头填写goodsid、cardno、password")
+                            }
                         }
                     }
                     this.$refs.file.value = ""
@@ -394,6 +432,12 @@ export default {
             const wb = XLSX.utils.book_new()
             XLSX.utils.book_append_sheet(wb, ws, "demo")
             XLSX.writeFile(wb, "demo.xls")
+        },
+        downloadTxt () {
+            let txt = this.$refs.txt
+            txt.download = "demo.txt"
+            txt.href = URL.createObjectURL(new Blob(["cardno:password:goodsid\r\nJDV16320000198000002:7C0D-EBCA-4657-7AD6:50002"]))
+            txt.click()
         }
     }
 }

@@ -1,38 +1,46 @@
-import store from '@/store'
+import store from "@/store"
 
-const { body } = document
+const {
+    body 
+} = document
 const WIDTH = 992 // refer to Bootstrap's responsive design
 
 export default {
     watch: {
-        $route(route) {
-            if (this.device === 'mobile' && this.sidebar.opened) {
-                store.dispatch('CloseSideBar', { withoutAnimation: false })
+        $route (route) {
+            if (this.device === "mobile" && this.sidebar.opened) {
+                store.dispatch("CloseSideBar", {
+                    withoutAnimation: false 
+                })
             }
         }
     },
-    beforeMount() {
-        window.addEventListener('resize', this.resizeHandler)
+    beforeMount () {
+        window.addEventListener("resize", this.resizeHandler)
     },
-    mounted() {
+    mounted () {
         const isMobile = this.isMobile()
         if (isMobile) {
-            store.dispatch('ToggleDevice', 'mobile')
-            store.dispatch('CloseSideBar', { withoutAnimation: true })
+            store.dispatch("ToggleDevice", "mobile")
+            store.dispatch("CloseSideBar", {
+                withoutAnimation: true 
+            })
         }
     },
     methods: {
-        isMobile() {
+        isMobile () {
             const rect = body.getBoundingClientRect()
             return rect.width - 1 < WIDTH
         },
-        resizeHandler() {
+        resizeHandler () {
             if (!document.hidden) {
                 const isMobile = this.isMobile()
-                store.dispatch('ToggleDevice', isMobile ? 'mobile' : 'desktop')
+                store.dispatch("ToggleDevice", isMobile ? "mobile" : "desktop")
 
                 if (isMobile) {
-                    store.dispatch('CloseSideBar', { withoutAnimation: true })
+                    store.dispatch("CloseSideBar", {
+                        withoutAnimation: true 
+                    })
                 }
             }
         }

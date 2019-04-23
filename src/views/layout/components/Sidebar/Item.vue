@@ -1,20 +1,22 @@
 <script>
 export default {
-    name: 'MenuItem',
+    name: "MenuItem",
     functional: true,
     props: {
         meta: {
             type: Object,
             default: () => {
                 return {
-                    title: '',
-                    icon: ''
+                    title: "",
+                    icon: ""
                 }
             }
         }
     },
-    render(h, context) {
-        const { icon, title } = context.props.meta
+    render (h, context) {
+        const {
+            icon, title 
+        } = context.props.meta
         const vnodes = []
 
         if (icon) {

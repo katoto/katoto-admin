@@ -1,27 +1,37 @@
-import router from './router'
-import store from './store'
-import NProgress from 'nprogress' // progress bar
-import 'nprogress/nprogress.css' // progress bar style
-import { Message } from 'element-ui'
-import { getCk } from '@/utils/auth' // getCk from cookie
+import router from "./router"
+import store from "./store"
+import NProgress from "nprogress" // progress bar
+import "nprogress/nprogress.css" // progress bar style
+import {
+    Message 
+} from "element-ui"
+import {
+    getCk 
+} from "@/utils/auth" // getCk from cookie
 
-NProgress.configure({ showSpinner: false })// NProgress configuration 禁用进度环
+NProgress.configure({
+    showSpinner: false 
+})// NProgress configuration 禁用进度环
 
-const whiteList = ['/login'] // 不重定向白名单
+const whiteList = ["/login"] // 不重定向白名单
 router.beforeEach((to, from, next) => {
     NProgress.start()
     if (getCk()) {
-        if (to.path === '/login') {
-            next({ path: '/' })
+        if (to.path === "/login") {
+            next({
+                path: "/" 
+            })
             NProgress.done()
         } else {
             if (!store.getters.userinfo) {
-                store.dispatch('GetInfo').then(res => { // 拉取用户信息
+                store.dispatch("GetInfo").then(res => { // 拉取用户信息
                     next()
                 }).catch((err) => {
-                    store.dispatch('FedLogOut').then(() => {
-                        Message.error(err || 'Verification failed, please login again')
-                        next({ path: '/' })
+                    store.dispatch("FedLogOut").then(() => {
+                        Message.error(err || "Verification failed, please login again")
+                        next({
+                            path: "/" 
+                        })
                     })
                 })
             } else {

@@ -18,7 +18,7 @@ function getCommonParams () {
 // 在config 配置
 const service = axios.create({
     baseURL: process.env.BASE_API, // api 的 base_url
-    timeout: 25000 // 请求超时时间
+    timeout: 65000 // 请求超时时间
 })
 
 // request 拦截器

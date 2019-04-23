@@ -1,7 +1,7 @@
 <template>
   <div
-    class="app"
     :class="{ready: ready}"
+    class="app"
   >
     <table ref="table">
       <tr>

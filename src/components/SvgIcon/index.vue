@@ -1,17 +1,17 @@
 <template>
-    <svg 
-        :class="svgClass" 
-        aria-hidden="true" 
-        v-on="$listeners">
-        <use :xlink:href="iconName"/>
-    </svg>
+  <svg 
+    :class="svgClass" 
+    aria-hidden="true" 
+    v-on="$listeners">
+    <use :xlink:href="iconName"/>
+  </svg>
 </template>
 
 <script>
 // 语义化的隐藏 aria-hidden="true"
 // xlink:href = id  id 是通过base.conf 配置的  options: { symbolId: 'icon-[name]' }
 export default {
-    name: 'SvgIcon',
+    name: "SvgIcon",
     props: {
         iconClass: {
             type: String,
@@ -19,18 +19,18 @@ export default {
         },
         className: {
             type: String,
-            default: ''
+            default: ""
         }
     },
     computed: {
-        iconName() {
+        iconName () {
             return `#icon-${this.iconClass}`
         },
-        svgClass() {
+        svgClass () {
             if (this.className) {
-                return 'svg-icon ' + this.className
+                return "svg-icon " + this.className
             } else {
-                return 'svg-icon'
+                return "svg-icon"
             }
         }
     }
