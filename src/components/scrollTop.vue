@@ -1,30 +1,33 @@
 <template>
-    <a 
-        :class="[scrollTop<400?'hide':'']" 
-        href="javascript:;" 
-        class="scrollTop" 
-        @click="toTop">
-        ScrollTop
-    </a>
+  <a 
+    :class="[scrollTop<400?'hide':'']" 
+    href="javascript:;" 
+    class="scrollTop" 
+    @click="toTop">
+    ScrollTop
+  </a>
 </template>
 
 <script>
 export default {
-    components: {},
+    components: {
+    },
     data () {
         return {
             scrollTop: 0
         }
     },
-    computed: {},
-    watch: {},
+    computed: {
+    },
+    watch: {
+    },
     mounted () {
         this.$nextTick(() => {
-            window.addEventListener('scroll', this.handleScroll, false)
+            window.addEventListener("scroll", this.handleScroll, false)
         })
     },
     destroyed () {
-        window.removeEventListener('scroll', this.handleScroll, true)
+        window.removeEventListener("scroll", this.handleScroll, true)
     },
     methods: {
         handleScroll () {
@@ -37,7 +40,7 @@ export default {
                 window.scrollTo(0, c - c / 8)
             }
         }
-    },
+    }
 }
 </script>
 <style scoped lang="less">

@@ -30,7 +30,7 @@ module.exports = {
     filename: '[name].js',
     publicPath:
       process.env.NODE_ENV === 'production'
-        ? config.build.assetsPublicPath
+        ? process.env.ISPre === "true" ? config.prebuild.assetsPublicPath : config.build.assetsPublicPath
         : config.dev.assetsPublicPath
   },
   resolve: {
@@ -93,11 +93,7 @@ module.exports = {
   },
   plugins: [new VueLoaderPlugin()],
   node: {
-    // prevent webpack from injecting useless setImmediate polyfill because Vue
-    // source contains it (although only uses it if it's native).
     setImmediate: false,
-    // prevent webpack from injecting mocks to Node native modules
-    // that does not make sense for the client
     dgram: 'empty',
     fs: 'empty',
     net: 'empty',

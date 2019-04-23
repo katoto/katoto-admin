@@ -2,8 +2,12 @@
  * Created by xiezg on 2018/4/9.
  */
 
-import { getGoodsList, setsubscribeOperate, setScoreOperate, getsearchList } from '@/api/football'
-import { getCk, setCk, removeCk } from '@/utils/auth'
+import {
+    getGoodsList, setsubscribeOperate, setScoreOperate, getsearchList 
+} from "@/api/football"
+import {
+    getCk, setCk, removeCk 
+} from "@/utils/auth"
 
 const football = {
     state: {
@@ -12,7 +16,9 @@ const football = {
     },
     actions: {
         // 商品列表
-        football_getGoodsList({ commit }, obj) {
+        football_getGoodsList ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 getGoodsList(obj).then(response => {
                     resolve(response.data)
@@ -21,7 +27,9 @@ const football = {
                 })
             })
         },
-        football_setsubscribeOperate({ commit }, obj) {
+        football_setsubscribeOperate ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 setsubscribeOperate(obj).then(response => {
                     resolve(response.data)
@@ -30,7 +38,9 @@ const football = {
                 })
             })
         },
-        football_setScoreOperate({ commit }, obj) {
+        football_setScoreOperate ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 setScoreOperate(obj).then(response => {
                     resolve(response.data)
@@ -39,7 +49,9 @@ const football = {
                 })
             })
         },
-        football_getsearchList({ commit }, obj) {
+        football_getsearchList ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 getsearchList(obj).then(response => {
                     resolve(response.data)
@@ -52,11 +64,6 @@ const football = {
 }
 
 export default football
-
- 
- 
- 
- 
  
 // import ajax from '@/utils/ajax'
 // import { src, platform, mapMutations, mapActions } from '@/utils/index'
@@ -145,7 +152,6 @@ export default football
 //         }
 //     },
 // }, 'football');
-
 
 // export const mTypes = mutationsInfo.mTypes
 // const mutations = mutationsInfo.mutations

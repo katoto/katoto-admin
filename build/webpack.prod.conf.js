@@ -15,10 +15,14 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
+let env = null
 
-const env = require('../config/prod.env')
+if (process.env.ISPre === "true") {
+    env = require('../config/release.env')
+} else {
+    env = require('../config/prod.env')
+}
 
-// For NamedChunksPlugin
 const seen = new Set()
 const nameLength = 4
 

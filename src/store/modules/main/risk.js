@@ -1,5 +1,9 @@
-import { goodsReview, goodsList, userlist, accountinf, logs, sumlogs, uslevel } from '@/api/main/risk'
-import { getCk, setCk, removeCk } from '@/utils/auth'
+import {
+    goodsReview, goodsList, userlist, accountinf, logs, sumlogs, uslevel 
+} from "@/api/main/risk"
+import {
+    getCk, setCk, removeCk 
+} from "@/utils/auth"
 
 const mailmsg = {
     state: {
@@ -8,7 +12,9 @@ const mailmsg = {
     },
     actions: {
         // 兑换审核
-        risk_goodsReview({ commit }, obj) {
+        risk_goodsReview ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 goodsReview(obj).then(response => {
                     resolve(response.data)
@@ -17,7 +23,9 @@ const mailmsg = {
                 })
             })
         },
-        risk_goodslist({ commit }, obj) {
+        risk_goodslist ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 goodsList(obj).then(response => {
                     resolve(response.data)
@@ -26,7 +34,9 @@ const mailmsg = {
                 })
             })
         },
-        risk_userlist({ commit }, obj) {
+        risk_userlist ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 userlist(obj).then(response => {
                     resolve(response.data)
@@ -35,7 +45,9 @@ const mailmsg = {
                 })
             })
         },
-        risk_accountinf({ commit }, obj) {
+        risk_accountinf ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 accountinf(obj).then(response => {
                     resolve(response.data)
@@ -44,7 +56,9 @@ const mailmsg = {
                 })
             })
         },
-        risk_logs({ commit }, obj) {
+        risk_logs ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 logs(obj).then(response => {
                     resolve(response.data)
@@ -53,7 +67,9 @@ const mailmsg = {
                 })
             })
         },
-        risk_sumlogs({ commit }, obj) {
+        risk_sumlogs ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 sumlogs(obj).then(response => {
                     resolve(response.data)
@@ -62,7 +78,9 @@ const mailmsg = {
                 })
             })
         },
-        risk_levelUpdate({ commit }, obj) {
+        risk_levelUpdate ({
+            commit 
+        }, obj) {
             return new Promise((resolve, reject) => {
                 uslevel(obj).then(response => {
                     resolve(response.data)
@@ -70,7 +88,7 @@ const mailmsg = {
                     reject(error)
                 })
             })
-        },                
+        }                
     }
 }
 

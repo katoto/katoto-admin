@@ -1,18 +1,18 @@
 <template>
-    <div class="page">
-        <ul :style="{ visibility: ready ? 'visible' : 'hidden' }">
-            <transition
-                v-for="(item, index) in list"
-                :key="item"
-                name="item">
-                <li
-                    v-if="list.length - (index) <= 4"
-                >
-                    {{ item }}{{ index }}
-                </li>
-            </transition>
-        </ul>
-    </div>
+  <div class="page">
+    <ul :style="{ visibility: ready ? 'visible' : 'hidden' }">
+      <transition
+        v-for="(item, index) in list"
+        :key="item"
+        name="item">
+        <li
+          v-if="list.length - (index) <= 4"
+        >
+          {{ item }}{{ index }}
+        </li>
+      </transition>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -20,7 +20,7 @@ export default {
     data () {
         return {
             list: [
-                '123', '456', '789', '1234'
+                "123", "456", "789", "1234"
             ],
             ready: false
         }
