@@ -55,6 +55,10 @@
         prop="mobile"
       />
       <el-table-column
+        label="邮政编号"
+        prop="postcode"
+      />
+      <el-table-column
         label="物流单号"
         prop="trackingno"
       />
@@ -109,6 +113,11 @@
           label="联系方式"
         >
           <div>{{ selectObj.mobile }}</div>
+        </el-form-item>
+        <el-form-item
+          label="邮政编号"
+        >
+          <div>{{ selectObj.postcode }}</div>
         </el-form-item>
         <el-form-item
           label="详细地址"
