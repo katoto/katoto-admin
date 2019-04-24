@@ -7,5 +7,5 @@ module.exports = merge(prodEnv, {
 //   BASE_API: '"http://10.0.1.41:18010"', // 41 端口
   // BASE_API: '"http://192.168.30.13:8010"',
 //   BASE_API: '"http://149.129.138.180/admin/"'
-  BASE_API: '"http://prewww.madcrickets.com/preadmin"'
+  BASE_API: '"http://prewww.madcrickets.com/onlineadmin"'
 })

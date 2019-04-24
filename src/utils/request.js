@@ -1,11 +1,13 @@
 import axios from "axios"
 import {
-    Message, MessageBox
+    Message, MessageBox, Loading
 } from "element-ui"
 import store from "../store"
 import {
     getCk
 } from "@/utils/auth"
+
+let loadingInstance = null
 
 function getCommonParams () {
     let ck = getCk() || ""
@@ -24,6 +26,9 @@ const service = axios.create({
 // request 拦截器
 service.interceptors.request.use(
     config => {
+        if(config && config.method !== 'OPTION' && config.method !== "option"){
+            loadingInstance = Loading.service()
+        }
         if (config.params) {
             config.params = {
                 ...getCommonParams(),
@@ -46,9 +51,10 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
     response => {
-    /**
-     * code为非20000是抛错 可结合自己业务进行修改
-     */
+        loadingInstance.close();
+        /**
+         * code为非20000是抛错 可结合自己业务进行修改
+         */
         const res = response.data
         if (res.status !== "100") {
             Message({
