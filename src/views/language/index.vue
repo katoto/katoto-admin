@@ -406,7 +406,7 @@ export default {
             selLangOptions: [{
                 value: "English"
             }],
-            selPlat: "0",
+            selPlat: "2",
             selPlatOptions: [{
                 value: "0",
                 label: "客户端 *"
@@ -415,7 +415,7 @@ export default {
                 label: "h5"
             },{
                 value: "2",
-                label: "服务端"
+                label: "* 服务端 *"
             }],
             addform: {
                 string_id: "",
@@ -495,7 +495,7 @@ export default {
             this.selPlat === "0" ? this.platName = "客户端" : this.platName = "h5"
             this.getLanArr(this.selPage, this.selLang, this.selPlat )
         },
-        getLanArr (page = "", language = "English", plat = "0") {
+        getLanArr (page = "", language = "English", plat = "2") {
             let obj = {
                 language,
                 page,
