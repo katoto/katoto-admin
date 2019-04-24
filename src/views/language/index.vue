@@ -376,9 +376,6 @@
 
 <script>
 import XLSX from "xlsx"
-import {
-    wait
-} from "@/utils/utils.js"
 import FileSaver from "file-saver"
 
 export default {
@@ -448,18 +445,10 @@ export default {
                 console.log(this.allSelArr)
                 let isSure = window.confirm("确定批量删除？删除个数为"+ this.allSelArr.length)
                 if (isSure) {
-                    const loading = this.$loading({
-                        lock: true,
-                        text: "Loading",
-                        spinner: "el-icon-loading",
-                        background: "rgba(0, 0, 0, 0.7)"
-                    })
+                    let load = this.$load()
                     for (var item of this.allSelArr) {
                         // 执行删除
-                        await this.$store.dispatch("languageDel", item).then((res) => {
-                        }).catch(err => {
-                            console.error("rmMoreList error")
-                        })
+                        await this.$store.dispatch("languageDel", item)
                     }
                     this.$nextTick(() => {
                         this.$message({
@@ -468,7 +457,7 @@ export default {
                         })
                         // 更新列表
                         this.page_lan_Evt()
-                        loading.close()
+                        load.close()
                     })
                 }
             }
@@ -491,7 +480,7 @@ export default {
             /* 生成xlsx文件 */
             XLSX.writeFile(wb, "ms_langdemo.xlsx")
         },
-        page_lan_Evt (evt) {
+        page_lan_Evt () {
             this.selPlat === "0" ? this.platName = "客户端" : this.platName = "h5"
             this.getLanArr(this.selPage, this.selLang, this.selPlat )
         },
@@ -503,12 +492,7 @@ export default {
                 pageno: "1",
                 pagesize: "99999"
             }
-            const loading = this.$loading({
-                lock: true,
-                text: "Loading1",
-                spinner: "el-icon-loading",
-                background: "rgba(0, 0, 0, 0.7)"
-            })
+            let load = this.$load()
             this.$store.dispatch("languagePage", obj).then((res) => {
                 this.backlangArr = res.lang_list
                 if (res.filters) {
@@ -520,7 +504,7 @@ export default {
                     if (res.filters.pages && res.filters.pages.length > 0) {
                         let obj = {
                         }
-                        res.filters.pages.forEach((item,index) => {
+                        res.filters.pages.forEach((item) => {
                             obj.value = item
                             obj.label = item
                             basePage.push({
@@ -531,7 +515,7 @@ export default {
                     if (res.filters.languages && res.filters.languages.length > 0) {
                         let obj = {
                         }
-                        res.filters.languages.forEach((item,index) => {
+                        res.filters.languages.forEach((item) => {
                             obj.value = item
                             obj.label = item
                             baseLang.push({
@@ -542,9 +526,9 @@ export default {
                     this.selPageOptions = basePage
                     this.selLangOptions = baseLang
                 }
-                loading.close()
+                load.close()
             }).catch(() => {
-                loading.close()
+                load.close()
             })
         },
         pageinit () {
@@ -554,7 +538,7 @@ export default {
             let newJson = {
             }
             if (this.backlangArr && this.backlangArr.length>0) {
-                this.backlangArr.forEach((item, index) => {
+                this.backlangArr.forEach((item) => {
                     let currStr =  item.page+"."+ item.string_id
                     newJson[currStr] = item.content
                 })
@@ -624,7 +608,7 @@ export default {
                 }
                 // 更新列表
                 this.page_lan_Evt()
-            }).catch(err => {
+            }).catch(() => {
                 console.error("languageModify error")
             })
         },
@@ -645,7 +629,7 @@ export default {
                 }
                 // 更新列表
                 this.page_lan_Evt()
-            }).catch(err => {
+            }).catch(() => {
                 console.error("languageDel error")
             })
         },
@@ -686,7 +670,7 @@ export default {
                     })
                 })
             }
-            await this.$store.dispatch("languageAdd", base).then((res) => {
+            await this.$store.dispatch("languageAdd", base).then(() => {
                 this.$message({
                     type:"success",
                     message: "新增文案"
@@ -694,7 +678,7 @@ export default {
                 // 更新列表
                 this.page_lan_Evt()
                 this.showlangDialog = false
-            }).catch(err => {
+            }).catch(() => {
                 console.error("languageAdd error")
             })
             // 请求
@@ -732,7 +716,7 @@ export default {
                 plat: this.selPlat,
                 language_list: this.langArr
             }
-            await this.$store.dispatch("languageAdd", upObj).then((res) => {
+            await this.$store.dispatch("languageAdd", upObj).then(() => {
                 // 更新列表
                 this.page_lan_Evt()
                 this.dialogTableVisible = false
@@ -740,7 +724,7 @@ export default {
                     type: "success",
                     message: "上传成功"
                 })
-            }).catch(err => {
+            }).catch(() => {
                 this.uploading = false
                 console.error("languageAdd error")
             })
@@ -748,7 +732,6 @@ export default {
         },
         readExcel (e) {
         // 表格数据导入
-            let that = this
             const files = e.target.files
             if (files.length<=0) {
                 this.$message({
