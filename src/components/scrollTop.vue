@@ -1,8 +1,8 @@
 <template>
-  <a 
-    :class="[scrollTop<400?'hide':'']" 
-    href="javascript:;" 
-    class="scrollTop" 
+  <a
+    :class="[scrollTop<400?'hide':'']"
+    href="javascript:;"
+    class="scrollTop"
     @click="toTop">
     ScrollTop
   </a>
@@ -37,7 +37,7 @@ export default {
             const c = this.scrollTop
             if (c > 0) {
                 window.requestAnimationFrame(this.toTop)
-                window.scrollTo(0, c - c / 8)
+                window.scrollTo(0, c - c / 4)
             }
         }
     }
