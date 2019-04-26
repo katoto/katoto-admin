@@ -1,22 +1,22 @@
 <template>
   <div class="login-container">
-    <el-form 
-      ref="loginForm" 
-      :model="loginForm" 
-      :rules="loginRules" 
-      class="login-form" 
-      auto-complete="on" 
+    <el-form
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form"
+      auto-complete="on"
       label-position="left">
       <h3 class="title">madsports 管理后台</h3>
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input 
-          v-model="loginForm.username" 
-          name="username" 
-          type="text" 
-          auto-complete="on" 
+        <el-input
+          v-model="loginForm.username"
+          name="username"
+          type="text"
+          auto-complete="on"
           placeholder="username" />
       </el-form-item>
       <el-form-item prop="password">
@@ -30,17 +30,17 @@
           auto-complete="on"
           placeholder="password"
           @keyup.enter.native="handleLogin" />
-        <span 
-          class="show-pwd" 
+        <span
+          class="show-pwd"
           @click="showPwd">
           <svg-icon :icon-class="pwdType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
       <el-form-item>
-        <el-button 
-          :loading="loading" 
-          type="primary" 
-          style="width:100%;" 
+        <el-button
+          :loading="loading"
+          type="primary"
+          style="width:100%;"
           @click.native.prevent="handleLogin">
           登陆
         </el-button>
@@ -51,7 +51,7 @@
 
 <script>
 import {
-    isvalidUsername 
+    isvalidUsername
 } from "@/utils/validate"
 
 export default {
@@ -66,18 +66,18 @@ export default {
         }
         return {
             loginForm: {
-                username: "admin",
-                password: "admin"
+                username: "",
+                password: ""
             },
             loginRules: {
                 username: [{
                     required: true,
-                    trigger: "blur" 
+                    trigger: "blur"
                 }],
                 password: [{
                     required: true,
                     trigger: "blur",
-                    validator: validatePass 
+                    validator: validatePass
                 }]
             },
             loading: false,
@@ -104,7 +104,7 @@ export default {
                     this.$store.dispatch("Login", this.loginForm).then(() => {
                         this.loading = false
                         this.$router.push({
-                            path: this.redirect || "/" 
+                            path: this.redirect || "/"
                         })
                     }).catch(() => {
                         this.loading = false
@@ -114,7 +114,7 @@ export default {
                     return false
                 }
             })
-      
+
         }
     }
 }

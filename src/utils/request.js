@@ -86,6 +86,7 @@ service.interceptors.response.use(
     },
     error => {
         console.log("err" + error) // for debug
+        loadingInstance.close();
         Message({
             message: error.message,
             type: "error",
