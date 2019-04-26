@@ -710,6 +710,11 @@ export default {
                 })
                 return false
             }
+            this.langArr.forEach((item, index)=>{
+                if(item && item.content){
+                    item.content = item.content.replace(/\r\r\n/, '\r\n')
+                }
+            })
             this.uploading = true
             let upObj = {
                 inputLan:this.inputLan,
