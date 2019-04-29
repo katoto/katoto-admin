@@ -5,9 +5,9 @@
         <div style="float:left">
           <section style="float: left;margin-top: 4px">
             <span style="font-size: 14px">状态筛选: </span>
-            <el-select 
-              v-model="selStyle" 
-              size="small" 
+            <el-select
+              v-model="selStyle"
+              size="small"
               placeholder="请选择"
               @change="exchangeFn"
             >
@@ -20,14 +20,14 @@
           </section>
         </div>
         <div style="float: right">
-          <el-input 
-            v-model="searchUid" 
-            size="small" 
+          <el-input
+            v-model="searchUid"
+            size="small"
             placeholder="uid 查询"/>
-          <el-button 
-            type="primary" 
-            plain 
-            size="small" 
+          <el-button
+            type="primary"
+            plain
+            size="small"
             @click="goodslist()">
             查询
           </el-button>
@@ -53,27 +53,27 @@
         <el-table-column
           label="操作"
           width="230px">
-          <template 
-            slot-scope="scope" 
+          <template
+            slot-scope="scope"
             class="mailmsgOpera">
             <section>
-              <el-button 
-                type="primary" 
-                size="small" 
+              <el-button
+                type="primary"
+                size="small"
                 @click="js_useMsg( scope.row )">
                 查看
               </el-button>
-              <el-button 
-                :disabled="scope.row.orderstatus==='1'" 
-                type="success" 
-                size="small" 
+              <el-button
+                :disabled="scope.row.orderstatus==='1'"
+                type="success"
+                size="small"
                 @click="js_showmsgFn( scope.row, '1' )">
                 通过
               </el-button>
-              <el-button 
-                :disabled="scope.row.orderstatus==='6'" 
-                type="danger" 
-                size="small" 
+              <el-button
+                :disabled="scope.row.orderstatus==='6'"
+                type="danger"
+                size="small"
                 @click="js_showmsgFn( scope.row, '6' )">
                 拒绝
               </el-button>
@@ -81,8 +81,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <div 
-        class="block" 
+      <div
+        class="block"
         style="text-align:center">
         <el-pagination
           :current-page.sync="listPageNumber"
@@ -94,125 +94,125 @@
           @current-change="listCurrentChange"
         />
       </div>
-            
+
     </div>
-    <el-dialog 
-      :fullscreen="true" 
-      :visible.sync="showUidMsg" 
-      height="50%" 
-      width="80%" 
-      title="用户信息审核" 
+    <el-dialog
+      :fullscreen="true"
+      :visible.sync="showUidMsg"
+      height="50%"
+      width="80%"
+      title="用户信息审核"
       center>
       <section style="text-align:center">
         <el-table :data="userinfo">
-          <el-table-column 
-            prop="username" 
+          <el-table-column
+            prop="username"
             label="用户名"/>
-          <el-table-column 
-            prop="uid" 
+          <el-table-column
+            prop="uid"
             label="用户ID"/>
-          <el-table-column 
+          <el-table-column
             label="用户头像">
             <template slot-scope="scope">
               <img :src="scope.row.photo">
             </template>
           </el-table-column>
-          <el-table-column 
-            prop="ip" 
+          <el-table-column
+            prop="ip"
             label="IP 信息"/>
-          <el-table-column 
-            prop="regtime" 
+          <el-table-column
+            prop="regtime"
             label="注册时间"/>
-          <el-table-column 
-            prop="logintime" 
+          <el-table-column
+            prop="logintime"
             label="最后登录时间"/>
-          <el-table-column 
-            prop="deviceid" 
+          <el-table-column
+            prop="deviceid"
             label="手机设备号"/>
         </el-table>
       </section>
       <section style="margin-top: 50px;border-top: 2px solid #ccc;padding-top: 10px">
         <h4 style="text-align:center">关联账号信息</h4>
         <el-table :data="userinfosimilar">
-          <el-table-column 
-            prop="matchStr" 
-            width="110" 
+          <el-table-column
+            prop="matchStr"
+            width="110"
             label="关联原因"/>
-          <el-table-column 
-            prop="username" 
-            width="130" 
+          <el-table-column
+            prop="username"
+            width="130"
             label="用户名"/>
-          <el-table-column 
-            prop="uid" 
-            width="130" 
+          <el-table-column
+            prop="uid"
+            width="130"
             label="用户ID"/>
-          <el-table-column 
+          <el-table-column
             width="130"
             label="用户头像">
             <template slot-scope="scope">
               <img :src="scope.row.photo" >
             </template>
           </el-table-column>
-          <el-table-column 
-            prop="ip" 
-            width="150" 
+          <el-table-column
+            prop="ip"
+            width="150"
             label="IP信息"/>
-          <el-table-column 
-            prop="regtime" 
+          <el-table-column
+            prop="regtime"
             label="注册时间"/>
-          <el-table-column 
-            prop="deviceid" 
+          <el-table-column
+            prop="deviceid"
             label="设备号"/>
         </el-table>
       </section>
-            
-      <el-collapse 
-        v-model="activeNames" 
+
+      <el-collapse
+        v-model="activeNames"
         @change="collChange">
-        <el-collapse-item 
-          title="流水信息汇总(点击查看)" 
+        <el-collapse-item
+          title="流水信息汇总(点击查看)"
           name="1">
-          <el-table 
-            :data="sumAccountMsg" 
-            border 
+          <el-table
+            :data="sumAccountMsg"
+            border
             stripe>
-            <el-table-column 
-              prop="inout" 
+            <el-table-column
+              prop="inout"
               label="流水代码"/>
-            <el-table-column 
-              prop="desc" 
+            <el-table-column
+              prop="desc"
               label="流水名"/>
-            <el-table-column 
-              prop="golds" 
+            <el-table-column
+              prop="golds"
               label="流水总额"/>
           </el-table>
         </el-collapse-item>
-        <el-collapse-item 
-          title="流水明细(点击查看)" 
+        <el-collapse-item
+          title="流水明细(点击查看)"
           name="2">
-          <el-table 
-            :data="accountlogs" 
-            border 
+          <el-table
+            :data="accountlogs"
+            border
             stripe>
-            <el-table-column 
-              prop="crtime" 
+            <el-table-column
+              prop="crtime"
               label="时间"/>
-            <el-table-column 
-              prop="desc" 
+            <el-table-column
+              prop="desc"
               label="流水类型"/>
-            <el-table-column 
-              prop="golds" 
+            <el-table-column
+              prop="golds"
               label="流水数量"/>
-            <el-table-column 
-              prop="balance" 
-              width="200" 
+            <el-table-column
+              prop="balance"
+              width="200"
               label="余额"/>
-            <el-table-column 
-              prop="remark" 
+            <el-table-column
+              prop="remark"
               label="备注信息"/>
           </el-table>
-          <div 
-            class="block" 
+          <div
+            class="block"
             style="text-align:center">
             <el-pagination
               :current-page.sync="logNumber"
@@ -226,7 +226,7 @@
           </div>
         </el-collapse-item>
       </el-collapse>
-            
+
     </el-dialog>
   </section>
 </template>
@@ -239,18 +239,18 @@ export default {
             accountUid: "10015471",
             accountlogs: [],
             sumAccountMsg: [],
-            
+
             logNumber: 1,
-            logSize: 8,
+            logSize: 60,
             logCounts: 3,
-            
+
             userinfo: [],  // 用户信息
             userinfosimilar: [],  // 关联账户信息
-            
+
             listPageNumber: 1,
             listPageSize: 10,
             listMsgCounts: 3,
-            
+
             activeNames: [],
             showUidMsg: false, // 详细弹窗
             goodsList: [
@@ -341,7 +341,7 @@ export default {
                 this.userinfo = []
                 this.userinfo.push(accountinf.userinfo)
                 this.userinfosimilar = this.formateSim(accountinf.similar_userinfo)
-                
+
             } else {
                 this.$message({
                     type: "error",
@@ -411,7 +411,7 @@ export default {
             console.log(exchangeList)
         },
         goodsReview (row) {
-            
+
         },
         collChange (val) {
             if (val.indexOf("2")>-1) {
@@ -436,7 +436,7 @@ export default {
                     message: "用户信息获取失败"
                 })
             }
-        }        
+        }
     }
 }
 </script>
