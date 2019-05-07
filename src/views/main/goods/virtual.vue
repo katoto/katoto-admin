@@ -252,6 +252,14 @@ export default {
         this.$refs.file.removeEventListener("change", this.readExcel)
     },
     methods: {
+        hasThisCard (thistype) {
+            for (let type of this.types) {
+                if (type.goodsid === thistype) {
+                    return true
+                }
+            }
+            return false
+        },
         getList () {
             return virtualGoodList({
                 goodsid: this.goodsid,
@@ -387,6 +395,12 @@ export default {
                             data.split("\r\n").map(item => {
                                 if (item !== "") {
                                     let _item = item.split(":")
+                                    if (_item.length !== 3) {
+                                        throw new Error(`格式错误${item}`)
+                                    }
+                                    if (!this.hasThisCard(_item[2])) {
+                                        throw new Error(`没有这个类型的卡片：${_item[2]}`)
+                                    }
                                     arr.push({
                                         goodsid: _item[2],
                                         cardno: _item[0],
@@ -396,7 +410,7 @@ export default {
                             })
                             this.importIt(arr, files[0].name)
                         } catch (e) {
-                            this.error("格式错误")
+                            this.error(e.toString())
                         }
                     } else {
                         const workbook = XLSX.read(data, {
