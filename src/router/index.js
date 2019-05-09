@@ -108,6 +108,15 @@ export const constantRouterMap = [
                     title: "用户后台",
                     icon: "tree"
                 }
+            },
+            {
+                path: "adsconfig",
+                name: "adsconfig",
+                component: () => import("@/views/main/adsconfig/index"),
+                meta: {
+                    title: "广告配置",
+                    icon: "table"
+                }
             }
         ]
     },

@@ -26,7 +26,7 @@ const service = axios.create({
 // request 拦截器
 service.interceptors.request.use(
     config => {
-        if(config && config.method !== 'OPTION' && config.method !== "option"){
+        if (config && config.method !== "OPTION" && config.method !== "option") {
             loadingInstance = Loading.service()
         }
         if (config.params) {
@@ -51,7 +51,7 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
     response => {
-        loadingInstance.close();
+        loadingInstance.close()
         /**
          * code为非20000是抛错 可结合自己业务进行修改
          */
@@ -86,7 +86,7 @@ service.interceptors.response.use(
     },
     error => {
         console.log("err" + error) // for debug
-        loadingInstance.close();
+        loadingInstance.close()
         Message({
             message: error.message,
             type: "error",
