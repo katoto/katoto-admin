@@ -710,9 +710,9 @@ export default {
                 })
                 return false
             }
-            this.langArr.forEach((item, index)=>{
-                if(item && item.content){
-                    item.content = item.content.replace(/\r\r\n/g, '\r\n')
+            this.langArr.forEach((item, index) => {
+                if (item && item.content) {
+                    item.content = item.content.replace(/\r\r\n/g, "\r\n")
                 }
             })
             this.uploading = true

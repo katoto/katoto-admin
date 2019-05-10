@@ -14,87 +14,87 @@
         <el-radio :label="'2'">纯安卓</el-radio>
         <el-radio :label="'3'">纯IOS</el-radio>
       </el-radio-group>
-      <section 
-        v-if="selUid==='-1'" 
-        class="someSend" 
+      <section
+        v-if="selUid==='-1'"
+        class="someSend"
         style="margin-top:20px">
-        <el-input 
-          v-model="someUid" 
+        <el-input
+          v-model="someUid"
           size="small"
-          placeholder="请输入uid用','区分（部分发送不区分平台哦~）" 
+          placeholder="请输入uid用','区分（部分发送不区分平台哦~）"
           @blur="testUid"/>
-        <el-button 
-          size="small" 
-          type="primary" 
+        <el-button
+          size="small"
+          type="primary"
           disabled="disabled"
           @click="inpUidFn">批量导入</el-button>
       </section>
     </div>
     <!-- 语言区 -->
-    <div 
-      v-for="(item,index) in langObj" 
+    <div
+      v-for="(item,index) in langObj"
       :key="index">
       <p style="color:#F56C6C;font-weight:700">{{ item.langtitle }} 通知:</p>
-      <el-form 
-        ref="form" 
-        :model="item.langmsg" 
-        size="small" 
+      <el-form
+        ref="form"
+        :model="item.langmsg"
+        size="small"
         label-width="110px">
         <el-form-item label="站内信标题:">
-          <el-input 
+          <el-input
             v-model="item.langmsg.title"
             placeholder="输入48个字符"
             @input="checklen"/><span class="formTitle">{{ item.langmsg.title.length }}/48字符</span>
         </el-form-item>
         <el-form-item label="赠送金额:">
-          <el-input 
+          <el-input
             v-model="item.langmsg.amount"
-            type="number" 
+            type="number"
             placeholder="填写则发送奖励通知！"/>
         </el-form-item>
         <el-form-item label="站内信内容:">
-          <el-input 
-            v-model="item.langmsg.content" 
-            placeholder="输入120个字符"
-            type="textarea" 
-            @input="checklen_content"/><span class="formContent">{{ item.langmsg.content.length }}/120字符</span>
+          <el-input
+            v-model="item.langmsg.content"
+            placeholder="输入500个字符"
+            type="textarea"
+            @input="checklen_content"/><span class="formContent">{{ item.langmsg.content.length }}/500字符</span>
         </el-form-item>
       </el-form>
     </div>
     <section style="float:right;">
-      <el-button 
-        type="warning" 
+      <el-button
+        type="warning"
         @click="sendmsg">发送</el-button>
-      <el-button 
-        type="info" 
+      <el-button
+        type="info"
         @click="clearmsg">清空</el-button>
     </section>
-    
+
     <!--导入UId弹窗 -->
-    <el-dialog 
-      :visible.sync="dialogTableVisible" 
-      title="注意！" 
+    <el-dialog
+      :visible.sync="dialogTableVisible"
+      title="注意！"
       @open="openDialog">
       <div>
         <span>导入的uid信息:</span>
         <hr>
-        <el-input 
-          v-model="someUid" 
-          size="small" 
-          readonly 
+        <el-input
+          v-model="someUid"
+          size="small"
+          readonly
           placeholder="导入的信息(只读)"/>
       </div>
       <div style="margin-top:10px">
-        <input 
-          ref="upload" 
+        <input
+          ref="upload"
           type="file">
       </div>
-      <div 
-        slot="footer" 
+      <div
+        slot="footer"
         class="dialog-footer">
         <el-button @click="uplang">取 消</el-button>
-        <el-button 
-          type="primary" 
+        <el-button
+          type="primary"
           @click="dialogTableVisible = false" >确 定</el-button>
       </div>
     </el-dialog>
@@ -150,10 +150,10 @@ export default {
     },
     methods:{
         checklen_content (val) {
-            if (val && val.length > 120) {
+            if (val && val.length > 500) {
                 this.$message({
                     type:"error",
-                    message: "超过120字符限制长度"
+                    message: "超过500字符限制长度"
                 })
             }
         },
@@ -210,9 +210,9 @@ export default {
                         tipsmsg = item.langtitle + " 通知下的标题超过48字符限制"
                         return true
                     }
-                    if (item.langmsg.content.length>120) {
-                        tipsmsg = item.langtitle + " 通知下的内容超过120字符限制"
-                        return true 
+                    if (item.langmsg.content.length>500) {
+                        tipsmsg = item.langtitle + " 通知下的内容超过500字符限制"
+                        return true
                     }
                 })
                 if (islen) {
