@@ -56,6 +56,15 @@ export const constantRouterMap = [
         },
         children: [
             {
+                path: "international_goods",
+                name: "international_goods",
+                component: () => import("@/views/main/goods/international"),
+                meta: {
+                    title: "国际版商品配置",
+                    icon: "table"
+                }
+            },
+            {
                 path: "goods",
                 name: "goods",
                 component: () => import("@/views/main/goods/index"),
