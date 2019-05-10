@@ -92,7 +92,7 @@
             <el-button
               size="small"
               type="danger"
-              @click="showOpt(scope.row)">删除</el-button>
+              @click="delOpt(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -241,7 +241,7 @@ export default {
                 }
             ],
             dialogTableVisible: false,
-            dialogAds: true,
+            dialogAds: false,
             adsform: {
                 title: "",
                 desc: "",
@@ -259,6 +259,45 @@ export default {
         this.adslistFn()
     },
     methods: {
+        delOpt(row){
+            // 删除
+            console.log(row)
+            this.$confirm(`将永久删除${JSON.stringify(row)}该广告? `, '注意！', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(async () => {
+                console.log(row)
+                let exchangeList = await this.$store.dispatch("risk_userlist", obj)
+                if (exchangeList) {
+                    if (exchangeList.userinfos) {this.adslist = this.formateUserList(exchangeList.userinfos)}
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: "操作失败"
+                    })
+                }
+
+            }).catch(() => {
+                // 取消操作
+
+            });
+        },
+        showOpt(row){
+            // 修改
+            this.adsform = {
+                title: "",
+                desc: "",
+                startdate: "",
+                enddate: "",
+                num: ""
+            }
+            this.dialogAds = true
+        },
         onaddSubmit () {
             // 点击提交
             console.log(this.adsform)
@@ -325,12 +364,6 @@ export default {
             // 位置信息切换
             this.adslistFn()
         },
-        showOpt (row) {
-            // 操作
-            this.dialogTableVisible = true
-            this.opeUId = row.uid
-            this.opelocal = row.local
-        },
 
         formateUserList (list) {
             if (list && list.length>0) {
@@ -349,9 +382,9 @@ export default {
             let obj = {
                 localid: this.localid,
                 language: currlan,
-                platfrom: platfromSet
+                platfrom: this.platfromSet
             }
-
+            // 获取基础信息
             let exchangeList = await this.$store.dispatch("risk_userlist", obj)
             if (exchangeList) {
                 if (exchangeList.userinfos) {this.adslist = this.formateUserList(exchangeList.userinfos)}
