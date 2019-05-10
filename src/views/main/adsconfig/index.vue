@@ -3,7 +3,7 @@
     <div>
       <section class="clear">
         <div style="float:left">
-          <!-- 新增币种选择 -->
+          <!--  -->
           <section style="float: left;margin-top: 4px">
             <span style="font-size: 14px">广告图位置: </span>
             <el-select
@@ -83,19 +83,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- <div
-        class="block"
-        style="text-align:center">
-        <el-pagination
-          :current-page.sync="userPageNumber"
-          :page-size="userPageSize"
-          :page-count="userMsgCounts"
-          background
-          size="small"
-          layout="prev, pager, next,jumper"
-          @current-change="userCurrentChange"
-        />
-      </div> -->
     </div>
 
     <!--新增广告的弹窗 -->
@@ -172,33 +159,6 @@
 
     </el-dialog>
 
-    <!--导入UId弹窗 -->
-    <!-- <el-dialog
-      :visible.sync="dialogTableVisible"
-      title="注意！" >
-      <div>
-        <span>设置用户 {{ opeUId }} 等级:</span>
-        <el-select
-          v-model="opelocal"
-          size="small"
-          placeholder="请选择">
-          <el-option
-            v-for="item in opelocalObj"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"/>
-        </el-select>
-      </div>
-      <div
-        slot="footer"
-        class="dialog-footer">
-        <el-button @click="dialogTableVisible = false" >取 消</el-button>
-        <el-button
-          type="primary"
-          @click="uplocalFn">确 定</el-button>
-      </div>
-    </el-dialog> -->
-
   </section>
 </template>
 
@@ -207,7 +167,6 @@
 export default {
     data () {
         return {
-
             activeName: "first",
             adslist: [
             ],
@@ -223,6 +182,7 @@ export default {
             ],
             dialogTableVisible: false,
             dialogAds: true,
+            // 新增弹层
             adsform: {
                 title: "",
                 desc: "",
@@ -231,10 +191,6 @@ export default {
                 num: "",
                 checkArr:['ios', 'android'],
             },
-
-            // userPageNumber: 1,
-            // userPageSize: 10,
-            // userMsgCounts: 3,
         }
     },
     mounted () {
@@ -243,13 +199,12 @@ export default {
     methods: {
         delOpt(row){
             // 删除
-            console.log(row)
             this.$confirm(`将永久删除${JSON.stringify(row)}该广告? `, '注意！', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(async () => {
-                console.log(row)
+              // todo
                 let exchangeList = await this.$store.dispatch("risk_userlist", obj)
                 if (exchangeList) {
                     if (exchangeList.userinfos) {this.adslist = this.formateUserList(exchangeList.userinfos)}
@@ -263,7 +218,6 @@ export default {
                         message: "操作失败"
                     })
                 }
-
             }).catch(() => {
                 // 取消操作
 
@@ -281,10 +235,9 @@ export default {
             this.dialogAds = true
         },
         onaddSubmit () {
-            // 点击提交
+            // 点击新增提交
             console.log(this.adsform)
-            console.log(this.fileList)
-            console.log(this.dialogAds)
+
         },
         handleClick (tab, event) {
             // 切换语言选项卡  tab  eng india
@@ -349,9 +302,6 @@ export default {
 
         formateUserList (list) {
             if (list && list.length>0) {
-                // list.forEach((item) => {
-                //     item.localStr = this.localObj[item.local]
-                // })
             }
             return list
         },
@@ -378,42 +328,16 @@ export default {
 
         }
 
-        // async uplocalFn () {
-        //     // 更新用户等级
-        //     let currlan = 'en'
-        //     if(this.activeName !== 'first'){
-        //         currlan = 'india'
-        //     }
-        //     let obj = {
-        //         local: this.opelocal.toString(),
-        //         language: currlan
-        //     }
-        //     let local = await this.$store.dispatch("risk_localUpdate", obj)
-        //     if (local) {
-        //         this.$message({
-        //             type: "success",
-        //             message: "操作用户等级成功"
-        //         })
-        //         this.dialogTableVisible = false
-        //         this.adslistFn()
-        //     } else {
-        //         this.$message({
-        //             type: "error",
-        //             message: "操作用户等级error"
-        //         })
-        //     }
-        // },
-
     }
 }
 </script>
 <style scoped>
-.addTop section{
-    margin-top: 10px
-}
-.el-col-2{
-    text-align: center
-}
+  .addTop section{
+      margin-top: 10px
+  }
+  .el-col-2{
+      text-align: center
+  }
   .seaUid .el-input {
     width: 300px;
     line-height: 40px;
@@ -424,8 +348,7 @@ export default {
   .clear{
     overflow: hidden;
   }
-
-    .avatar-uploader .el-upload {
+  .avatar-uploader .el-upload {
         border: 1px dashed #d9d9d9;
         border-radius: 6px;
         cursor: pointer;
