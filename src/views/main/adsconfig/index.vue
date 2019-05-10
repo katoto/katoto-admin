@@ -19,22 +19,6 @@
                 :value="item.value"/>
             </el-select>
           </section>
-          <!-- 平台 -->
-          <section style="float: left;margin-top: 4px;margin-left:10px">
-            <span style="font-size: 14px">平台配置: </span>
-            <el-select
-              v-model="platfromSet"
-              size="small"
-              placeholder="请选择平台"
-              @change="adsLocalChange"
-            >
-              <el-option
-                v-for="item in platfromOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"/>
-            </el-select>
-          </section>
         </div>
         <div
           style="float: right"
@@ -77,6 +61,9 @@
         <el-table-column
           prop="regtime"
           label="内容"/>
+        <el-table-column
+          prop="regtime"
+          label="平台"/>
         <el-table-column
           prop="localStr"
           label="上线时间"/>
@@ -160,6 +147,12 @@
               style="width: 100%;"/>
           </el-col>
         </el-form-item>
+        <el-form-item label="展示平台: ">
+          <el-checkbox-group v-model="adsform.checkArr">
+            <el-checkbox label="ios" name="type"></el-checkbox>
+            <el-checkbox label="android" name="type"></el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
         <el-form-item label="权重设置">
           <el-input-number
             v-model="adsform.num"
@@ -214,19 +207,7 @@
 export default {
     data () {
         return {
-            platfromSet: "0",
-            platfromOptions:[
-                {
-                    value: "0",
-                    label: "All"
-                }, {
-                    value: "1",
-                    label: "ios"
-                }, {
-                    value: "2",
-                    label: "android"
-                }
-            ],
+
             activeName: "first",
             adslist: [
             ],
@@ -241,13 +222,14 @@ export default {
                 }
             ],
             dialogTableVisible: false,
-            dialogAds: false,
+            dialogAds: true,
             adsform: {
                 title: "",
                 desc: "",
                 startdate: "",
                 enddate: "",
-                num: ""
+                num: "",
+                checkArr:['ios', 'android'],
             },
 
             // userPageNumber: 1,
@@ -381,8 +363,7 @@ export default {
             }
             let obj = {
                 localid: this.localid,
-                language: currlan,
-                platfrom: this.platfromSet
+                language: currlan
             }
             // 获取基础信息
             let exchangeList = await this.$store.dispatch("risk_userlist", obj)
