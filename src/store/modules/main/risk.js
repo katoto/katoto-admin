@@ -1,5 +1,5 @@
 import {
-    goodsReview, goodsList, userlist, accountinf, logs, sumlogs, uslevel, adList
+    goodsReview, goodsList, userlist, accountinf, logs, sumlogs, uslevel, adList, ad_modify
 } from "@/api/main/risk"
 import {
     getCk, setCk, removeCk
@@ -94,6 +94,17 @@ const mailmsg = {
         }, obj) {
             return new Promise((resolve, reject) => {
                 adList(obj).then(response => {
+                    resolve(response.data)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+        ad_modify ({
+            commit
+        }, obj) {
+            return new Promise((resolve, reject) => {
+                ad_modify(obj).then(response => {
                     resolve(response.data)
                 }).catch(error => {
                     reject(error)

@@ -53,3 +53,7 @@ export function adList (data = {
 }) {
     return get("/admin/activity/config/list", data)
 }
+export function ad_modify (data = {
+}) {
+    return post("/admin/activity/config/modify", data)
+}

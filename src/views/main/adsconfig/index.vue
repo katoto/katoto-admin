@@ -50,21 +50,44 @@
         stripe
         highlight-current-row
         style="width: 100%">
+
         <el-table-column
-          prop="index"
+          prop="activityid"
           label="序号"/>
         <el-table-column
-          prop="uid"
-          label="广告图"/>
+          prop="weight"
+          label="权重"/>
         <el-table-column
-          prop="regtime"
+          label="广告图">
+          <template slot-scope="scope">
+            <img :src="scope.row.img_url">
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          label="标题"/>
+        <el-table-column
+          prop="description"
           label="内容"/>
         <el-table-column
-          prop="regtime"
-          label="平台"/>
+          label="平台">
+          <template slot-scope="scope">
+            <div class="flex">
+              <p>{{ scope.row.platform[0]?'IOS':'' }}</p>
+              <p>|</p>
+              <p>{{ scope.row.platform[2]?'Android':'' }}</p>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="localStr"
+          prop="begintime"
           label="上线时间"/>
+        <el-table-column
+          prop="endtime"
+          label="下线时间"/>
+        <el-table-column
+          prop="link"
+          label="活动地址"/>
         <el-table-column
           label="操作"
           width="230px">
@@ -95,23 +118,22 @@
         <el-form-item label="活动标题">
           <el-input
             v-model="adsform.title"
-            style="max-width:350px"/>
+          />
         </el-form-item>
         <el-form-item label="活动内容">
           <el-input
-            v-model="adsform.desc"
+            v-model="adsform.description"
             type="textarea"/>
         </el-form-item>
         <el-form-item label="广告图">
-          <input
-            ref="upload"
-            type="file"
-          >
+          <el-input
+            v-model="adsform.img_url"
+          />
         </el-form-item>
         <el-form-item label="活动时间">
           <el-col :span="11">
             <el-date-picker
-              v-model="adsform.startdate"
+              v-model="adsform.begintime"
               size="small"
               type="date"
               format="yyyy-MM-dd"
@@ -124,7 +146,7 @@
             class="line">-</el-col>
           <el-col :span="11">
             <el-date-picker
-              v-model="adsform.enddate"
+              v-model="adsform.endtime"
               size="small"
               format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
@@ -133,18 +155,16 @@
           </el-col>
         </el-form-item>
         <el-form-item label="展示平台: ">
-          <el-checkbox-group v-model="adsform.checkArr">
+          <el-checkbox-group v-model="adsform.platform">
             <el-checkbox
-              label="ios"
-              name="type"/>
+              label="ios"/>
             <el-checkbox
-              label="android"
-              name="type"/>
+              label="android"/>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="权重设置">
           <el-input-number
-            v-model="adsform.num"
+            v-model="adsform.weight"
             :min="1"
             :max="100"
             label="描述文字"
@@ -152,8 +172,8 @@
         </el-form-item>
         <el-form-item label="活动地址">
           <el-input
-            v-model="adsform.address"
-            style="max-width:350px"/>
+            v-model="adsform.link"
+          />
         </el-form-item>
         <el-form-item>
           <el-button
@@ -161,15 +181,15 @@
             @click="onaddSubmit">立即创建</el-button>
           <el-button @click="dialogAds = false" >取消</el-button>
         </el-form-item>
-
       </el-form>
-
     </el-dialog>
-
   </section>
 </template>
 
 <script>
+import {
+    type
+} from "os"
 
 export default {
     data () {
@@ -188,16 +208,18 @@ export default {
                 }
             ],
             dialogTableVisible: false,
-            dialogAds: true,
+            dialogAds: false,
             address:"",
             // 新增弹层
             adsform: {
                 title: "",
-                desc: "",
-                startdate: "",
-                enddate: "",
-                num: "",
-                checkArr:["ios", "android"]
+                description:"",
+                img_url:"",
+                begintime: "",
+                endtime: "",
+                weight: "",
+                link:"",
+                platform:[]
             }
         }
     },
@@ -232,20 +254,25 @@ export default {
             })
         },
         showOpt (row) {
+            console.log(row)
             // 修改
-            this.adsform = {
-                title: "",
-                desc: "",
-                startdate: "",
-                enddate: "",
-                num: ""
-            }
+            this.adsform = row
             this.dialogAds = true
         },
         onaddSubmit () {
-            // 点击新增提交
-            console.log(this.adsform)
-
+            let currlan = "en"
+            if (this.activeName !== "first") {
+                currlan = "india"
+            }
+            let obj = {
+                localid: this.localid,
+                language: currlan
+            }
+            let data = {
+                ...obj,
+                ...this.adsform
+            }
+            this.$store.dispatch("ad_modify",data)
         },
         handleClick (tab, event) {
             // 切换语言选项卡  tab  eng india
@@ -254,16 +281,29 @@ export default {
             })
         },
         addAdsFn () {
-            // 新增广告
+            let currlan = "en"
+            if (this.activeName !== "first") {
+                currlan = "india"
+            }
+            let obj = {
+                localid: this.localid,
+                language: currlan
+            }
+            this.adsform = {
+                title: "",
+                description:"",
+                img_url:"",
+                begintime: "",
+                endtime: "",
+                weight: "",
+                link:"",
+                platform:[]
+            }
+            let data = {
+                ...obj,
+                ...this.adsform
+            }
             this.dialogAds = true
-            this.$refs.upload.value = ""
-            this.$nextTick(() => {
-                let thisRef = this.$refs.upload
-                if (thisRef) {
-                    thisRef.removeEventListener("change", this.readUpload)
-                    thisRef.addEventListener("change", this.readUpload)
-                }
-            })
         },
         readUpload (e) {
         // 表格数据导入
@@ -326,6 +366,7 @@ export default {
             }
             // 获取基础信息
             let exchangeList = await this.$store.dispatch("adList", obj)
+            this.adslist = exchangeList.activitylist
             console.log(exchangeList)
         }
 
@@ -371,5 +412,9 @@ export default {
   width: 20px;
   height: 20px;
   display: block;
+}
+.flex{
+    display: flex;
+    justify-content: center;
 }
 </style>
