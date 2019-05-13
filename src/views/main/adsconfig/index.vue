@@ -39,12 +39,10 @@
           @tab-click="handleClick">
           <el-tab-pane
             label="英文"
-            name="first">
-          </el-tab-pane>
+            name="first"/>
           <el-tab-pane
             label="印地语"
-            name="second">
-          </el-tab-pane>
+            name="second"/>
         </el-tabs>
       </div>
       <el-table
@@ -97,7 +95,7 @@
         <el-form-item label="活动标题">
           <el-input
             v-model="adsform.title"
-            style="width:350px"/>
+            style="max-width:350px"/>
         </el-form-item>
         <el-form-item label="活动内容">
           <el-input
@@ -105,10 +103,10 @@
             type="textarea"/>
         </el-form-item>
         <el-form-item label="广告图">
-            <input
+          <input
             ref="upload"
             type="file"
-            >
+          >
         </el-form-item>
         <el-form-item label="活动时间">
           <el-col :span="11">
@@ -136,8 +134,12 @@
         </el-form-item>
         <el-form-item label="展示平台: ">
           <el-checkbox-group v-model="adsform.checkArr">
-            <el-checkbox label="ios" name="type"></el-checkbox>
-            <el-checkbox label="android" name="type"></el-checkbox>
+            <el-checkbox
+              label="ios"
+              name="type"/>
+            <el-checkbox
+              label="android"
+              name="type"/>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="权重设置">
@@ -147,6 +149,11 @@
             :max="100"
             label="描述文字"
             size="small"/>
+        </el-form-item>
+        <el-form-item label="活动地址">
+          <el-input
+            v-model="adsform.address"
+            style="max-width:350px"/>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -182,6 +189,7 @@ export default {
             ],
             dialogTableVisible: false,
             dialogAds: true,
+            address:"",
             // 新增弹层
             adsform: {
                 title: "",
@@ -189,29 +197,29 @@ export default {
                 startdate: "",
                 enddate: "",
                 num: "",
-                checkArr:['ios', 'android'],
-            },
+                checkArr:["ios", "android"]
+            }
         }
     },
     mounted () {
         this.adslistFn()
     },
     methods: {
-        delOpt(row){
+        delOpt (row) {
             // 删除
-            this.$confirm(`将永久删除${JSON.stringify(row)}该广告? `, '注意！', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
+            this.$confirm(`将永久删除${JSON.stringify(row)}该广告? `, "注意！", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
             }).then(async () => {
-              // todo
+                // todo
                 let exchangeList = await this.$store.dispatch("risk_userlist", obj)
                 if (exchangeList) {
                     if (exchangeList.userinfos) {this.adslist = this.formateUserList(exchangeList.userinfos)}
                     this.$message({
-                        type: 'success',
-                        message: '删除成功!'
-                    });
+                        type: "success",
+                        message: "删除成功!"
+                    })
                 } else {
                     this.$message({
                         type: "error",
@@ -221,9 +229,9 @@ export default {
             }).catch(() => {
                 // 取消操作
 
-            });
+            })
         },
-        showOpt(row){
+        showOpt (row) {
             // 修改
             this.adsform = {
                 title: "",
@@ -248,7 +256,7 @@ export default {
         addAdsFn () {
             // 新增广告
             this.dialogAds = true
-            this.$refs.upload.value = ''
+            this.$refs.upload.value = ""
             this.$nextTick(() => {
                 let thisRef = this.$refs.upload
                 if (thisRef) {
@@ -302,6 +310,7 @@ export default {
 
         formateUserList (list) {
             if (list && list.length>0) {
+
             }
             return list
         },
@@ -316,60 +325,51 @@ export default {
                 language: currlan
             }
             // 获取基础信息
-            let exchangeList = await this.$store.dispatch("risk_userlist", obj)
-            if (exchangeList) {
-                if (exchangeList.userinfos) {this.adslist = this.formateUserList(exchangeList.userinfos)}
-            } else {
-                this.$message({
-                    type: "error",
-                    message: "操作失败"
-                })
-            }
-
+            let exchangeList = await this.$store.dispatch("adList", obj)
+            console.log(exchangeList)
         }
 
     }
 }
 </script>
 <style scoped>
-  .addTop section{
-      margin-top: 10px
-  }
-  .el-col-2{
-      text-align: center
-  }
-  .seaUid .el-input {
-    width: 300px;
-    line-height: 40px;
-  }
-  .el-input{
-    width: 150px;
-  }
-  .clear{
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload {
-        border: 1px dashed #d9d9d9;
-        border-radius: 6px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 20px;
-    color: #8c939d;
-    width: 30px;
-    height: 20px;
-    line-height: 20px;
-    text-align: center;
-  }
-  .avatar {
-    width: 20px;
-    height: 20px;
-    display: block;
-  }
-
+.addTop section {
+  margin-top: 10px;
+}
+.el-col-2 {
+  text-align: center;
+}
+.seaUid .el-input {
+  width: 300px;
+  line-height: 40px;
+}
+.el-input {
+  width: 150px;
+}
+.clear {
+  overflow: hidden;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 20px;
+  color: #8c939d;
+  width: 30px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+}
+.avatar {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
 </style>
