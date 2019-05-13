@@ -40,7 +40,7 @@
           <el-tab-pane
             label="英文"
             name="first"/>
-          <el-tab-pane
+          <el-tab-pane v-if="!isnational"
             label="印地语"
             name="second"/>
         </el-tabs>
@@ -110,7 +110,7 @@
     <el-dialog
       :visible.sync="dialogAds"
       :close-on-click-modal="false"
-      :title="localid === '0' ? '新增活动中心广告' : '新增弹窗中心广告'" >
+      :title="modifyTitle ? '修改广告图' : localid === '0' ? '新增活动中心广告' : '新增弹窗中心广告'" >
       <el-form
         ref="form"
         :model="adsform"
@@ -220,16 +220,32 @@ export default {
                 weight: "",
                 link:"",
                 platform:[]
-            }
+            },
+            modifyTitle: false,
+            isnational: 0
+        }
+    },
+    watch: {
+        $route(to, from){
+            console.log(to)
+            this.pageinit()
         }
     },
     mounted () {
-        this.adslistFn()
+        this.pageinit()
     },
     methods: {
+        pageinit(){
+            if(this.$route && this.$route.fullPath.indexOf('/national') > -1){
+                this.isnational = 1
+            } else {
+                this.isnational = 0
+            }
+            this.adslistFn()
+        },
         delOpt (row) {
             // 删除
-            this.$confirm(`将永久删除${JSON.stringify(row)}该广告? `, "注意！", {
+            this.$confirm(`将永久删除${JSON.stringify(row.activityid)}该广告? `, "注意！", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning"
@@ -237,7 +253,7 @@ export default {
                 // todo
                 let exchangeList = await this.$store.dispatch("risk_userlist", obj)
                 if (exchangeList) {
-                    if (exchangeList.userinfos) {this.adslist = this.formateUserList(exchangeList.userinfos)}
+                    if (exchangeList.userinfos) {this.adslist = exchangeList.userinfos}
                     this.$message({
                         type: "success",
                         message: "删除成功!"
@@ -254,12 +270,12 @@ export default {
             })
         },
         showOpt (row) {
-            console.log(row)
+            this.modifyTitle = true
             // 修改
             this.adsform = row
             this.dialogAds = true
         },
-        onaddSubmit () {
+        async onaddSubmit () {
             let currlan = "en"
             if (this.activeName !== "first") {
                 currlan = "india"
@@ -268,11 +284,27 @@ export default {
                 localid: this.localid,
                 language: currlan
             }
+            this.adsform.weight = this.adsform.weight.toString()
+            this.adsform.begintime = this.adsform.begintime.split(' ')[0]
+            this.adsform.endtime = this.adsform.endtime.split(' ')[0]
             let data = {
                 ...obj,
                 ...this.adsform
             }
-            this.$store.dispatch("ad_modify",data)
+            let addata = await this.$store.dispatch("ad_modify",data)
+            if (addata) {
+                this.adslistFn()
+                this.$message({
+                    type: "success",
+                    message: "success!"
+                })
+                this.dialogAds = false
+            } else {
+                this.$message({
+                    type: "error",
+                    message: "操作失败"
+                })
+            }
         },
         handleClick (tab, event) {
             // 切换语言选项卡  tab  eng india
@@ -281,6 +313,7 @@ export default {
             })
         },
         addAdsFn () {
+            this.modifyTitle = false
             let currlan = "en"
             if (this.activeName !== "first") {
                 currlan = "india"
@@ -305,54 +338,10 @@ export default {
             }
             this.dialogAds = true
         },
-        readUpload (e) {
-        // 表格数据导入
-            const files = e.target.files
-            if (files.length<=0) {
-                this.$message({
-                    message: "error 请选择一个文件!",
-                    type: "warning"
-                })
-                return false
-            } else if (!/\.(png|jpeg|bmp|jpg)$/.test(files[0].name.toLowerCase())) {
-                this.$message({
-                    message: "上传格式不正确，请上传xls或者xlsx格式",
-                    type: "error"
-                })
-                return false
-            }
-            const fileReader = new FileReader()
-            fileReader.onload = (ev) => {
-                try {
-                    const data = ev.target.result
-                    const workbook = XLSX.read(data, {
-                        type: "binary"
-                    })
-                    const wsname = workbook.SheetNames[0]// 取第一张表
-                    this.langArr = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])// 生成json表格内容
-                    let oneData = this.langArr[0]
-                    if ((oneData[0] && oneData[0].__EMPTY) || ( !oneData.string_id && !oneData.page && !oneData.language )) {
-                        this.error("文档应该加密了, 需要先解锁文档!")
-                        this.$refs.upload.value = ""
-                        this.langArr = []
-                    }
-                } catch (e) {
-                    return false
-                }
-            }
-            fileReader.readAsBinaryString(files[0])
-        },
 
         adsLocalChange () {
             // 位置信息切换
             this.adslistFn()
-        },
-
-        formateUserList (list) {
-            if (list && list.length>0) {
-
-            }
-            return list
         },
         async adslistFn () {
             // 获取广告信息
@@ -362,7 +351,8 @@ export default {
             }
             let obj = {
                 localid: this.localid,
-                language: currlan
+                language: currlan,
+                national: this.isnational.toString()
             }
             // 获取基础信息
             let exchangeList = await this.$store.dispatch("adList", obj)
