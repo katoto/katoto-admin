@@ -53,10 +53,14 @@
 
         <el-table-column
           prop="activityid"
-          label="序号"/>
+          label="序号"
+          width="70"
+          />
         <el-table-column
           prop="weight"
-          label="权重"/>
+          label="权重"
+          width="60"
+          />
         <el-table-column
           label="广告图">
           <template slot-scope="scope">
@@ -72,11 +76,10 @@
         <el-table-column
           label="平台">
           <template slot-scope="scope">
-            <div class="flex">
-              <p>{{ scope.row.platform[0]?'IOS':'' }}</p>
-              <p>|</p>
-              <p>{{ scope.row.platform[2]?'Android':'' }}</p>
+            <div class="flex" v-if="scope.row.platform.length>0">
+              <p v-for="item in scope.row.platform">&nbsp;{{ item }}&nbsp;</p>
             </div>
+            <div v-else>无</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -88,6 +91,11 @@
         <el-table-column
           prop="link"
           label="活动地址"/>
+        <el-table-column label="上线状态">
+            <template slot-scope="scope">
+                <p>{{ statusName(scope.row.status) }}</p>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           width="230px">
@@ -97,10 +105,14 @@
             <el-button
               size="small"
               @click="showOpt(scope.row)">修改</el-button>
-            <el-button
+            <el-button v-if="scope.row.status === '0'"
+              size="small"
+              type="success"
+              @click="delOpt(scope.row, '1')">上线</el-button>
+            <el-button v-else
               size="small"
               type="danger"
-              @click="delOpt(scope.row)">删除</el-button>
+              @click="delOpt(scope.row, '0')">下线</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -157,16 +169,16 @@
         <el-form-item label="展示平台: ">
           <el-checkbox-group v-model="adsform.platform">
             <el-checkbox
-              label="ios"/>
+              label="ios" value='1'/>
             <el-checkbox
-              label="android"/>
+              label="android" value='1'/>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="权重设置">
           <el-input-number
             v-model="adsform.weight"
             :min="1"
-            :max="100"
+            :max="1000"
             label="描述文字"
             size="small"/>
         </el-form-item>
@@ -175,6 +187,7 @@
             v-model="adsform.link"
           />
         </el-form-item>
+
         <el-form-item>
           <el-button
             type="primary"
@@ -235,6 +248,9 @@ export default {
         this.pageinit()
     },
     methods: {
+        statusName(val){
+            return val === '0' ? '下线' : '上线';
+        },
         pageinit(){
             if(this.$route && this.$route.fullPath.indexOf('/national') > -1){
                 this.isnational = 1
@@ -243,27 +259,17 @@ export default {
             }
             this.adslistFn()
         },
-        delOpt (row) {
+        delOpt (row, val) {
             // 删除
-            this.$confirm(`将永久删除${JSON.stringify(row.activityid)}该广告? `, "注意！", {
+            this.$confirm(`将上下线${JSON.stringify(row.activityid)}该广告? `, "注意！", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning"
             }).then(async () => {
                 // todo
-                let exchangeList = await this.$store.dispatch("risk_userlist", obj)
-                if (exchangeList) {
-                    if (exchangeList.userinfos) {this.adslist = exchangeList.userinfos}
-                    this.$message({
-                        type: "success",
-                        message: "删除成功!"
-                    })
-                } else {
-                    this.$message({
-                        type: "error",
-                        message: "操作失败"
-                    })
-                }
+                row.status = val
+                this.adsform = JSON.parse(JSON.stringify(row))
+                this.onaddSubmit()
             }).catch(() => {
                 // 取消操作
 
@@ -272,7 +278,14 @@ export default {
         showOpt (row) {
             this.modifyTitle = true
             // 修改
-            this.adsform = row
+            console.log(row)
+            // if(row.platform && row.platform !== ''){
+            //     let formArr = row.platform.split('|')
+            //     row.platform = []
+            //     if(formArr[0] === '1') row.platform[0] = 'ios'
+            //     if(formArr[1] === '1') row.platform[1] = 'android'
+            // }
+            this.adsform = JSON.parse(JSON.stringify(row))
             this.dialogAds = true
         },
         async onaddSubmit () {
@@ -284,13 +297,21 @@ export default {
                 localid: this.localid,
                 language: currlan
             }
+            let arrplat = []
+            arrplat[0] = this.adsform.platform.indexOf('ios')>-1? '1' : '0'
+            arrplat[1] = this.adsform.platform.indexOf('android')>-1? '1' : '0'
+            // this.adsform.platform = arrplat.join('|')
+            // console.log(this.adsform)
             this.adsform.weight = this.adsform.weight.toString()
             this.adsform.begintime = this.adsform.begintime.split(' ')[0]
             this.adsform.endtime = this.adsform.endtime.split(' ')[0]
             let data = {
                 ...obj,
-                ...this.adsform
+                ...this.adsform,
+                national: this.isnational.toString()
             }
+            data = JSON.parse(JSON.stringify(data))
+            data.platform = arrplat.join('|')
             let addata = await this.$store.dispatch("ad_modify",data)
             if (addata) {
                 this.adslistFn()
@@ -370,12 +391,8 @@ export default {
 .el-col-2 {
   text-align: center;
 }
-.seaUid .el-input {
-  width: 300px;
-  line-height: 40px;
-}
 .el-input {
-  width: 150px;
+  max-width: 400px;
 }
 .clear {
   overflow: hidden;

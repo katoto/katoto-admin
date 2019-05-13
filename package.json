@@ -5,7 +5,7 @@
   "description": "madsport admin",
   "author": "",
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 127.0.0.1",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 0.0.0.0",
     "prebuild-release": "npm run clean",
     "build-release": "cross-env ISPre=true node build/build.js",
     "prebuild": "npm run clean",
