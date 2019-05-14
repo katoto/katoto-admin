@@ -40,7 +40,8 @@
           <el-tab-pane
             label="英文"
             name="first"/>
-          <el-tab-pane v-if="!isnational"
+          <el-tab-pane
+            v-if="!isnational"
             label="印地语"
             name="second"/>
         </el-tabs>
@@ -55,12 +56,12 @@
           prop="activityid"
           label="序号"
           width="70"
-          />
+        />
         <el-table-column
           prop="weight"
           label="权重"
           width="60"
-          />
+        />
         <el-table-column
           label="广告图">
           <template slot-scope="scope">
@@ -76,7 +77,9 @@
         <el-table-column
           label="平台">
           <template slot-scope="scope">
-            <div class="flex" v-if="scope.row.platform.length>0">
+            <div
+              v-if="scope.row.platform.length>0"
+              class="flex">
               <p v-for="item in scope.row.platform">&nbsp;{{ item }}&nbsp;</p>
             </div>
             <div v-else>无</div>
@@ -86,14 +89,15 @@
           prop="begintime"
           label="上线时间"/>
         <el-table-column
+          label="下线时间"
           prop="endtime"
-          label="下线时间"/>
+        />
         <el-table-column
           prop="link"
           label="活动地址"/>
         <el-table-column label="上线状态">
-            <template slot-scope="scope">
-                <p>{{ statusName(scope.row.status) }}</p>
+          <template slot-scope="scope">
+            <p>{{ statusName(scope.row.status) }}</p>
           </template>
         </el-table-column>
         <el-table-column
@@ -105,11 +109,13 @@
             <el-button
               size="small"
               @click="showOpt(scope.row)">修改</el-button>
-            <el-button v-if="scope.row.status === '0'"
+            <el-button
+              v-if="scope.row.status === '0'"
               size="small"
               type="success"
               @click="delOpt(scope.row, '1')">上线</el-button>
-            <el-button v-else
+            <el-button
+              v-else
               size="small"
               type="danger"
               @click="delOpt(scope.row, '0')">下线</el-button>
@@ -147,10 +153,10 @@
             <el-date-picker
               v-model="adsform.begintime"
               size="small"
-              type="date"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择开始日期"
+              value-format="timestamp"
               style="width: 100%;"/>
           </el-col>
           <el-col
@@ -160,18 +166,21 @@
             <el-date-picker
               v-model="adsform.endtime"
               size="small"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择结束日期"
+              value-format="timestamp"
               style="width: 100%;"/>
           </el-col>
         </el-form-item>
         <el-form-item label="展示平台: ">
           <el-checkbox-group v-model="adsform.platform">
             <el-checkbox
-              label="ios" value='1'/>
+              label="ios"
+              value="1"/>
             <el-checkbox
-              label="android" value='1'/>
+              label="android"
+              value="1"/>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="权重设置">
@@ -239,7 +248,7 @@ export default {
         }
     },
     watch: {
-        $route(to, from){
+        $route (to, from) {
             console.log(to)
             this.pageinit()
         }
@@ -248,11 +257,11 @@ export default {
         this.pageinit()
     },
     methods: {
-        statusName(val){
-            return val === '0' ? '下线' : '上线';
+        statusName (val) {
+            return val === "0" ? "下线" : "上线"
         },
-        pageinit(){
-            if(this.$route && this.$route.fullPath.indexOf('/national') > -1){
+        pageinit () {
+            if (this.$route && this.$route.fullPath.indexOf("/national") > -1) {
                 this.isnational = 1
             } else {
                 this.isnational = 0
@@ -277,41 +286,42 @@ export default {
         },
         showOpt (row) {
             this.modifyTitle = true
-            // 修改
-            console.log(row)
-            // if(row.platform && row.platform !== ''){
-            //     let formArr = row.platform.split('|')
-            //     row.platform = []
-            //     if(formArr[0] === '1') row.platform[0] = 'ios'
-            //     if(formArr[1] === '1') row.platform[1] = 'android'
-            // }
             this.adsform = JSON.parse(JSON.stringify(row))
             this.dialogAds = true
         },
         async onaddSubmit () {
+            console.log(this.adsform)
+            if (
+                Object.values(this.adsform).includes("")
+            ) {
+                this.$message({
+                    type: "error",
+                    message: "内容不能为空"
+                })
+                return
+            }
+
             let currlan = "en"
             if (this.activeName !== "first") {
-                currlan = "india"
+                currlan = "hi"
             }
             let obj = {
                 localid: this.localid,
                 language: currlan
             }
             let arrplat = []
-            arrplat[0] = this.adsform.platform.indexOf('ios')>-1? '1' : '0'
-            arrplat[1] = this.adsform.platform.indexOf('android')>-1? '1' : '0'
-            // this.adsform.platform = arrplat.join('|')
-            // console.log(this.adsform)
+            arrplat[0] = this.adsform.platform.indexOf("ios")>-1? "1" : "0"
+            arrplat[1] = this.adsform.platform.indexOf("android")>-1? "1" : "0"
+            this.adsform.begintime = this.getdate(this.adsform.begintime)
+            this.adsform.endtime = this.getdate(this.adsform.endtime)
             this.adsform.weight = this.adsform.weight.toString()
-            this.adsform.begintime = this.adsform.begintime.split(' ')[0]
-            this.adsform.endtime = this.adsform.endtime.split(' ')[0]
             let data = {
                 ...obj,
                 ...this.adsform,
                 national: this.isnational.toString()
             }
             data = JSON.parse(JSON.stringify(data))
-            data.platform = arrplat.join('|')
+            data.platform = arrplat.join("|")
             let addata = await this.$store.dispatch("ad_modify",data)
             if (addata) {
                 this.adslistFn()
@@ -328,7 +338,7 @@ export default {
             }
         },
         handleClick (tab, event) {
-            // 切换语言选项卡  tab  eng india
+            // 切换语言选项卡  tab  eng hi
             this.$nextTick(() => {
                 this.adslistFn()
             })
@@ -337,7 +347,7 @@ export default {
             this.modifyTitle = false
             let currlan = "en"
             if (this.activeName !== "first") {
-                currlan = "india"
+                currlan = "hi"
             }
             let obj = {
                 localid: this.localid,
@@ -368,7 +378,7 @@ export default {
             // 获取广告信息
             let currlan = "en"
             if (this.activeName !== "first") {
-                currlan = "india"
+                currlan = "hi"
             }
             let obj = {
                 localid: this.localid,
@@ -379,6 +389,13 @@ export default {
             let exchangeList = await this.$store.dispatch("adList", obj)
             this.adslist = exchangeList.activitylist
             console.log(exchangeList)
+        },
+        getdate (time) {
+            var now = new Date(Number(time)),
+                y = now.getFullYear(),
+                m = now.getMonth() + 1,
+                d = now.getDate()
+            return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substr(0, 8)
         }
 
     }
