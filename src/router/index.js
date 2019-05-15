@@ -65,6 +65,15 @@ export const constantRouterMap = [
                 }
             },
             {
+                path: "adsconfig/national",
+                name: "adsconfig",
+                component: () => import("@/views/main/adsconfig/index"),
+                meta: {
+                    title: "国际版广告配置",
+                    icon: "table"
+                }
+            },
+            {
                 path: "goods",
                 name: "goods",
                 component: () => import("@/views/main/goods/index"),
@@ -119,14 +128,14 @@ export const constantRouterMap = [
                 }
             },
             {
-                path: "adsconfig",
+                path: "adsconfig/",
                 name: "adsconfig",
                 component: () => import("@/views/main/adsconfig/index"),
                 meta: {
                     title: "广告配置",
                     icon: "table"
                 }
-            }
+            },
         ]
     },
     {

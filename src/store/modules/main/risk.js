@@ -1,8 +1,8 @@
 import {
-    goodsReview, goodsList, userlist, accountinf, logs, sumlogs, uslevel 
+    goodsReview, goodsList, userlist, accountinf, logs, sumlogs, uslevel, adList, ad_modify
 } from "@/api/main/risk"
 import {
-    getCk, setCk, removeCk 
+    getCk, setCk, removeCk
 } from "@/utils/auth"
 
 const mailmsg = {
@@ -13,7 +13,7 @@ const mailmsg = {
     actions: {
         // 兑换审核
         risk_goodsReview ({
-            commit 
+            commit
         }, obj) {
             return new Promise((resolve, reject) => {
                 goodsReview(obj).then(response => {
@@ -24,7 +24,7 @@ const mailmsg = {
             })
         },
         risk_goodslist ({
-            commit 
+            commit
         }, obj) {
             return new Promise((resolve, reject) => {
                 goodsList(obj).then(response => {
@@ -35,7 +35,7 @@ const mailmsg = {
             })
         },
         risk_userlist ({
-            commit 
+            commit
         }, obj) {
             return new Promise((resolve, reject) => {
                 userlist(obj).then(response => {
@@ -46,7 +46,7 @@ const mailmsg = {
             })
         },
         risk_accountinf ({
-            commit 
+            commit
         }, obj) {
             return new Promise((resolve, reject) => {
                 accountinf(obj).then(response => {
@@ -57,7 +57,7 @@ const mailmsg = {
             })
         },
         risk_logs ({
-            commit 
+            commit
         }, obj) {
             return new Promise((resolve, reject) => {
                 logs(obj).then(response => {
@@ -68,7 +68,7 @@ const mailmsg = {
             })
         },
         risk_sumlogs ({
-            commit 
+            commit
         }, obj) {
             return new Promise((resolve, reject) => {
                 sumlogs(obj).then(response => {
@@ -79,7 +79,7 @@ const mailmsg = {
             })
         },
         risk_levelUpdate ({
-            commit 
+            commit
         }, obj) {
             return new Promise((resolve, reject) => {
                 uslevel(obj).then(response => {
@@ -88,7 +88,29 @@ const mailmsg = {
                     reject(error)
                 })
             })
-        }                
+        },
+        adList ({
+            commit
+        }, obj) {
+            return new Promise((resolve, reject) => {
+                adList(obj).then(response => {
+                    resolve(response.data)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+        ad_modify ({
+            commit
+        }, obj) {
+            return new Promise((resolve, reject) => {
+                ad_modify(obj).then(response => {
+                    resolve(response.data)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        }
     }
 }
 

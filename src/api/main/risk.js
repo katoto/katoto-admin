@@ -47,3 +47,13 @@ export function uslevel (data = {
 }) {
     return post("/user/level/update", data)
 }
+
+// 广告配置列表
+export function adList (data = {
+}) {
+    return get("/admin/activity/config/list", data)
+}
+export function ad_modify (data = {
+}) {
+    return post("/admin/activity/config/modify", data)
+}

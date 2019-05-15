@@ -3,7 +3,7 @@
     <div>
       <section class="clear">
         <div style="float:left">
-          <!-- 新增币种选择 -->
+          <!--  -->
           <section style="float: left;margin-top: 4px">
             <span style="font-size: 14px">广告图位置: </span>
             <el-select
@@ -14,22 +14,6 @@
             >
               <el-option
                 v-for="item in localStyleOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"/>
-            </el-select>
-          </section>
-          <!-- 平台 -->
-          <section style="float: left;margin-top: 4px;margin-left:10px">
-            <span style="font-size: 14px">平台配置: </span>
-            <el-select
-              v-model="platfromSet"
-              size="small"
-              placeholder="请选择平台"
-              @change="adsLocalChange"
-            >
-              <el-option
-                v-for="item in platfromOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"/>
@@ -55,12 +39,11 @@
           @tab-click="handleClick">
           <el-tab-pane
             label="英文"
-            name="first">
-          </el-tab-pane>
+            name="first"/>
           <el-tab-pane
+            v-if="!isnational"
             label="印地语"
-            name="second">
-          </el-tab-pane>
+            name="second"/>
         </el-tabs>
       </div>
       <el-table
@@ -68,18 +51,55 @@
         stripe
         highlight-current-row
         style="width: 100%">
+
         <el-table-column
-          prop="index"
-          label="序号"/>
+          prop="activityid"
+          label="序号"
+          width="70"
+        />
         <el-table-column
-          prop="uid"
-          label="广告图"/>
+          prop="weight"
+          label="权重"
+          width="60"
+        />
         <el-table-column
-          prop="regtime"
+          label="广告图">
+          <template slot-scope="scope">
+            <img :src="scope.row.img_url">
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          label="标题"/>
+        <el-table-column
+          prop="description"
           label="内容"/>
         <el-table-column
-          prop="localStr"
+          label="平台">
+          <template slot-scope="scope">
+            <div
+              v-if="scope.row.platform.length>0"
+              class="flex">
+              <p v-for="item in scope.row.platform">&nbsp;{{ item }}&nbsp;</p>
+            </div>
+            <div v-else>无</div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="begintime"
           label="上线时间"/>
+        <el-table-column
+          label="下线时间"
+          prop="endtime"
+        />
+        <el-table-column
+          prop="link"
+          label="活动地址"/>
+        <el-table-column label="上线状态">
+          <template slot-scope="scope">
+            <p>{{ statusName(scope.row.status) }}</p>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           width="230px">
@@ -90,32 +110,25 @@
               size="small"
               @click="showOpt(scope.row)">修改</el-button>
             <el-button
+              v-if="scope.row.status === '0'"
+              size="small"
+              type="success"
+              @click="delOpt(scope.row, '1')">上线</el-button>
+            <el-button
+              v-else
               size="small"
               type="danger"
-              @click="delOpt(scope.row)">删除</el-button>
+              @click="delOpt(scope.row, '0')">下线</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <!-- <div
-        class="block"
-        style="text-align:center">
-        <el-pagination
-          :current-page.sync="userPageNumber"
-          :page-size="userPageSize"
-          :page-count="userMsgCounts"
-          background
-          size="small"
-          layout="prev, pager, next,jumper"
-          @current-change="userCurrentChange"
-        />
-      </div> -->
     </div>
 
     <!--新增广告的弹窗 -->
     <el-dialog
       :visible.sync="dialogAds"
       :close-on-click-modal="false"
-      :title="localid === '0' ? '新增活动中心广告' : '新增弹窗中心广告'" >
+      :title="modifyTitle ? '修改广告图' : localid === '0' ? '新增活动中心广告' : '新增弹窗中心广告'" >
       <el-form
         ref="form"
         :model="adsform"
@@ -123,28 +136,27 @@
         <el-form-item label="活动标题">
           <el-input
             v-model="adsform.title"
-            style="width:350px"/>
+          />
         </el-form-item>
         <el-form-item label="活动内容">
           <el-input
-            v-model="adsform.desc"
+            v-model="adsform.description"
             type="textarea"/>
         </el-form-item>
         <el-form-item label="广告图">
-            <input
-            ref="upload"
-            type="file"
-            >
+          <el-input
+            v-model="adsform.img_url"
+          />
         </el-form-item>
         <el-form-item label="活动时间">
           <el-col :span="11">
             <el-date-picker
-              v-model="adsform.startdate"
+              v-model="adsform.begintime"
               size="small"
-              type="date"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择开始日期"
+              value-format="timestamp"
               style="width: 100%;"/>
           </el-col>
           <el-col
@@ -152,81 +164,58 @@
             class="line">-</el-col>
           <el-col :span="11">
             <el-date-picker
-              v-model="adsform.enddate"
+              v-model="adsform.endtime"
               size="small"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择结束日期"
+              value-format="timestamp"
               style="width: 100%;"/>
           </el-col>
         </el-form-item>
+        <el-form-item label="展示平台: ">
+          <el-checkbox-group v-model="adsform.platform">
+            <el-checkbox
+              label="ios"
+              value="1"/>
+            <el-checkbox
+              label="android"
+              value="1"/>
+          </el-checkbox-group>
+        </el-form-item>
         <el-form-item label="权重设置">
           <el-input-number
-            v-model="adsform.num"
+            v-model="adsform.weight"
             :min="1"
-            :max="100"
+            :max="1000"
             label="描述文字"
             size="small"/>
         </el-form-item>
+        <el-form-item label="活动地址">
+          <el-input
+            v-model="adsform.link"
+          />
+        </el-form-item>
+
         <el-form-item>
           <el-button
             type="primary"
             @click="onaddSubmit">立即创建</el-button>
           <el-button @click="dialogAds = false" >取消</el-button>
         </el-form-item>
-
       </el-form>
-
     </el-dialog>
-
-    <!--导入UId弹窗 -->
-    <!-- <el-dialog
-      :visible.sync="dialogTableVisible"
-      title="注意！" >
-      <div>
-        <span>设置用户 {{ opeUId }} 等级:</span>
-        <el-select
-          v-model="opelocal"
-          size="small"
-          placeholder="请选择">
-          <el-option
-            v-for="item in opelocalObj"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"/>
-        </el-select>
-      </div>
-      <div
-        slot="footer"
-        class="dialog-footer">
-        <el-button @click="dialogTableVisible = false" >取 消</el-button>
-        <el-button
-          type="primary"
-          @click="uplocalFn">确 定</el-button>
-      </div>
-    </el-dialog> -->
-
   </section>
 </template>
 
 <script>
+import {
+    type
+} from "os"
 
 export default {
     data () {
         return {
-            platfromSet: "0",
-            platfromOptions:[
-                {
-                    value: "0",
-                    label: "All"
-                }, {
-                    value: "1",
-                    label: "ios"
-                }, {
-                    value: "2",
-                    label: "android"
-                }
-            ],
             activeName: "first",
             adslist: [
             ],
@@ -242,230 +231,214 @@ export default {
             ],
             dialogTableVisible: false,
             dialogAds: false,
+            address:"",
+            // 新增弹层
             adsform: {
                 title: "",
-                desc: "",
-                startdate: "",
-                enddate: "",
-                num: ""
+                description:"",
+                img_url:"",
+                begintime: "",
+                endtime: "",
+                weight: "",
+                link:"",
+                platform:[]
             },
-
-            // userPageNumber: 1,
-            // userPageSize: 10,
-            // userMsgCounts: 3,
+            modifyTitle: false,
+            isnational: 0
+        }
+    },
+    watch: {
+        $route (to, from) {
+            console.log(to)
+            this.pageinit()
         }
     },
     mounted () {
-        this.adslistFn()
+        this.pageinit()
     },
     methods: {
-        delOpt(row){
+        statusName (val) {
+            return val === "0" ? "下线" : "上线"
+        },
+        pageinit () {
+            if (this.$route && this.$route.fullPath.indexOf("/national") > -1) {
+                this.isnational = 1
+            } else {
+                this.isnational = 0
+            }
+            this.adslistFn()
+        },
+        delOpt (row, val) {
             // 删除
-            console.log(row)
-            this.$confirm(`将永久删除${JSON.stringify(row)}该广告? `, '注意！', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
+            this.$confirm(`将上下线${JSON.stringify(row.activityid)}该广告? `, "注意！", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
             }).then(async () => {
-                console.log(row)
-                let exchangeList = await this.$store.dispatch("risk_userlist", obj)
-                if (exchangeList) {
-                    if (exchangeList.userinfos) {this.adslist = this.formateUserList(exchangeList.userinfos)}
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
-                    });
-                } else {
-                    this.$message({
-                        type: "error",
-                        message: "操作失败"
-                    })
-                }
-
+                // todo
+                row.status = val
+                this.adsform = JSON.parse(JSON.stringify(row))
+                this.onaddSubmit()
             }).catch(() => {
                 // 取消操作
 
-            });
+            })
         },
-        showOpt(row){
-            // 修改
-            this.adsform = {
-                title: "",
-                desc: "",
-                startdate: "",
-                enddate: "",
-                num: ""
-            }
+        showOpt (row) {
+            this.modifyTitle = true
+            this.adsform = JSON.parse(JSON.stringify(row))
             this.dialogAds = true
         },
-        onaddSubmit () {
-            // 点击提交
+        async onaddSubmit () {
             console.log(this.adsform)
-            console.log(this.fileList)
-            console.log(this.dialogAds)
-        },
-        handleClick (tab, event) {
-            // 切换语言选项卡  tab  eng india
-            this.$nextTick(() => {
-                this.adslistFn()
-            })
-        },
-        addAdsFn () {
-            // 新增广告
-            this.dialogAds = true
-            this.$refs.upload.value = ''
-            this.$nextTick(() => {
-                let thisRef = this.$refs.upload
-                if (thisRef) {
-                    thisRef.removeEventListener("change", this.readUpload)
-                    thisRef.addEventListener("change", this.readUpload)
-                }
-            })
-        },
-        readUpload (e) {
-        // 表格数据导入
-            const files = e.target.files
-            if (files.length<=0) {
+            if (
+                Object.values(this.adsform).includes("")
+            ) {
                 this.$message({
-                    message: "error 请选择一个文件!",
-                    type: "warning"
+                    type: "error",
+                    message: "内容不能为空"
                 })
-                return false
-            } else if (!/\.(png|jpeg|bmp|jpg)$/.test(files[0].name.toLowerCase())) {
-                this.$message({
-                    message: "上传格式不正确，请上传xls或者xlsx格式",
-                    type: "error"
-                })
-                return false
+                return
             }
-            const fileReader = new FileReader()
-            fileReader.onload = (ev) => {
-                try {
-                    const data = ev.target.result
-                    const workbook = XLSX.read(data, {
-                        type: "binary"
-                    })
-                    const wsname = workbook.SheetNames[0]// 取第一张表
-                    this.langArr = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])// 生成json表格内容
-                    let oneData = this.langArr[0]
-                    if ((oneData[0] && oneData[0].__EMPTY) || ( !oneData.string_id && !oneData.page && !oneData.language )) {
-                        this.error("文档应该加密了, 需要先解锁文档!")
-                        this.$refs.upload.value = ""
-                        this.langArr = []
-                    }
-                } catch (e) {
-                    return false
-                }
-            }
-            fileReader.readAsBinaryString(files[0])
-        },
 
-        adsLocalChange () {
-            // 位置信息切换
-            this.adslistFn()
-        },
-
-        formateUserList (list) {
-            if (list && list.length>0) {
-                // list.forEach((item) => {
-                //     item.localStr = this.localObj[item.local]
-                // })
-            }
-            return list
-        },
-        async adslistFn () {
-            // 获取广告信息
             let currlan = "en"
             if (this.activeName !== "first") {
-                currlan = "india"
+                currlan = "hi"
             }
             let obj = {
                 localid: this.localid,
-                language: currlan,
-                platfrom: this.platfromSet
+                language: currlan
             }
-            // 获取基础信息
-            let exchangeList = await this.$store.dispatch("risk_userlist", obj)
-            if (exchangeList) {
-                if (exchangeList.userinfos) {this.adslist = this.formateUserList(exchangeList.userinfos)}
+            let arrplat = []
+            arrplat[0] = this.adsform.platform.indexOf("ios")>-1? "1" : "0"
+            arrplat[1] = this.adsform.platform.indexOf("android")>-1? "1" : "0"
+            this.adsform.begintime = this.getdate(this.adsform.begintime)
+            this.adsform.endtime = this.getdate(this.adsform.endtime)
+            this.adsform.weight = this.adsform.weight.toString()
+            let data = {
+                ...obj,
+                ...this.adsform,
+                national: this.isnational.toString()
+            }
+            data = JSON.parse(JSON.stringify(data))
+            data.platform = arrplat.join("|")
+            let addata = await this.$store.dispatch("ad_modify",data)
+            if (addata) {
+                this.adslistFn()
+                this.$message({
+                    type: "success",
+                    message: "success!"
+                })
+                this.dialogAds = false
             } else {
                 this.$message({
                     type: "error",
                     message: "操作失败"
                 })
             }
+        },
+        handleClick (tab, event) {
+            // 切换语言选项卡  tab  eng hi
+            this.$nextTick(() => {
+                this.adslistFn()
+            })
+        },
+        addAdsFn () {
+            this.modifyTitle = false
+            let currlan = "en"
+            if (this.activeName !== "first") {
+                currlan = "hi"
+            }
+            let obj = {
+                localid: this.localid,
+                language: currlan
+            }
+            this.adsform = {
+                title: "",
+                description:"",
+                img_url:"",
+                begintime: "",
+                endtime: "",
+                weight: "",
+                link:"",
+                platform:[]
+            }
+            let data = {
+                ...obj,
+                ...this.adsform
+            }
+            this.dialogAds = true
+        },
 
+        adsLocalChange () {
+            // 位置信息切换
+            this.adslistFn()
+        },
+        async adslistFn () {
+            // 获取广告信息
+            let currlan = "en"
+            if (this.activeName !== "first") {
+                currlan = "hi"
+            }
+            let obj = {
+                localid: this.localid,
+                language: currlan,
+                national: this.isnational.toString()
+            }
+            // 获取基础信息
+            let exchangeList = await this.$store.dispatch("adList", obj)
+            this.adslist = exchangeList.activitylist
+            console.log(exchangeList)
+        },
+        getdate (time) {
+            var now = new Date(Number(time)),
+                y = now.getFullYear(),
+                m = now.getMonth() + 1,
+                d = now.getDate()
+            return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substr(0, 8)
         }
-
-        // async uplocalFn () {
-        //     // 更新用户等级
-        //     let currlan = 'en'
-        //     if(this.activeName !== 'first'){
-        //         currlan = 'india'
-        //     }
-        //     let obj = {
-        //         local: this.opelocal.toString(),
-        //         language: currlan
-        //     }
-        //     let local = await this.$store.dispatch("risk_localUpdate", obj)
-        //     if (local) {
-        //         this.$message({
-        //             type: "success",
-        //             message: "操作用户等级成功"
-        //         })
-        //         this.dialogTableVisible = false
-        //         this.adslistFn()
-        //     } else {
-        //         this.$message({
-        //             type: "error",
-        //             message: "操作用户等级error"
-        //         })
-        //     }
-        // },
 
     }
 }
 </script>
 <style scoped>
-.addTop section{
-    margin-top: 10px
+.addTop section {
+  margin-top: 10px;
 }
-.el-col-2{
-    text-align: center
+.el-col-2 {
+  text-align: center;
 }
-  .seaUid .el-input {
-    width: 300px;
-    line-height: 40px;
-  }
-  .el-input{
-    width: 150px;
-  }
-  .clear{
-    overflow: hidden;
-  }
-
-    .avatar-uploader .el-upload {
-        border: 1px dashed #d9d9d9;
-        border-radius: 6px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 20px;
-    color: #8c939d;
-    width: 30px;
-    height: 20px;
-    line-height: 20px;
-    text-align: center;
-  }
-  .avatar {
-    width: 20px;
-    height: 20px;
-    display: block;
-  }
-
+.el-input {
+  max-width: 400px;
+}
+.clear {
+  overflow: hidden;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 20px;
+  color: #8c939d;
+  width: 30px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+}
+.avatar {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.flex{
+    display: flex;
+    justify-content: center;
+}
 </style>
