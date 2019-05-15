@@ -124,6 +124,7 @@
           </el-tab-pane>
           <el-tab-pane
             label="印度语"
+            v-if="false"
             name="second"
           >
             <el-form-item
