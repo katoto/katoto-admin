@@ -20,13 +20,14 @@
         style="margin-top:20px">
         <el-input
           v-model="someUid"
+          type="textarea"
           size="small"
           placeholder="请输入uid用','区分（部分发送不区分平台哦~）"
           @blur="testUid"/>
         <el-button
+            style="margin-top:8px"
           size="small"
           type="primary"
-          disabled="disabled"
           @click="inpUidFn">批量导入</el-button>
       </section>
     </div>
@@ -79,6 +80,7 @@
         <span>导入的uid信息:</span>
         <hr>
         <el-input
+            type="textarea"
           v-model="someUid"
           size="small"
           readonly
@@ -146,7 +148,10 @@ export default {
         //     })
         // }
     },
-    mounted () {
+    beforeDestroy () {
+        if(this.$refs.upload){
+            this.$refs.upload.removeEventListener("change", this.readExcel)
+        }
     },
     methods:{
         checklen_content (val) {
@@ -297,9 +302,9 @@ export default {
                     type: "warning"
                 })
                 return false
-            } else if (!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())) {
+            } else if (!/\.(xls|xlsx|txt)$/.test(files[0].name.toLowerCase())) {
                 this.$message({
-                    message: "上传格式不正确，请上传xls或者xlsx格式",
+                    message: "上传格式不正确，请上传txt格式",
                     type: "error"
                 })
                 return false
@@ -308,12 +313,15 @@ export default {
             fileReader.onload = (ev) => {
                 try {
                     const data = ev.target.result
-                    const workbook = XLSX.read(data, {
-                        type: "binary"
-                    })
-                    const wsname = workbook.SheetNames[0]// 取第一张表
-                    this.langUidArr = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])// 生成json表格内容
-                    console.log(this.langUidArr)
+                    let nowVal = ''
+                    try {
+                        data.split("\r\n").map(item => {
+                            nowVal += item + ','
+                        })
+                    } catch (e) {
+                        this.error(e.toString())
+                    }
+                    this.someUid = nowVal.slice(0, -1)
                 } catch (e) {
                     return false
                 }
